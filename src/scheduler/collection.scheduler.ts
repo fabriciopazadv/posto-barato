@@ -1,0 +1,2 @@
+import { loadEnvironment } from '../config/environment.js'; import { collectOnce } from '../services/collection.service.js'; import { logger } from '../logging/logger.js';
+export function startScheduler(){const env=loadEnvironment(); if(!env.SCHEDULER_ENABLED){logger.info('scheduler desativado'); return;} const ms=env.COLLECTION_FREQUENCY_HOURS*3600_000; void collectOnce({all:true}); setInterval(()=>void collectOnce({all:true}),ms);}

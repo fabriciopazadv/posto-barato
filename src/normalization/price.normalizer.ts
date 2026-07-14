@@ -1,0 +1,1 @@
+export function parseBrazilianPrice(text:string):number{const cleaned=text.replace(/[^\d,.]/g,'').replace(/\./g,'').replace(',','.'); const n=Number(cleaned); if(!Number.isFinite(n)) throw new Error(`Preço inválido: ${text}`); return n;}
