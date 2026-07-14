@@ -1,0 +1,2 @@
+import { z } from 'zod';
+export const observationSchema=z.object({originalProductName:z.string().min(1),originalPriceText:z.string().min(1),priceDecimal:z.number().positive(),relativeTimeText:z.string().optional(),originalStationName:z.string().min(1),originalAddress:z.string().min(3),sourcePosition:z.number().int().positive(),municipality:z.string().min(1),state:z.string().length(2),collectedAt:z.date()});

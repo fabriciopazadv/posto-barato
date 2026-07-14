@@ -1,0 +1,50 @@
+{
+  "name": "posto-barato-coletor",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate deploy",
+    "db:seed": "tsx prisma/seed.ts",
+    "auth": "tsx src/cli/auth.ts",
+    "diagnose": "tsx src/cli/diagnose.ts",
+    "collect": "tsx src/cli/collect.ts",
+    "collect:all": "tsx src/cli/collect.ts --all",
+    "report:last": "tsx src/cli/report-last.ts",
+    "report:daily": "tsx src/cli/report-daily.ts",
+    "scheduler": "tsx src/cli/scheduler.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "build": "tsc -p tsconfig.build.json",
+    "security:scan": "node scripts/security-scan.mjs",
+    "precommit:guard": "pnpm security:scan"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.12.0",
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.7",
+    "pino": "^9.5.0",
+    "playwright": "^1.49.1",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.17.0",
+    "@types/node": "^22.10.5",
+    "eslint": "^9.17.0",
+    "globals": "^15.14.0",
+    "prettier": "^3.4.2",
+    "prisma": "^6.12.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "typescript-eslint": "^8.19.0",
+    "vitest": "^2.1.8"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
+  }
+}

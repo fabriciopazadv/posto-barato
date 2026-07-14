@@ -1,0 +1,2 @@
+import { describe, expect, it } from 'vitest'; import { parseRelativeTime } from '../../src/parsers/relative-time.parser.js';
+describe('tempo relativo',()=>{const base=new Date('2026-07-14T14:00:00Z'); it('horas',()=>expect(parseRelativeTime('há 5 horas',base).estimatedObservedAt?.toISOString()).toBe('2026-07-14T09:00:00.000Z')); it('dias',()=>expect(parseRelativeTime('há 2 dias',base).estimatedObservedAt?.toISOString()).toBe('2026-07-12T14:00:00.000Z')); it('minutos',()=>expect(parseRelativeTime('há 30 minutos',base).estimatedTime).toBe(true));});

@@ -1,0 +1,3 @@
+import { fingerprintText } from '../utils/text.js'; import type { CanonicalFuel } from '../types/index.js';
+const map:Record<string,CanonicalFuel>={'ETANOL':'ETANOL','ETANOL COMUM':'ETANOL','ETANOL HIDRATADO':'ETANOL','ETANOL ADITIVADO':'ETANOL_ADITIVADO','GASOLINA COMUM':'GASOLINA_COMUM','GASOLINA ADITIVADA':'GASOLINA_ADITIVADA','DIESEL':'DIESEL_COMUM','DIESEL COMUM':'DIESEL_COMUM','DIESEL S10':'DIESEL_S10','DIESEL S-10':'DIESEL_S10','GNV':'GNV'};
+export function normalizeFuel(text:string):CanonicalFuel{const key=fingerprintText(text).replace('S 10','S10'); const v=map[key]; if(!v) throw new Error(`Combustível desconhecido: ${text}`); return v;}

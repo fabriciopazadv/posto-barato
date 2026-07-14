@@ -1,0 +1,3 @@
+import os from 'node:os'; import { prisma } from './prisma.js';
+export async function createRun(args:{municipality:string;state:string;products:string[];browserVersion?:string}){return prisma.collectionRun.create({data:{municipality:args.municipality,state:args.state,productsRequested:args.products,browserVersion:args.browserVersion,collectorVersion:'0.1.0',hostName:os.hostname()}});}
+export async function finishRun(id:string,status:'RUNNING'|'SUCCESS'|'PARTIAL_SUCCESS'|'FAILED'|'AUTH_REQUIRED'|'BLOCKED'|'CAPTCHA_DETECTED'|'SECURITY_CHALLENGE'|'PAGE_CHANGED',metrics:Record<string,unknown>={}){return prisma.collectionRun.update({where:{id},data:{...metrics,status,finishedAt:new Date()}});}

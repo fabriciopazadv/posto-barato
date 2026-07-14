@@ -1,0 +1,5 @@
+import fs from 'node:fs/promises'; import path from 'node:path'; import type { Locator } from 'playwright'; import { loadEnvironment } from '../config/environment.js'; import { sha256 } from './hashing.service.js';
+export interface SavedEvidence{filePath:string;sha256:string;containsPersonalHeader:false;}
+async function ensure(dir:string){await fs.mkdir(dir,{recursive:true});}
+export async function saveHtmlEvidence(runId:string,html:string):Promise<SavedEvidence>{const env=loadEnvironment(); await ensure(env.HTML_SNAPSHOT_DIR); const filePath=path.join(env.HTML_SNAPSHOT_DIR,`${runId}-${Date.now()}.html`); await fs.writeFile(filePath,html); return{filePath,sha256:sha256(Buffer.from(html)),containsPersonalHeader:false};}
+export async function saveElementScreenshot(runId:string,locator:Locator):Promise<SavedEvidence|null>{const env=loadEnvironment(); if(!env.SAVE_SCREENSHOTS)return null; await ensure(env.EVIDENCE_DIR); const filePath=path.join(env.EVIDENCE_DIR,`${runId}-${Date.now()}.png`); const buffer=await locator.screenshot({path:filePath}).catch(()=>null); return buffer?{filePath,sha256:sha256(buffer),containsPersonalHeader:false}:null;}

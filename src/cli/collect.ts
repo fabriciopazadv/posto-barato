@@ -1,0 +1,2 @@
+import { Command } from 'commander'; import { collectOnce } from '../services/collection.service.js';
+const program=new Command().option('--municipality <name>').option('--product <name>').option('--all'); program.parse(); const opts=program.opts(); const r=await collectOnce({municipality:opts.municipality,product:opts.product,all:opts.all}); console.log(JSON.stringify(r,null,2)); if(r.status!=='SUCCESS') process.exitCode=1;

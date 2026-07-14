@@ -1,0 +1,2 @@
+import { prisma } from '../repositories/prisma.js';
+const run=await prisma.collectionRun.findFirst({orderBy:{startedAt:'desc'},include:{evidences:true,errors:true}}); if(!run){console.log('Nenhuma execução encontrada.'); process.exit(0);} const stats=await prisma.priceObservation.groupBy({by:['productId'],where:{collectionRunId:run.id},_min:{priceDecimal:true},_max:{priceDecimal:true},_avg:{priceDecimal:true},_count:true}).catch(()=>[]); console.log(JSON.stringify({run,stats},null,2));
