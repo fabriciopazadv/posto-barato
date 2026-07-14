@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Posto Barato - Onboarding</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "secondary-fixed": "#d8e3fb",
+                      "on-secondary-fixed-variant": "#3c475a",
+                      "secondary-fixed-dim": "#bcc7de",
+                      "secondary-container": "#d5e0f8",
+                      "surface-tint": "#006c49",
+                      "surface-container-highest": "#d9e3f4",
+                      "on-secondary-fixed": "#111c2d",
+                      "primary-fixed": "#6ffbbe",
+                      "on-error": "#ffffff",
+                      "surface-dim": "#d1dbec",
+                      "on-tertiary": "#ffffff",
+                      "error": "#ba1a1a",
+                      "on-tertiary-container": "#003f4b",
+                      "on-primary": "#ffffff",
+                      "error-container": "#ffdad6",
+                      "inverse-primary": "#4edea3",
+                      "on-surface-variant": "#3c4a42",
+                      "primary": "#006c49",
+                      "on-primary-container": "#00422b",
+                      "outline": "#6c7a71",
+                      "tertiary-fixed": "#acedff",
+                      "on-tertiary-fixed-variant": "#004e5c",
+                      "inverse-on-surface": "#eaf1ff",
+                      "secondary": "#545f73",
+                      "surface-container-low": "#eef4ff",
+                      "on-surface": "#121c28",
+                      "tertiary": "#00687a",
+                      "inverse-surface": "#27313e",
+                      "tertiary-fixed-dim": "#4cd7f6",
+                      "surface": "#f8f9ff",
+                      "surface-container-high": "#dfe9fa",
+                      "outline-variant": "#bbcabf",
+                      "surface-container": "#e5eeff",
+                      "tertiary-container": "#00b2d0",
+                      "surface-bright": "#f8f9ff",
+                      "on-error-container": "#93000a",
+                      "on-secondary-container": "#586377",
+                      "primary-fixed-dim": "#4edea3",
+                      "surface-container-lowest": "#ffffff",
+                      "primary-container": "#10b981",
+                      "background": "#f8f9ff",
+                      "on-tertiary-fixed": "#001f26",
+                      "on-background": "#121c28",
+                      "on-primary-fixed-variant": "#005236",
+                      "on-secondary": "#ffffff",
+                      "on-primary-fixed": "#002113",
+                      "surface-variant": "#d9e3f4"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "md": "16px",
+                      "sm": "8px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "xl": "32px",
+                      "container-margin": "16px",
+                      "gutter": "12px"
+              },
+              "fontFamily": {
+                      "headline-lg": [
+                              "Manrope"
+                      ],
+                      "price-display": [
+                              "Manrope"
+                      ],
+                      "headline-lg-mobile": [
+                              "Manrope"
+                      ],
+                      "headline-md": [
+                              "Manrope"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "body-md": [
+                              "Inter"
+                      ],
+                      "label-bold": [
+                              "Inter"
+                      ]
+              },
+              "fontSize": {
+                      "headline-lg": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "price-display": [
+                              "24px",
+                              {
+                                      "lineHeight": "24px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "headline-lg-mobile": [
+                              "24px",
+                              {
+                                      "lineHeight": "32px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "800"
+                              }
+                      ],
+                      "headline-md": [
+                              "20px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "body-lg": [
+                              "16px",
+                              {
+                                      "lineHeight": "24px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-md": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "label-bold": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "fontWeight": "700"
+                              }
+                      ]
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        /* Fallback styling for material symbols */
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Fluid base for safe areas */
+        .pt-safe { padding-top: max(16px, env(safe-area-inset-top)); }
+        .pb-safe { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-hidden selection:bg-primary-container selection:text-on-primary-container">
+<!-- Main Mobile Container -->
+<main class="w-full h-[100dvh] max-w-md mx-auto relative flex flex-col shadow-2xl bg-surface-container-lowest">
+<!-- Background Tonal Layering -->
+<div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface-container-low to-surface-container-lowest opacity-50"></div>
+<!-- Top Action Area -->
+<header class="relative z-10 w-full flex justify-end items-center px-container-margin pt-safe h-14">
+<button class="font-label-bold text-label-bold text-primary active:scale-95 transition-transform px-xs py-sm uppercase tracking-wider">
+                Pular
+            </button>
+</header>
+<!-- Illustration Canvas -->
+<section class="relative z-10 flex-1 w-full flex items-center justify-center p-xl">
+<!-- Dynamic Background Glow -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-64 h-64 bg-primary-container/20 rounded-full blur-3xl"></div>
+</div>
+<!-- Core Illustration -->
+<div class="w-full max-w-[280px] aspect-square bg-contain bg-center bg-no-repeat relative z-10 drop-shadow-lg" data-alt="A clean, modern, flat vector-style illustration of a stylized digital map interface. Prominent elements include vibrant vivid green teardrop location pins and a floating digital price tag displaying fuel costs. The overall aesthetic is bright, corporate, and technological, utilizing a light mode palette with pristine white backgrounds, soft light grey (#F3F4F6) geometric pathways, and striking accents of deep petrol blue and bright energetic green to convey a sense of economy and precision. The visual style mimics a high-quality, professional app onboarding graphic tailored for a modern driving application." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuABOO23sNKihtJtlEG_PmyEH2AeTmKejpZvTF_hD_JVb_TEs9RDyEtWVBof-K9_xj-R2ig3IVwfB9GZANk1emdVxHBBCKasUGDxPHNmRupZ5xgQNVYXolgdj1DadjimZlQC7Ujn_2TmknwUVzMlfqAuYVK88f3vFLMUmbq8pBuCcQX-B9xbhgY1BIJhGMoTHimPKqLUEJXQ1NRFklSUJing5y-eqVTbR8QdnhB_IbDTMflXfQo5pIyK')">
+</div>
+</section>
+<!-- Content & Navigation Area -->
+<section class="relative z-10 w-full flex flex-col gap-lg px-container-margin pb-xl pt-md bg-surface-container-lowest rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.03)] border-t border-surface-variant/50">
+<!-- Progress Indicator -->
+<div class="flex gap-2 justify-center items-center mb-xs">
+<div class="h-2 w-8 rounded-full bg-primary transition-all duration-300"></div>
+<div class="h-2 w-2 rounded-full bg-surface-variant transition-all duration-300"></div>
+<div class="h-2 w-2 rounded-full bg-surface-variant transition-all duration-300"></div>
+</div>
+<!-- Typography Content -->
+<div class="flex flex-col gap-sm text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">
+                    Encontre o melhor preço perto de você
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant px-sm">
+                    Compare valores, distância e atualização dos postos da sua região.
+                </p>
+</div>
+<!-- Primary Action -->
+<div class="w-full mt-sm pb-safe">
+<button class="w-full h-[56px] flex items-center justify-center bg-primary hover:bg-surface-tint text-on-primary font-label-bold text-label-bold uppercase tracking-wider rounded-xl shadow-md active:scale-[0.98] active:shadow-sm transition-all duration-200 gap-2 group">
+<span>Continuar</span>
+<span class="material-symbols-outlined text-[18px] group-hover:translate-x-1 transition-transform">arrow_forward</span>
+</button>
+</div>
+</section>
+</main>
+</body></html>

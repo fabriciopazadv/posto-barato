@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>EV Charging Stations - Posto Barato</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#ffffff",
+                        "surface-tint": "#006c49",
+                        "on-surface-variant": "#3c4a42",
+                        "on-background": "#121c28",
+                        "tertiary-container": "#00b2d0",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#121c28",
+                        "error-container": "#ffdad6",
+                        "on-secondary-fixed": "#111c2d",
+                        "error": "#ba1a1a",
+                        "background": "#f8f9ff",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#002113",
+                        "secondary-container": "#d5e0f8",
+                        "surface-variant": "#d9e3f4",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "surface-container-highest": "#d9e3f4",
+                        "on-tertiary-fixed": "#001f26",
+                        "inverse-primary": "#4edea3",
+                        "on-secondary-container": "#586377",
+                        "inverse-surface": "#27313e",
+                        "surface-bright": "#f8f9ff",
+                        "inverse-on-surface": "#eaf1ff",
+                        "tertiary": "#00687a",
+                        "surface-dim": "#d1dbec",
+                        "on-primary-container": "#00422b",
+                        "primary": "#006c49",
+                        "surface-container-high": "#dfe9fa",
+                        "on-tertiary-container": "#003f4b",
+                        "surface-container": "#e5eeff",
+                        "on-primary": "#ffffff",
+                        "surface-container-low": "#eef4ff",
+                        "surface": "#f8f9ff",
+                        "outline-variant": "#bbcabf",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "tertiary-fixed": "#acedff",
+                        "primary-fixed-dim": "#4edea3",
+                        "outline": "#6c7a71",
+                        "primary-fixed": "#6ffbbe",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "primary-container": "#10b981",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "secondary": "#545f73",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-error-container": "#93000a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "container-margin": "16px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "gutter": "12px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "price-display": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "headline-lg": ["Manrope"],
+                        "label-bold": ["Inter"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "price-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "label-bold": ["12px", { "lineHeight": "16px", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .map-bg {
+            background-color: #e5e5e5;
+            background-image: radial-gradient(#d4d4d4 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        /* Custom scrollbar for horizontal chips */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background h-screen overflow-hidden flex flex-col font-body-md relative">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-14 bg-surface border-b border-outline-variant shadow-sm transition-all duration-200">
+<button class="text-on-surface-variant hover:bg-surface-container active:scale-95 p-2 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">menu</span>
+</button>
+<div class="font-headline-md text-headline-md font-extrabold text-primary">Posto Barato</div>
+<button class="text-on-surface-variant hover:bg-surface-container active:scale-95 p-2 rounded-full transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">account_circle</span>
+</button>
+</header>
+<!-- Main Content Area (Map Canvas) -->
+<main class="flex-1 relative mt-14 map-bg w-full h-full">
+<!-- Interactive Map Placeholder -->
+<div class="absolute inset-0 w-full h-full" data-alt="A detailed digital map interface showing city streets in a clean, modern light mode aesthetic. The map uses subtle tonal greys and whites, with very light blue accents indicating water features. The style is highly legible, clinical, and optimized for quick scanning while driving, embodying a corporate yet user-friendly design system." data-location="Seattle" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDZgnR5V6qo-CNQEoSqaBp2ArXNCzA4SW5Ems4f-ybw_pkkxDp6NmLg6g8Y3GIuQTNsmk6sTxu0rqJ-_eK5OPY6w_RGwA4Pm5Ng46h7f4NIPr13edgm8lOsC-1mAyJrUBx2Pxff993PqAPGyjRTDh0Qyr8c2QkTf4f9ZaNBJJeEgaPHxifIZVkepcsVhqL8u3Advr2tZKU-zKDpXibns9nlJ95sl_Uz86UK41dj2kFddjBAf3i-y-BM'); background-size: cover; background-position: center;">
+<!-- Map Markers -->
+<!-- EV Marker 1 -->
+<div class="absolute top-[30%] left-[40%] transform -translate-x-1/2 -translate-y-1/2 group">
+<div class="relative flex flex-col items-center cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-125 z-10">
+<div class="bg-tertiary-container text-on-tertiary shadow-lg rounded-full w-12 h-12 flex items-center justify-center ring-4 ring-white relative z-10">
+<span class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+</div>
+<div class="bg-white shadow-md rounded-full px-2 py-0.5 mt-1 border border-outline-variant font-label-bold text-label-bold text-on-surface">60kW</div>
+<!-- Ambient Glow -->
+<div class="absolute inset-0 bg-tertiary-container rounded-full blur-md opacity-40 -z-10 animate-pulse"></div>
+</div>
+</div>
+<!-- EV Marker 2 (Active/Selected) -->
+<div class="absolute top-[50%] left-[60%] transform -translate-x-1/2 -translate-y-1/2 group z-20">
+<div class="relative flex flex-col items-center cursor-pointer transition-transform duration-300 scale-125 z-10">
+<div class="bg-tertiary-container text-on-tertiary shadow-xl rounded-full w-14 h-14 flex items-center justify-center ring-4 ring-tertiary relative z-10">
+<span class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">electric_bolt</span>
+</div>
+<div class="bg-white shadow-md rounded-full px-3 py-1 mt-1 border border-tertiary font-label-bold text-label-bold text-tertiary">150kW</div>
+<div class="absolute inset-0 bg-tertiary rounded-full blur-lg opacity-50 -z-10"></div>
+</div>
+</div>
+<!-- EV Marker 3 -->
+<div class="absolute top-[70%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 group">
+<div class="relative flex flex-col items-center cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-125 z-10">
+<div class="bg-surface-variant text-on-surface-variant shadow-sm rounded-full w-10 h-10 flex items-center justify-center ring-2 ring-white opacity-70 relative z-10">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">electric_bolt</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Filters -->
+<div class="absolute top-4 left-0 w-full z-30 px-container-margin">
+<div class="flex space-x-2 overflow-x-auto hide-scrollbar py-2">
+<button class="flex items-center space-x-1 bg-surface shadow-md border border-outline-variant rounded-full px-4 py-2 h-12 flex-shrink-0 active:scale-95 transition-transform">
+<span class="material-symbols-outlined text-on-surface-variant text-sm">filter_list</span>
+<span class="font-label-bold text-label-bold text-on-surface">Filters</span>
+</button>
+<button class="flex items-center space-x-1 bg-secondary text-on-secondary shadow-md rounded-full px-4 py-2 h-12 flex-shrink-0 active:scale-95 transition-transform">
+<span class="font-label-bold text-label-bold">Fast Charge (&gt;50kW)</span>
+</button>
+<button class="flex items-center space-x-1 bg-surface shadow-md border border-outline-variant rounded-full px-4 py-2 h-12 flex-shrink-0 active:scale-95 transition-transform hover:bg-surface-container">
+<span class="font-label-bold text-label-bold text-on-surface">Available Now</span>
+</button>
+<button class="flex items-center space-x-1 bg-surface shadow-md border border-outline-variant rounded-full px-4 py-2 h-12 flex-shrink-0 active:scale-95 transition-transform hover:bg-surface-container">
+<span class="font-label-bold text-label-bold text-on-surface">CCS2</span>
+</button>
+</div>
+</div>
+<!-- Locate FAB -->
+<button class="absolute bottom-[240px] right-container-margin z-30 bg-surface shadow-lg w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant active:scale-95 transition-transform hover:bg-surface-container">
+<span class="material-symbols-outlined text-on-surface-variant">my_location</span>
+</button>
+</main>
+<!-- Bottom Sheet (Station Details) -->
+<div class="fixed bottom-0 left-0 w-full z-40 bg-surface/90 backdrop-blur-md rounded-t-[18px] shadow-[0_-4px_20px_rgba(0,0,0,0.1)] border-t border-outline-variant pb-20 md:pb-4 transition-transform duration-300 transform translate-y-0 flex flex-col max-h-[60vh]">
+<!-- Drag Handle -->
+<div class="w-full flex justify-center pt-3 pb-1 cursor-grab">
+<div class="w-10 h-1.5 bg-outline-variant rounded-full"></div>
+</div>
+<!-- Selected Station Info -->
+<div class="px-container-margin py-sm overflow-y-auto hide-scrollbar flex-1">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">ChargePoint Plaza</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Operated by GreenGrid Network</p>
+</div>
+<div class="flex flex-col items-end">
+<div class="font-price-display text-price-display text-tertiary">150kW</div>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">2.4 km away</span>
+</div>
+</div>
+<!-- Connectors Status -->
+<div class="bg-surface-container-low rounded-xl p-md border border-surface-variant mb-md">
+<h3 class="font-label-bold text-label-bold text-on-surface-variant mb-sm uppercase tracking-wider">Available Connectors</h3>
+<div class="space-y-sm">
+<!-- Connector 1 -->
+<div class="flex items-center justify-between p-sm bg-surface rounded-lg border border-outline-variant shadow-sm">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">ev_charger</span>
+</div>
+<div>
+<div class="font-body-lg text-body-lg font-bold text-on-surface">CCS2</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Up to 150kW</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="inline-flex items-center space-x-1 px-2 py-1 rounded-md bg-primary-container text-on-primary-container font-label-bold text-label-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Available (2)</span>
+</span>
+</div>
+</div>
+<!-- Connector 2 -->
+<div class="flex items-center justify-between p-sm bg-surface rounded-lg border border-outline-variant shadow-sm">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">avg_time</span>
+</div>
+<div>
+<div class="font-body-lg text-body-lg font-bold text-on-surface">Type 2</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Up to 22kW</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="inline-flex items-center space-x-1 px-2 py-1 rounded-md bg-error-container text-on-error-container font-label-bold text-label-bold">
+<span>In Use (1)</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex space-x-3 mt-md">
+<button class="flex-1 bg-tertiary text-on-tertiary h-12 rounded-xl font-label-bold text-label-bold flex items-center justify-center shadow-md active:scale-95 transition-transform">
+<span class="material-symbols-outlined mr-2">directions</span>
+                    Navigate
+                </button>
+<button class="w-12 h-12 border-2 border-outline-variant rounded-xl flex items-center justify-center text-on-surface-variant active:scale-95 transition-transform hover:bg-surface-container">
+<span class="material-symbols-outlined">bookmark_add</span>
+</button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl md:hidden">
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform duration-300 ease-out active:scale-90">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">home</span>
+<span class="font-label-bold text-label-bold">Home</span>
+</button>
+<button class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-3 py-1.5 transition-transform duration-300 ease-out active:scale-90">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">explore</span>
+<span class="font-label-bold text-label-bold">Explore</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform duration-300 ease-out active:scale-90">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">compare_arrows</span>
+<span class="font-label-bold text-label-bold">Compare</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform duration-300 ease-out active:scale-90">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">favorite</span>
+<span class="font-label-bold text-label-bold">Favorites</span>
+</button>
+<button class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform duration-300 ease-out active:scale-90">
+<span class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">person</span>
+<span class="font-label-bold text-label-bold">Profile</span>
+</button>
+</nav>
+</body></html>

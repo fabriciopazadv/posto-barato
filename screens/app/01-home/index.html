@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Posto Barato - Home</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-container": "#00b2d0",
+                        "on-error-container": "#93000a",
+                        "surface-container-highest": "#d9e3f4",
+                        "on-error": "#ffffff",
+                        "secondary": "#545f73",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "surface-container": "#e5eeff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "on-surface-variant": "#3c4a42",
+                        "tertiary": "#00687a",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed": "#d8e3fb",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-surface": "#121c28",
+                        "surface": "#f8f9ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#005236",
+                        "background": "#f8f9ff",
+                        "on-secondary-container": "#586377",
+                        "surface-tint": "#006c49",
+                        "primary": "#006c49",
+                        "on-secondary-fixed": "#111c2d",
+                        "tertiary-fixed": "#acedff",
+                        "on-background": "#121c28",
+                        "inverse-surface": "#27313e",
+                        "inverse-primary": "#4edea3",
+                        "on-primary-fixed": "#002113",
+                        "surface-variant": "#d9e3f4",
+                        "primary-container": "#10b981",
+                        "outline-variant": "#bbcabf",
+                        "surface-container-high": "#dfe9fa",
+                        "primary-fixed-dim": "#4edea3",
+                        "secondary-container": "#d5e0f8",
+                        "on-tertiary-container": "#003f4b",
+                        "inverse-on-surface": "#eaf1ff",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#f8f9ff",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#6ffbbe",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "error": "#ba1a1a",
+                        "surface-dim": "#d1dbec",
+                        "surface-container-low": "#eef4ff",
+                        "on-primary-container": "#00422b",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "outline": "#6c7a71"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "lg": "24px",
+                        "xl": "32px",
+                        "md": "16px",
+                        "gutter": "12px",
+                        "container-margin": "16px",
+                        "xs": "4px",
+                        "sm": "8px"
+                    },
+                    "fontFamily": {
+                        "body-md": ["Inter"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-lg": ["Inter"],
+                        "price-display": ["Manrope"],
+                        "label-bold": ["Inter"],
+                        "headline-lg": ["Manrope"]
+                    },
+                    "fontSize": {
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "price-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "label-bold": ["12px", { "lineHeight": "16px", "fontWeight": "700" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24 md:pb-0 md:pt-14 md:pl-80 flex flex-col items-center">
+<!-- Top App Bar (Web) / Header (Mobile) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-14 bg-surface border-b border-outline-variant shadow-sm md:hidden">
+<button aria-label="Menu" class="text-on-surface-variant p-2 rounded-full hover:bg-surface-container transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-extrabold text-primary">Posto Barato</h1>
+<button aria-label="Perfil" class="text-on-surface-variant p-2 rounded-full hover:bg-surface-container transition-all duration-200 active:scale-95">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</header>
+<!-- Side Navigation (Web Only) -->
+<nav class="hidden md:flex fixed inset-y-0 left-0 z-[60] flex-col p-md h-full w-80 rounded-r-xl bg-surface border-r border-outline-variant shadow-xl">
+<div class="flex items-center gap-4 mb-lg px-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an individual, suitable for a corporate app profile picture, well lit, neutral background, modern corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDxbSquuBjLYmeBD6JjCDYYFZqTml2zvs0z9WuCS4QuCKf9fOmQpv7ieFnEmncwb58iYKfJLGl5IbQm41CA-n4ciJwRBJNemIazxHXcqAp_SE851Hvz2x7BNHgUUZHnQvRFGZQlnQF_TetwkvZnV_LgK-73NqG3Fl9MEhHwixqVNb6fd8JZD9w7wsSnZO5fn-5w1QUz5SV_Yu8Ylqol5jmt8wTs5F5sISIezX1Akk5OrZn6eN72lL9I"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary">Premium Member</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">120 Points Earned</p>
+<p class="font-label-bold text-label-bold text-primary-container mt-1">Vivid Green Status</p>
+</div>
+</div>
+<ul class="flex flex-col gap-2 mt-4 font-body-lg text-body-lg">
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">home</span>
+                    Home
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">explore</span>
+                    Explore
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+                    Compare
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full bg-secondary-container text-on-secondary-container rounded-full transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">favorite</span>
+                    Favorites
+                </a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">person</span>
+                    Profile
+                </a>
+</li>
+</ul>
+<div class="mt-auto border-t border-outline-variant pt-4">
+<ul class="flex flex-col gap-2 font-body-lg text-body-lg">
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">workspace_premium</span>
+                        Fuel Rewards
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">local_gas_station</span>
+                        Station Services
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+                        Settings
+                    </a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">help_outline</span>
+                        Help
+                    </a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-3xl px-container-margin pt-20 md:pt-8 md:px-lg flex-1">
+<!-- Location Header -->
+<section class="flex justify-between items-center mb-lg">
+<div>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">location_on</span> Localização atual
+                </p>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">Rondonópolis - MT</h2>
+</div>
+<div class="hidden md:block w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img alt="User Profile" class="w-full h-full object-cover" data-alt="A professional headshot of an individual, suitable for a corporate app profile picture, well lit, neutral background, modern corporate style." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYGcrA8NYYFlMc7Wif5YyVMDnyvbD7_tG3os3TOqHVtsgfzIr4aMDrM-UbqWAw3PuTiBK45Fm2gaIUNs1OeSB_Z0tKI_8Sy_gTLB_mhKQG65VTGkXdZr7fQFQw0QBGWGkC4ZBVp5N1r6TuVBuZE1T3TQvx2jvsvmcuNtbe1pyFghFfCEekClgCLw5d6Z6DR6BbI52C7NcNd_O88oiTjQ49QK_CJydzLx1Dn8yOqbDa7kqyT5y4bomu"/>
+</div>
+</section>
+<!-- Search Bar -->
+<section class="mb-lg">
+<div class="relative flex items-center h-[56px] bg-surface-container-low rounded-xl border border-transparent focus-within:border-primary transition-colors duration-200 px-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+<span class="material-symbols-outlined text-on-surface-variant mr-3">search</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-background placeholder-on-surface-variant font-body-lg text-body-lg h-full outline-none" placeholder="Busque posto, combustível, bairro ou endereço" type="text"/>
+<button class="ml-3 p-2 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors">
+<span class="material-symbols-outlined">mic</span>
+</button>
+</div>
+</section>
+<!-- Segmented Control -->
+<section class="mb-md">
+<div class="flex p-1 bg-surface-container rounded-xl w-full max-w-sm mx-auto shadow-sm">
+<button class="flex-1 py-2 px-4 rounded-lg bg-tertiary text-on-tertiary font-label-bold text-label-bold shadow-sm transition-all duration-200">
+                    Combustíveis
+                </button>
+<button class="flex-1 py-2 px-4 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 font-label-bold text-label-bold transition-all duration-200">
+                    Recarga Elétrica
+                </button>
+</div>
+</section>
+<!-- Quick Filters -->
+<section class="mb-xl">
+<div class="flex gap-3 overflow-x-auto hide-scroll pb-2">
+<button class="flex-shrink-0 h-12 px-6 rounded-full bg-tertiary text-on-tertiary font-label-bold text-label-bold shadow-md flex items-center gap-2">
+                    Gasolina
+                </button>
+<button class="flex-shrink-0 h-12 px-6 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-bold text-label-bold flex items-center gap-2 transition-colors">
+                    Etanol
+                </button>
+<button class="flex-shrink-0 h-12 px-6 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-bold text-label-bold flex items-center gap-2 transition-colors">
+                    Diesel
+                </button>
+<button class="flex-shrink-0 h-12 px-6 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-bold text-label-bold flex items-center gap-2 transition-colors">
+                    GNV
+                </button>
+</div>
+</section>
+<!-- Best Options -->
+<section class="mb-xl">
+<div class="flex justify-between items-end mb-md">
+<h3 class="font-headline-md text-headline-md text-on-background">Melhores opções perto de você</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Station Card 1 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col gap-4 group hover:shadow-lg transition-shadow duration-300">
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-block px-2 py-1 rounded bg-surface-container-high text-on-surface-variant font-label-bold text-[10px] mb-1">Gasolina</span>
+<h4 class="font-headline-md text-headline-md text-on-background">Posto Rodoep</h4>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> há 4 horas
+                            </p>
+</div>
+<div class="text-right">
+<span class="font-price-display text-price-display text-primary block">R$ 3,49<span class="text-sm font-normal">/l</span></span>
+<span class="font-label-bold text-[10px] text-primary-container bg-primary-container/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[12px]">trending_down</span> Economia R$ 11,20
+                            </span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-outline-variant/30">
+<div class="flex items-center gap-4 text-on-surface-variant font-body-md text-body-md">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">directions_car</span> 4,8 km</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">timer</span> 9 min</span>
+</div>
+<button class="h-10 px-4 rounded-lg bg-surface border border-tertiary text-tertiary font-label-bold text-label-bold hover:bg-tertiary hover:text-on-tertiary transition-colors duration-200">
+                            Ver no mapa
+                        </button>
+</div>
+</div>
+<!-- Station Card 2 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col gap-4 group hover:shadow-lg transition-shadow duration-300">
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-block px-2 py-1 rounded bg-surface-container-high text-on-surface-variant font-label-bold text-[10px] mb-1">Gasolina</span>
+<h4 class="font-headline-md text-headline-md text-on-background">Posto Ipiranga Centro</h4>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[16px]">schedule</span> há 2 horas
+                            </p>
+</div>
+<div class="text-right">
+<span class="font-price-display text-price-display text-on-background block">R$ 3,55<span class="text-sm font-normal">/l</span></span>
+<span class="font-label-bold text-[10px] text-primary-container bg-primary-container/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1 mt-1">
+<span class="material-symbols-outlined text-[12px]">trending_down</span> Economia R$ 8,50
+                            </span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-outline-variant/30">
+<div class="flex items-center gap-4 text-on-surface-variant font-body-md text-body-md">
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">directions_car</span> 2,1 km</span>
+<span class="flex items-center gap-1"><span class="material-symbols-outlined text-[18px]">timer</span> 5 min</span>
+</div>
+<button class="h-10 px-4 rounded-lg bg-surface border border-tertiary text-tertiary font-label-bold text-label-bold hover:bg-tertiary hover:text-on-tertiary transition-colors duration-200">
+                            Ver no mapa
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Widget -->
+<section class="mb-xl">
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/50 shadow-sm flex flex-col sm:flex-row gap-4 items-center justify-between">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-background">Menores preços hoje</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Baseado em 42 postos próximos</p>
+</div>
+<div class="flex gap-6 w-full sm:w-auto">
+<div class="flex flex-col items-start sm:items-end">
+<span class="font-body-md text-body-md text-on-surface-variant">Menor preço</span>
+<span class="font-price-display text-price-display text-primary">R$ 3,49</span>
+</div>
+<div class="w-px bg-outline-variant/50"></div>
+<div class="flex flex-col items-start sm:items-end">
+<span class="font-body-md text-body-md text-on-surface-variant">Média da região</span>
+<span class="font-price-display text-price-display text-on-surface-variant">R$ 3,82</span>
+</div>
+</div>
+</div>
+</section>
+<footer class="text-center py-6 border-t border-outline-variant/30 mb-8 md:mb-0">
+<p class="font-body-md text-body-md text-on-surface-variant/70">Fonte: Banco de Dados Posto Barato</p>
+</footer>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl font-label-bold text-label-bold text-on-surface-variant">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-3 py-1.5 transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center hover:text-primary transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">explore</span>
+<span class="mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center hover:text-primary transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">compare_arrows</span>
+<span class="mt-1">Compare</span>
+</a>
+<a class="flex flex-col items-center justify-center hover:text-primary transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">favorite</span>
+<span class="mt-1">Favorites</span>
+</a>
+<a class="flex flex-col items-center justify-center hover:text-primary transition-transform duration-300 ease-out active:scale-90" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="mt-1">Profile</span>
+</a>
+</nav>
+</body></html>
