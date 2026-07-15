@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Posto Barato — Galeria de Telas</title>
+  <style>
+    :root {
+      --primary: #006c49;
+      --primary-container: #10b981;
+      --surface: #f8f9ff;
+      --surface-container: #e5eeff;
+      --on-surface: #121c28;
+      --on-surface-variant: #3c4a42;
+      --outline: #bbcabf;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--surface);
+      color: var(--on-surface);
+    }
+    header {
+      background: var(--primary);
+      color: #fff;
+      padding: 32px 24px;
+    }
+    header h1 { margin: 0 0 6px; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+    header p { margin: 0; opacity: 0.9; font-size: 15px; }
+    main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    section { margin-bottom: 40px; }
+    h2 {
+      font-size: 20px; font-weight: 700;
+      border-bottom: 2px solid var(--outline);
+      padding-bottom: 8px; margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid var(--outline);
+      border-radius: 16px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px rgba(0,0,0,0.12); }
+    .card img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; background: var(--surface-container); }
+    .card .label { padding: 12px 14px; font-size: 14px; font-weight: 700; }
+    .card .num { color: var(--primary); font-weight: 800; margin-right: 6px; }
+    footer { text-align: center; padding: 24px; color: var(--on-surface-variant); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Posto Barato</h1>
+    <p>Galeria de protótipos de interface — mobilidade e economia de combustível</p>
+  </header>
+  <main>
+    <section>
+      <h2>Onboarding</h2>
+      <div class="grid">
+        <a class="card" href="screens/onboarding/00-splash/index.html"><img src="screens/onboarding/00-splash/preview.png" alt="Splash" loading="lazy"><div class="label"><span class="num">00</span>Splash</div></a>
+        <a class="card" href="screens/onboarding/01-precos/index.html"><img src="screens/onboarding/01-precos/preview.png" alt="Preços" loading="lazy"><div class="label"><span class="num">01</span>Preços</div></a>
+        <a class="card" href="screens/onboarding/02-economia-real/index.html"><img src="screens/onboarding/02-economia-real/preview.png" alt="Economia real" loading="lazy"><div class="label"><span class="num">02</span>Economia real</div></a>
+        <a class="card" href="screens/onboarding/03-combustivel-ev/index.html"><img src="screens/onboarding/03-combustivel-ev/preview.png" alt="Combustível e EV" loading="lazy"><div class="label"><span class="num">03</span>Combustível &amp; EV</div></a>
+        <a class="card" href="screens/onboarding/04-precos-refinado/index.html"><img src="screens/onboarding/04-precos-refinado/preview.png" alt="Preços refinado" loading="lazy"><div class="label"><span class="num">04</span>Preços (refinado)</div></a>
+        <a class="card" href="screens/onboarding/05-permissao-localizacao/index.html"><img src="screens/onboarding/05-permissao-localizacao/preview.png" alt="Permissão de localização" loading="lazy"><div class="label"><span class="num">05</span>Permissão de localização</div></a>
+        <a class="card" href="screens/onboarding/06-localizacao-refinado/index.html"><img src="screens/onboarding/06-localizacao-refinado/preview.png" alt="Localização refinado" loading="lazy"><div class="label"><span class="num">06</span>Localização (refinado)</div></a>
+      </div>
+    </section>
+    <section>
+      <h2>Autenticação</h2>
+      <div class="grid">
+        <a class="card" href="screens/auth/01-login/index.html"><img src="screens/auth/01-login/preview.png" alt="Login" loading="lazy"><div class="label"><span class="num">01</span>Login</div></a>
+        <a class="card" href="screens/auth/02-login-refinado/index.html"><img src="screens/auth/02-login-refinado/preview.png" alt="Login refinado" loading="lazy"><div class="label"><span class="num">02</span>Login (refinado)</div></a>
+      </div>
+    </section>
+    <section>
+      <h2>App principal</h2>
+      <div class="grid">
+        <a class="card" href="screens/app/01-home/index.html"><img src="screens/app/01-home/preview.png" alt="Home" loading="lazy"><div class="label"><span class="num">01</span>Home</div></a>
+        <a class="card" href="screens/app/02-mapa/index.html"><img src="screens/app/02-mapa/preview.png" alt="Mapa" loading="lazy"><div class="label"><span class="num">02</span>Mapa</div></a>
+        <a class="card" href="screens/app/03-detalhes-posto/index.html"><img src="screens/app/03-detalhes-posto/preview.png" alt="Detalhes do posto" loading="lazy"><div class="label"><span class="num">03</span>Detalhes do posto</div></a>
+        <a class="card" href="screens/app/04-comparador/index.html"><img src="screens/app/04-comparador/preview.png" alt="Comparador" loading="lazy"><div class="label"><span class="num">04</span>Comparador</div></a>
+        <a class="card" href="screens/app/05-perfil-veiculos/index.html"><img src="screens/app/05-perfil-veiculos/preview.png" alt="Perfil e veículos" loading="lazy"><div class="label"><span class="num">05</span>Perfil e veículos</div></a>
+        <a class="card" href="screens/app/06-mapa-recarga/index.html"><img src="screens/app/06-mapa-recarga/preview.png" alt="Mapa de recarga" loading="lazy"><div class="label"><span class="num">06</span>Mapa de recarga</div></a>
+      </div>
+    </section>
+    <section>
+      <h2>Assinatura</h2>
+      <div class="grid">
+        <a class="card" href="screens/assinatura/01-premium/index.html"><img src="screens/assinatura/01-premium/preview.png" alt="Premium" loading="lazy"><div class="label"><span class="num">01</span>Premium</div></a>
+        <a class="card" href="screens/assinatura/02-economia-total/index.html"><img src="screens/assinatura/02-economia-total/preview.png" alt="Economia total" loading="lazy"><div class="label"><span class="num">02</span>Economia total</div></a>
+      </div>
+    </section>
+  </main>
+  <footer>
+    Protótipos gerados com Google Stitch · Consulte <a href="design-system/DESIGN.md">o design system</a>
+  </footer>
+</body>
+</html>

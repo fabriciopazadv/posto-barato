@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Posto Barato - Assinatura Premium</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-tint": "#006c49",
+                        "inverse-on-surface": "#eaf1ff",
+                        "inverse-primary": "#4edea3",
+                        "tertiary-fixed": "#acedff",
+                        "tertiary-container": "#00b2d0",
+                        "secondary-container": "#d5e0f8",
+                        "inverse-surface": "#27313e",
+                        "on-error-container": "#93000a",
+                        "error": "#ba1a1a",
+                        "surface-variant": "#d9e3f4",
+                        "surface-container-high": "#dfe9fa",
+                        "secondary": "#545f73",
+                        "on-tertiary-container": "#003f4b",
+                        "on-primary-fixed-variant": "#005236",
+                        "background": "#f8f9ff",
+                        "on-background": "#121c28",
+                        "primary-container": "#10b981",
+                        "on-surface": "#121c28",
+                        "surface-container-low": "#eef4ff",
+                        "primary-fixed-dim": "#4edea3",
+                        "on-surface-variant": "#3c4a42",
+                        "on-primary-container": "#00422b",
+                        "primary-fixed": "#6ffbbe",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "on-secondary-container": "#586377",
+                        "surface-bright": "#f8f9ff",
+                        "on-primary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface": "#f8f9ff",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "on-tertiary": "#ffffff",
+                        "tertiary": "#00687a",
+                        "surface-container": "#e5eeff",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "secondary-fixed": "#d8e3fb",
+                        "primary": "#006c49",
+                        "on-primary-fixed": "#002113",
+                        "error-container": "#ffdad6",
+                        "surface-container-highest": "#d9e3f4",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d1dbec",
+                        "outline-variant": "#bbcabf",
+                        "surface-container-lowest": "#ffffff",
+                        "outline": "#6c7a71",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-secondary-fixed": "#111c2d"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sm": "8px",
+                        "gutter": "12px",
+                        "container-margin": "16px",
+                        "md": "16px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Manrope"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "price-display": ["Manrope"],
+                        "label-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "price-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "label-bold": ["12px", { "lineHeight": "16px", "fontWeight": "700" }]
+                    },
+                    "animation": {
+                        "shimmer": "shimmer 2s linear infinite",
+                        "scale-in": "scale-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards"
+                    },
+                    "keyframes": {
+                        "shimmer": {
+                            "from": {
+                                "backgroundPosition": "0 0"
+                            },
+                            "to": {
+                                "backgroundPosition": "-200% 0"
+                            }
+                        },
+                        "scale-in": {
+                            "0%": {
+                                "transform": "scale(0)",
+                                "opacity": "0"
+                            },
+                            "100%": {
+                                "transform": "scale(1)",
+                                "opacity": "1"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .shimmer-btn {
+            background-image: linear-gradient(90deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.2) 20%, rgba(255, 255, 255, 0.5) 60%, rgba(255, 255, 255, 0));
+            background-size: 200% auto;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-on-background text-primary dark:text-primary-fixed shadow-sm z-50">
+<div class="flex items-center justify-between px-container-margin h-14 w-full">
+<button class="flex items-center justify-center p-sm hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant rounded-full transition-colors duration-200 ease-in-out">
+<span class="material-symbols-outlined">menu</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Posto Barato</h1>
+<button class="flex items-center justify-center p-sm hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant rounded-full transition-colors duration-200 ease-in-out">
+<span class="material-symbols-outlined">account_circle</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center p-container-margin pb-24 md:pb-container-margin">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-lg border border-surface-variant p-lg flex flex-col gap-lg relative overflow-hidden">
+<!-- Decorative background blob -->
+<div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-primary-container opacity-20 rounded-full blur-2xl pointer-events-none"></div>
+<!-- Header Section -->
+<div class="text-center z-10 space-y-md">
+<div class="inline-flex items-center justify-center bg-primary-container text-on-primary-container font-label-bold text-label-bold px-md py-xs rounded-full mb-sm shadow-sm">
+<span class="material-symbols-outlined text-[16px] mr-xs">star</span>
+                    10 DIAS DE EXPERIÊNCIA GRÁTIS
+                </div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">
+                    Economize ainda mais com o Plano Economia Total
+                </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    Depois, apenas <span class="font-price-display text-price-display text-primary font-bold">R$ 3,99</span>/mês.
+                </p>
+</div>
+<!-- Benefits List (Glassmorphism) -->
+<div class="bg-surface/60 backdrop-blur-md rounded-lg p-md border border-surface-variant/50 space-y-sm z-10 shadow-sm">
+<ul class="space-y-sm font-body-md text-body-md text-on-surface-variant">
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs animate-[scale-in_0.5s_ease-out_0.1s_both]">check_circle</span>
+<span>Alertas de preço em tempo real.</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs animate-[scale-in_0.5s_ease-out_0.2s_both]">check_circle</span>
+<span>Histórico completo de preços.</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs animate-[scale-in_0.5s_ease-out_0.3s_both]">check_circle</span>
+<span>Comparação avançada de economia real.</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs animate-[scale-in_0.5s_ease-out_0.4s_both]">check_circle</span>
+<span>Sem anúncios.</span>
+</li>
+<li class="flex items-start gap-sm">
+<span class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs animate-[scale-in_0.5s_ease-out_0.5s_both]">check_circle</span>
+<span>Suporte prioritário.</span>
+</li>
+</ul>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-md z-10 pt-md">
+<button class="w-full h-12 bg-primary-container hover:bg-primary text-on-primary-container hover:text-on-primary font-label-bold text-label-bold rounded-xl shadow-md transition-all duration-200 active:scale-95 flex items-center justify-center relative overflow-hidden group">
+<span class="relative z-10">Assinar agora</span>
+<div class="absolute inset-0 shimmer-btn animate-shimmer opacity-30 group-hover:opacity-50"></div>
+</button>
+<button class="w-full h-12 border-2 border-on-tertiary-container text-on-tertiary-container font-label-bold text-label-bold rounded-xl hover:bg-surface-variant transition-all duration-200 active:scale-95 flex items-center justify-center">
+                    Continuar com plano limitado
+                </button>
+</div>
+<!-- Trust Indicators -->
+<div class="text-center z-10 flex flex-col items-center gap-xs pt-sm opacity-80">
+<p class="font-body-md text-body-md text-on-surface-variant text-xs">
+                    Cancele quando quiser.
+                </p>
+<div class="flex items-center justify-center text-on-surface-variant text-xs gap-xs">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+                    Pagamento seguro via gateway integrado.
+                </div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface dark:bg-on-background border-t border-outline-variant dark:border-outline shadow-lg flex justify-around items-center h-16 px-gutter">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest active:scale-95 transition-transform duration-150 p-sm rounded-xl" href="#">
+<span class="material-symbols-outlined">local_gas_station</span>
+<span class="font-label-bold text-label-bold mt-1">Postos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest active:scale-95 transition-transform duration-150 p-sm rounded-xl" href="#">
+<span class="material-symbols-outlined">sell</span>
+<span class="font-label-bold text-label-bold mt-1">Preços</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed bg-primary-container/20 rounded-xl px-3 py-1 active:scale-95 transition-transform duration-150" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">card_membership</span>
+<span class="font-label-bold text-label-bold mt-1">Assinatura</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest active:scale-95 transition-transform duration-150 p-sm rounded-xl" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="font-label-bold text-label-bold mt-1">Perfil</span>
+</a>
+</nav>
+</body></html>

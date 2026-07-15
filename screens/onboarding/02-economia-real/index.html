@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Posto Barato - Onboarding 2</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#d8e3fb",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "secondary-container": "#d5e0f8",
+                        "surface-tint": "#006c49",
+                        "surface-container-highest": "#d9e3f4",
+                        "on-secondary-fixed": "#111c2d",
+                        "primary-fixed": "#6ffbbe",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d1dbec",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#003f4b",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#4edea3",
+                        "on-surface-variant": "#3c4a42",
+                        "primary": "#006c49",
+                        "on-primary-container": "#00422b",
+                        "outline": "#6c7a71",
+                        "tertiary-fixed": "#acedff",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "inverse-on-surface": "#eaf1ff",
+                        "secondary": "#545f73",
+                        "surface-container-low": "#eef4ff",
+                        "on-surface": "#121c28",
+                        "tertiary": "#00687a",
+                        "inverse-surface": "#27313e",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "surface": "#f8f9ff",
+                        "surface-container-high": "#dfe9fa",
+                        "outline-variant": "#bbcabf",
+                        "surface-container": "#e5eeff",
+                        "tertiary-container": "#00b2d0",
+                        "surface-bright": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#586377",
+                        "primary-fixed-dim": "#4edea3",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#10b981",
+                        "background": "#f8f9ff",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-background": "#121c28",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#002113",
+                        "surface-variant": "#d9e3f4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "container-margin": "16px",
+                        "gutter": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Manrope"],
+                        "price-display": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "price-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-bold": ["12px", { "lineHeight": "16px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+<!-- Main Content Canvas - No Nav for Onboarding -->
+<main class="flex-grow flex flex-col px-container-margin py-xl max-w-md mx-auto w-full">
+<!-- Illustration Container -->
+<div class="flex-grow flex items-center justify-center relative mb-lg">
+<div class="absolute inset-0 bg-secondary-container rounded-full opacity-20 filter blur-3xl"></div>
+<img alt="Illustration of car route with savings" class="w-full h-auto max-h-[350px] object-contain relative z-10 drop-shadow-xl" data-alt="A clean, flat-vector style illustration of a simplified map showing a driving route line. Along the route are icons representing fuel savings and efficiency, styled in a Modern Corporate aesthetic using the brand's Primary Green (#006c49) and Electric Cyan accents. The background is a stark, light mode surface with soft, tonal layers to create subtle depth. The overall mood is technological precision and economy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB07UoXJ598wc-cn1AaGa4x67mI5arZB8K0xTCfcFbpJfezqOF5HEdxMDZupBuzei7bLna37jnHpjoMuS7lAC2JgnIKMXWMN0KqoAuW46uajoEHBzEpYj1EITGIo4y1g0br8TpbymuJwlgBnL4z_0MM4Cv662u81Ku64M_EBHCi7gQJ2uH5wASE885Ic1GiGWbv-CPqqvSNlgr1ZQfSL9EueX6_1G3X4SMwafv1FSyz0e0Xyb8BPDVf"/>
+</div>
+<!-- Text Content -->
+<div class="text-center mb-xl">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-sm">
+                Economia que considera o seu caminho
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                Veja quais opções realmente compensam considerando preço e deslocamento.
+            </p>
+</div>
+<!-- Pagination Indicators -->
+<div class="flex justify-center gap-sm mb-xl">
+<div class="w-2 h-2 rounded-full bg-surface-variant"></div>
+<div class="w-6 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-surface-variant"></div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-md w-full mt-auto">
+<button class="w-full h-12 bg-primary text-on-primary rounded-xl font-label-bold text-label-bold flex items-center justify-center shadow-md active:scale-95 transition-transform duration-200">
+                Continuar
+            </button>
+<button class="w-full h-12 bg-transparent text-secondary border border-outline-variant rounded-xl font-label-bold text-label-bold flex items-center justify-center active:scale-95 transition-transform duration-200 hover:bg-surface-container-low">
+                Pular
+            </button>
+</div>
+</main>
+</body></html>

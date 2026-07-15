@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Posto Barato - Permissão de Localização</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&amp;family=Manrope:wght@700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "secondary-fixed": "#d8e3fb",
+                        "on-secondary-fixed-variant": "#3c475a",
+                        "secondary-fixed-dim": "#bcc7de",
+                        "secondary-container": "#d5e0f8",
+                        "surface-tint": "#006c49",
+                        "surface-container-highest": "#d9e3f4",
+                        "on-secondary-fixed": "#111c2d",
+                        "primary-fixed": "#6ffbbe",
+                        "on-error": "#ffffff",
+                        "surface-dim": "#d1dbec",
+                        "on-tertiary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "on-tertiary-container": "#003f4b",
+                        "on-primary": "#ffffff",
+                        "error-container": "#ffdad6",
+                        "inverse-primary": "#4edea3",
+                        "on-surface-variant": "#3c4a42",
+                        "primary": "#006c49",
+                        "on-primary-container": "#00422b",
+                        "outline": "#6c7a71",
+                        "tertiary-fixed": "#acedff",
+                        "on-tertiary-fixed-variant": "#004e5c",
+                        "inverse-on-surface": "#eaf1ff",
+                        "secondary": "#545f73",
+                        "surface-container-low": "#eef4ff",
+                        "on-surface": "#121c28",
+                        "tertiary": "#00687a",
+                        "inverse-surface": "#27313e",
+                        "tertiary-fixed-dim": "#4cd7f6",
+                        "surface": "#f8f9ff",
+                        "surface-container-high": "#dfe9fa",
+                        "outline-variant": "#bbcabf",
+                        "surface-container": "#e5eeff",
+                        "tertiary-container": "#00b2d0",
+                        "surface-bright": "#f8f9ff",
+                        "on-error-container": "#93000a",
+                        "on-secondary-container": "#586377",
+                        "primary-fixed-dim": "#4edea3",
+                        "surface-container-lowest": "#ffffff",
+                        "primary-container": "#10b981",
+                        "background": "#f8f9ff",
+                        "on-tertiary-fixed": "#001f26",
+                        "on-background": "#121c28",
+                        "on-primary-fixed-variant": "#005236",
+                        "on-secondary": "#ffffff",
+                        "on-primary-fixed": "#002113",
+                        "surface-variant": "#d9e3f4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "container-margin": "16px",
+                        "gutter": "12px"
+                    },
+                    "fontFamily": {
+                        "headline-lg": ["Manrope"],
+                        "price-display": ["Manrope"],
+                        "headline-lg-mobile": ["Manrope"],
+                        "headline-md": ["Manrope"],
+                        "body-lg": ["Inter"],
+                        "body-md": ["Inter"],
+                        "label-bold": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "price-display": ["24px", { "lineHeight": "24px", "letterSpacing": "-0.01em", "fontWeight": "800" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "32px", "letterSpacing": "-0.02em", "fontWeight": "800" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "24px", "fontWeight": "400" }],
+                        "body-md": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "label-bold": ["12px", { "lineHeight": "16px", "fontWeight": "700" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface min-h-screen flex items-center justify-center p-container-margin selection:bg-primary-container selection:text-on-primary-container">
+<!-- Navigation Shell suppressed because this is a Transactional/Onboarding screen -->
+<main class="w-full max-w-[400px] bg-surface-container-lowest rounded-[24px] overflow-hidden shadow-lg border border-outline-variant/30 flex flex-col h-[85vh] max-h-[800px] md:h-auto md:min-h-[600px] relative">
+<!-- Illustration / Graphic Area -->
+<div class="relative w-full h-[45%] bg-surface-container-low overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full opacity-90 mix-blend-multiply" data-alt="A modern, clean 3D illustration of an isometric city map showing small, stylized fuel stations and electric vehicle charging points. The scene is brightly lit with soft, high-key lighting, emphasizing a trustworthy corporate aesthetic. The color palette features a neutral white and light grey base with vivid green and electric cyan accents for the points of interest. The style is highly polished, friendly, and technological." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuABk_W3Nt_erkHGSbUhBEC5yaPwp2DV3t7cyaWYqhzh5cs5ruhFZXntnNNoAaBeNU6E64wVtR3tRmbFGaQSrUB5KPe2H2roEnPokfhmTo2JAhK9FvLLbjlK-V5Jlj8fzwInt7iQTxg818K9TeNP0lXEQlZM3knhch74rs6NnrsyoHU2823pPNS99kVOKglPVVDXZDqh68uVDtQvcg8Ko88ZI_cmq_jT61-B30Abm-EDyZfTelmefHFH')"></div>
+<!-- Floating Marker Decoration -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-surface-container-lowest rounded-full p-md shadow-lg animate-bounce">
+<span class="material-symbols-outlined text-primary text-[32px]" style="font-variation-settings: 'FILL' 1;">location_on</span>
+</div>
+<!-- Gradient Overlay for smooth transition -->
+<div class="absolute bottom-0 left-0 w-full h-24 bg-gradient-to-t from-surface-container-lowest to-transparent"></div>
+</div>
+<!-- Content Area -->
+<div class="flex-1 flex flex-col px-lg pt-md pb-xl">
+<div class="text-center mb-auto pt-sm">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface mb-md">
+                    Encontre opções próximas
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[280px] mx-auto">
+                    Use sua localização para mostrar postos, preços e pontos de recarga ao seu redor.
+                </p>
+</div>
+<!-- Action Buttons -->
+<div class="flex flex-col gap-sm mt-xl">
+<button class="w-full min-h-[48px] bg-primary hover:bg-primary-container text-on-primary hover:text-on-primary-container font-label-bold text-label-bold rounded-[12px] transition-colors duration-200 shadow-sm flex items-center justify-center gap-sm group">
+<span class="material-symbols-outlined text-[20px] group-active:scale-90 transition-transform">my_location</span>
+                    Permitir localização
+                </button>
+<button class="w-full min-h-[48px] bg-transparent border-2 border-primary text-primary hover:bg-surface-container-low font-label-bold text-label-bold rounded-[12px] transition-colors duration-200 flex items-center justify-center gap-sm">
+<span class="material-symbols-outlined text-[20px]">search</span>
+                    Escolher cidade manualmente
+                </button>
+<button class="w-full min-h-[48px] bg-transparent text-secondary hover:text-on-surface hover:bg-surface-container-highest font-label-bold text-label-bold rounded-[12px] transition-colors duration-200 mt-xs">
+                    Agora não
+                </button>
+</div>
+</div>
+</main>
+</body></html>

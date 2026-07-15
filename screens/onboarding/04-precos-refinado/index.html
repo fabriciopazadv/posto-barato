@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Posto Barato - Onboarding</title>
+<!-- Material Symbols -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Google Fonts -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&amp;family=Manrope:wght@500;700;800&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Tailwind Config -->
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                "petrol-blue": "#003d4d",
+                "vivid-green": "#10b981",
+                "surface": "#f8f9ff",
+                "surface-container-lowest": "#ffffff",
+                "surface-container-low": "#eef4ff",
+                "surface-variant": "#d9e3f4",
+                "on-surface": "#121c28",
+                "on-surface-variant": "#3c4a42",
+              },
+              "spacing": {
+                "xs": "4px",
+                "sm": "8px",
+                "md": "16px",
+                "lg": "24px",
+                "xl": "32px",
+              },
+              "fontFamily": {
+                "sans": ["Inter", "sans-serif"],
+                "heading": ["Manrope", "sans-serif"],
+              }
+            }
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .pt-safe { padding-top: max(16px, env(safe-area-inset-top)); }
+        .pb-safe { padding-bottom: max(16px, env(safe-area-inset-bottom)); }
+        body { min-height: max(884px, 100dvh); }
+    </style>
+</head>
+<body class="bg-surface text-on-surface antialiased overflow-hidden selection:bg-vivid-green selection:text-white">
+<!-- Main Mobile Container -->
+<main class="w-full h-[884px] max-w-md mx-auto relative flex flex-col shadow-2xl bg-surface-container-lowest">
+<!-- Background Tonal Layering -->
+<div class="absolute inset-0 pointer-events-none bg-gradient-to-b from-surface-container-low to-surface-container-lowest opacity-60"></div>
+<!-- Top Action Area -->
+<header class="relative z-10 w-full flex justify-end items-center px-lg pt-safe h-14">
+<button class="font-heading font-bold text-[14px] text-vivid-green active:scale-95 transition-transform px-xs py-sm uppercase tracking-wider">
+                Pular
+            </button>
+</header>
+<!-- Illustration Canvas (UI Mockup Simulation) -->
+<section class="relative z-10 flex-1 w-full flex items-center justify-center p-lg overflow-hidden">
+<!-- Dynamic Background Glow -->
+<div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+<div class="w-72 h-72 bg-vivid-green/10 rounded-full blur-[64px]"></div>
+</div>
+<!-- Sleek UI Mockup -->
+<div class="relative w-full max-w-[280px] bg-white rounded-3xl shadow-2xl border border-surface-variant overflow-hidden transform rotate-[-2deg] scale-105 transition-transform duration-700 hover:rotate-0 hover:scale-100">
+<!-- Map Background Simulation -->
+<div class="w-full h-[360px] bg-[#e5e9f0] relative">
+<!-- Map Lines -->
+<div class="absolute inset-0 opacity-20 bg-[linear-gradient(45deg,transparent_25%,#fff_25%,#fff_50%,transparent_50%,transparent_75%,#fff_75%,#fff_100%)] bg-[length:20px_20px]"></div>
+<svg class="absolute inset-0 w-full h-full text-white/40" preserveaspectratio="none" viewbox="0 0 100 100"><path d="M0 50 Q 25 20, 50 50 T 100 50" fill="none" stroke="currentColor" stroke-width="4"></path></svg>
+<!-- Price Tag Highlighting -->
+<div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+<div class="bg-vivid-green text-white px-3 py-1.5 rounded-full font-heading font-extrabold text-[18px] shadow-lg flex items-center gap-1 border-2 border-white relative z-10">
+<span>R$</span> 4,89
+                        </div>
+<div class="w-4 h-4 bg-vivid-green transform rotate-45 absolute -bottom-1 left-1/2 -translate-x-1/2 border-r-2 border-b-2 border-white"></div>
+</div>
+<!-- Secondary Price Tag -->
+<div class="absolute top-1/4 left-1/4 transform -translate-x-1/2 -translate-y-1/2 opacity-60">
+<div class="bg-white text-petrol-blue px-2 py-1 rounded-full font-heading font-bold text-[14px] shadow-md border border-surface-variant">
+                            R$ 5,12
+                        </div>
+</div>
+<!-- User Location -->
+<div class="absolute bottom-1/4 right-1/3 w-6 h-6 bg-blue-500 rounded-full border-4 border-white shadow-md"></div>
+</div>
+<!-- Mockup Bottom Bar -->
+<div class="h-16 bg-white flex justify-around items-center px-4 border-t border-surface-variant/50">
+<div class="w-8 h-8 rounded bg-surface-variant/50"></div>
+<div class="w-8 h-8 rounded bg-vivid-green/20"></div>
+<div class="w-8 h-8 rounded bg-surface-variant/50"></div>
+</div>
+</div>
+</section>
+<!-- Content & Navigation Area -->
+<section class="relative z-10 w-full flex flex-col gap-md px-lg pb-xl pt-lg bg-surface-container-lowest rounded-t-[32px] shadow-[0_-12px_48px_rgba(0,0,60,0.06)] border-t border-surface-variant/30">
+<!-- Progress Indicator -->
+<div class="flex gap-2 justify-center items-center mb-xs">
+<div class="h-2 w-8 rounded-full bg-vivid-green transition-all duration-300"></div>
+<div class="h-2 w-2 rounded-full bg-surface-variant transition-all duration-300"></div>
+<div class="h-2 w-2 rounded-full bg-surface-variant transition-all duration-300"></div>
+</div>
+<!-- Typography Content -->
+<div class="flex flex-col gap-sm text-center">
+<h1 class="font-heading font-extrabold text-[28px] leading-[34px] tracking-tight text-petrol-blue">
+                    Menores preços,<br/>sempre à mão.
+                </h1>
+<p class="font-sans text-[16px] leading-[24px] text-on-surface-variant px-2 mt-1">
+                    Compare e encontre o combustível mais barato na sua região em tempo real.
+                </p>
+<span class="text-[10px] uppercase font-bold tracking-wider text-surface-variant-dark text-gray-400 mt-2">
+                    Fonte: Banco de Dados Posto Barato
+                </span>
+</div>
+<!-- Primary Action -->
+<div class="w-full mt-md pb-safe">
+<button class="w-full h-[56px] flex items-center justify-center bg-vivid-green hover:bg-[#0ea5e9] text-white font-heading font-bold text-[16px] uppercase tracking-wide rounded-2xl shadow-[0_8px_16px_rgba(16,185,129,0.25)] hover:shadow-[0_12px_24px_rgba(16,185,129,0.35)] hover:-translate-y-0.5 active:scale-[0.97] active:shadow-sm transition-all duration-300 gap-2 group">
+<span>Continuar</span>
+<span class="material-symbols-outlined text-[20px] group-hover:translate-x-1.5 transition-transform duration-300">arrow_forward</span>
+</button>
+</div>
+</section>
+</main>
+</body></html>
