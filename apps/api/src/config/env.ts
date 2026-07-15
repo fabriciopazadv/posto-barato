@@ -36,6 +36,25 @@ const schema = z.object({
     .enum(['true', 'false'])
     .default('false')
     .transform((v) => v === 'true'),
+
+  // Autenticação (seção 14). Segredos sem default — falha rápido se ausentes.
+  AUTH_ACCESS_SECRET: z.string().min(32, 'AUTH_ACCESS_SECRET deve ter ao menos 32 caracteres'),
+  AUTH_ACCESS_TOKEN_TTL_SECONDS: z.coerce.number().int().positive().default(900),
+  AUTH_REFRESH_TOKEN_TTL_DAYS: z.coerce.number().int().positive().default(30),
+  COOKIE_SECURE: z
+    .enum(['true', 'false'])
+    .default('true')
+    .transform((v) => v === 'true'),
+
+  // URL pública da API/app, usada nos callbacks de checkout (seção 16).
+  APP_URL: z.string().url().default('http://localhost:3333'),
+
+  // Premium vitalício — pagamento único via Asaas (chargeType DETACHED).
+  PREMIUM_PRICE_CENTS: z.coerce.number().int().positive().default(999),
+  PREMIUM_LABEL: z.string().default('Posto Barato Premium (vitalício)'),
+  ASAAS_API_KEY: z.string().optional(),
+  ASAAS_ENV: z.enum(['sandbox', 'production']).default('sandbox'),
+  ASAAS_WEBHOOK_TOKEN: z.string().optional(),
 });
 
 export type Env = z.infer<typeof schema>;

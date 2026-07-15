@@ -33,19 +33,19 @@ A infra local usa um único usuário por simplicidade. **Em produção**, crie
 papéis distintos (seção 7):
 
 ```sql
--- Leitura da camada pública (usado pela API). Sem acesso a evidências/erros.
-CREATE ROLE api_reader LOGIN PASSWORD '***';
-GRANT USAGE ON SCHEMA app TO api_reader;
-GRANT SELECT ON app.public_latest_prices TO api_reader;
-GRANT SELECT ON collector.products TO api_reader;          -- catálogo
+-- Papel da API (leitura pública + escrita das próprias tabelas de conta).
+-- Sem acesso a evidências/erros do coletor em nenhuma hipótese.
+CREATE ROLE app_api LOGIN PASSWORD '***';
+GRANT USAGE ON SCHEMA app TO app_api;
+GRANT SELECT ON app.public_latest_prices TO app_api;
+GRANT SELECT ON collector.products TO app_api;              -- catálogo
 GRANT SELECT (id, station_id, product_id, price_decimal, collected_at)
-  ON collector.price_observations TO api_reader;           -- histórico agregado
+  ON collector.price_observations TO app_api;               -- histórico agregado
+-- Tabelas de conta/sessão/compra (Fase 2, incremento 2) — a API é a única
+-- escritora dessas tabelas, nunca o coletor.
+GRANT SELECT, INSERT, UPDATE ON app.users, app.refresh_tokens, app.purchases TO app_api;
 -- NÃO conceder SELECT em collection_evidence, collection_errors,
 -- nem nas colunas raw_visible_data / *_path.
-
--- Escrita de dados de usuário (favoritos, alertas, veículos) — próximo incremento.
-CREATE ROLE app_writer LOGIN PASSWORD '***';
-GRANT USAGE ON SCHEMA app TO app_writer;
 
 -- Apenas migrações.
 CREATE ROLE migration_admin LOGIN PASSWORD '***';
@@ -55,8 +55,17 @@ CREATE ROLE collector_writer LOGIN PASSWORD '***';
 GRANT USAGE ON SCHEMA collector TO collector_writer;
 ```
 
-Configure `DATABASE_READONLY_URL` com `api_reader` e aponte a API para ele.
+Configure `DATABASE_URL` da API com `app_api` em produção.
 `SKIP_COLLECTOR_BOOTSTRAP=true` em produção (a Fase 1 é dona do schema `collector`).
+
+## Segredos de autenticação e pagamento
+
+`AUTH_ACCESS_SECRET` assina os access tokens (JWT); comprometê-lo permite
+forjar sessões — trate como credencial de produção, nunca versionado.
+`ASAAS_API_KEY` e `ASAAS_WEBHOOK_TOKEN` seguem a mesma regra. Senhas são
+hasheadas com Argon2id e refresh tokens são armazenados só como hash SHA-256
+— nenhum dos dois é reversível a partir do banco. Nenhum desses valores é
+logado (ver redação de `authorization`/`cookie` em `app.ts`).
 
 ## Proteções da API
 
@@ -69,6 +78,5 @@ Configure `DATABASE_READONLY_URL` com `api_reader` e aponte a API para ele.
 
 ## Itens ainda pendentes (próximos incrementos)
 
-Autenticação, LGPD (consentimento/exportação/exclusão), auditoria de ações e
-CSRF/refresh-token entram junto com as áreas logadas (favoritos, alertas,
-veículos, assinatura).
+LGPD (consentimento/exportação/exclusão de conta) e auditoria de ações
+entram junto com as áreas logadas (favoritos, alertas, veículos).

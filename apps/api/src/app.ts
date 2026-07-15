@@ -1,3 +1,4 @@
+import cookie from '@fastify/cookie';
 import cors from '@fastify/cors';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
@@ -6,7 +7,10 @@ import swaggerUi from '@fastify/swagger-ui';
 import Fastify, { type FastifyInstance } from 'fastify';
 import type { Env } from './config/env.js';
 import { buildContext } from './context.js';
+import { registerAuthPlugin } from './plugins/auth.js';
 import { registerErrorHandling } from './plugins/errors.js';
+import { registerAuthRoutes } from './routes/auth.js';
+import { registerBillingRoutes } from './routes/billing.js';
 import { registerCatalogRoutes } from './routes/catalog.js';
 import { registerHealthRoutes } from './routes/health.js';
 import { registerPriceRoutes } from './routes/prices.js';
@@ -29,11 +33,16 @@ export async function buildApp(env: Env): Promise<FastifyInstance> {
   await app.register(helmet, { contentSecurityPolicy: false });
   await app.register(cors, {
     origin: env.CORS_ORIGIN === '*' ? true : env.CORS_ORIGIN.split(','),
+    credentials: true,
   });
+  await app.register(cookie);
   await app.register(rateLimit, {
     max: env.RATE_LIMIT_MAX,
     timeWindow: env.RATE_LIMIT_WINDOW,
   });
+
+  app.decorate('authSecret', ctx.auth.accessSecret);
+  await app.register(registerAuthPlugin);
 
   await app.register(swagger, {
     openapi: {
@@ -49,6 +58,8 @@ export async function buildApp(env: Env): Promise<FastifyInstance> {
         { name: 'catálogo', description: 'Configuração, produtos e municípios' },
         { name: 'postos', description: 'Consulta de postos e preços' },
         { name: 'preços', description: 'Resumos, comparação e histórico' },
+        { name: 'auth', description: 'Conta, login e sessão' },
+        { name: 'billing', description: 'Compra do Premium vitalício' },
       ],
     },
   });
@@ -62,6 +73,8 @@ export async function buildApp(env: Env): Promise<FastifyInstance> {
       registerCatalogRoutes(instance, ctx);
       registerStationRoutes(instance, ctx);
       registerPriceRoutes(instance, ctx);
+      registerAuthRoutes(instance, ctx);
+      registerBillingRoutes(instance, ctx);
     },
     { prefix: API_PREFIX },
   );

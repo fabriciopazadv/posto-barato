@@ -111,3 +111,72 @@ model DemoStation {
   @@map("demo_stations")
   @@schema("app")
 }
+
+/// Conta do cliente final. Sem multi-tenant — cada usuário é a própria conta.
+/// `premiumSince` é a fonte única de verdade do gate de acesso: não nulo ==
+/// Premium vitalício (comprado uma única vez, seção "assinatura vitalícia").
+model User {
+  id            String         @id @default(uuid()) @db.Uuid
+  email         String         @unique
+  passwordHash  String         @map("password_hash")
+  name          String?
+  premiumSince  DateTime?      @map("premium_since")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  refreshTokens RefreshToken[]
+  purchases     Purchase[]
+
+  @@map("users")
+  @@schema("app")
+}
+
+/// Refresh token opaco (rotativo). Armazena apenas o hash — nunca o token cru.
+/// Revogação individual (`revokedAt`) e encadeamento (`replacedById`) permitem
+/// detectar reuso de token roubado (seção 14: refresh token rotativo).
+model RefreshToken {
+  id           String    @id @default(uuid()) @db.Uuid
+  userId       String    @map("user_id") @db.Uuid
+  user         User      @relation(fields: [userId], references: [id])
+  tokenHash    String    @unique @map("token_hash")
+  createdAt    DateTime  @default(now()) @map("created_at")
+  expiresAt    DateTime  @map("expires_at")
+  revokedAt    DateTime? @map("revoked_at")
+  replacedById String?   @map("replaced_by_id") @db.Uuid
+
+  @@index([userId])
+  @@map("refresh_tokens")
+  @@schema("app")
+}
+
+enum PurchaseStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
+
+  @@schema("app")
+}
+
+/// Compra única do Premium vitalício (R$ 9,99, sem recorrência). O
+/// pagamento real acontece via Asaas (Checkout hospedado, chargeType
+/// DETACHED); em desenvolvimento sem ASAAS_API_KEY o fluxo roda simulado.
+model Purchase {
+  id                 String         @id @default(uuid()) @db.Uuid
+  userId             String         @map("user_id") @db.Uuid
+  user               User           @relation(fields: [userId], references: [id])
+  amountCents        Int            @map("amount_cents")
+  currency           String         @default("BRL")
+  status             PurchaseStatus @default(PENDING)
+  provider           String         @default("asaas")
+  providerCheckoutId String?        @map("provider_checkout_id")
+  providerPaymentId  String?        @map("provider_payment_id")
+  paidAt             DateTime?      @map("paid_at")
+  createdAt          DateTime       @default(now()) @map("created_at")
+  updatedAt          DateTime       @updatedAt @map("updated_at")
+
+  @@index([userId])
+  @@index([providerCheckoutId])
+  @@index([providerPaymentId])
+  @@map("purchases")
+  @@schema("app")
+}
