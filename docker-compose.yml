@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    container_name: posto-barato-db
+    environment:
+      POSTGRES_USER: posto_barato
+      POSTGRES_PASSWORD: posto_barato
+      POSTGRES_DB: posto_barato
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U posto_barato -d posto_barato"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7-alpine
+    container_name: posto-barato-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/api.Dockerfile
+    container_name: posto-barato-api
+    environment:
+      DATABASE_URL: postgresql://posto_barato:posto_barato@postgres:5432/posto_barato
+      REDIS_URL: redis://redis:6379
+      NODE_ENV: development
+      API_HOST: 0.0.0.0
+      API_PORT: "3333"
+    ports:
+      - "3333:3333"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    profiles: ["full"]
+
+volumes:
+  pgdata:

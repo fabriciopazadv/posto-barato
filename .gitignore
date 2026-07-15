@@ -5,12 +5,17 @@ Thumbs.db
 .idea/
 .vscode/
 
-# Node (caso o projeto evolua para um build)
+# Node / monorepo
 node_modules/
 dist/
 build/
+.turbo/
+*.tsbuildinfo
 .env
 .env.local
+
+# Prisma
+packages/database/prisma/generated/
 
 # Logs
 *.log
