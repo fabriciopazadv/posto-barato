@@ -1,6 +1,8 @@
 import { randomUUID } from 'node:crypto';
 import type { FastifyError, FastifyInstance } from 'fastify';
 import { ZodError } from 'zod';
+import { PremiumRequiredError } from '../domain/premium-policy.js';
+import { UnauthorizedError } from '../services/auth.service.js';
 
 /** Erro de API com código estável e status HTTP. */
 export class ApiException extends Error {
@@ -33,6 +35,20 @@ export function registerErrorHandling(app: FastifyInstance): void {
       return;
     }
 
+    if (error instanceof UnauthorizedError) {
+      reply.status(401).send({
+        error: { code: 'UNAUTHORIZED', message: error.message, requestId },
+      });
+      return;
+    }
+
+    if (error instanceof PremiumRequiredError) {
+      reply.status(402).send({
+        error: { code: 'PREMIUM_REQUIRED', message: error.message, requestId },
+      });
+      return;
+    }
+
     if (error instanceof ZodError) {
       reply.status(400).send({
         error: {
@@ -47,6 +63,16 @@ export function registerErrorHandling(app: FastifyInstance): void {
     if (error.statusCode === 429) {
       reply.status(429).send({
         error: { code: 'RATE_LIMITED', message: 'Muitas requisições. Tente novamente em instantes.', requestId },
+      });
+      return;
+    }
+
+    // Erros do próprio Fastify (JSON malformado, corpo vazio com Content-Type
+    // json, payload grande demais etc.) já vêm com um statusCode 4xx correto —
+    // respeitamos em vez de mascarar como 500.
+    if (error.statusCode && error.statusCode >= 400 && error.statusCode < 500) {
+      reply.status(error.statusCode).send({
+        error: { code: 'BAD_REQUEST', message: 'Requisição inválida.', requestId },
       });
       return;
     }

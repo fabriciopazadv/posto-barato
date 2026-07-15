@@ -183,3 +183,77 @@ export const STATION_SORTS = [
   'most_recent',
 ] as const;
 export type StationSort = (typeof STATION_SORTS)[number];
+
+// ---------------------------------------------------------------------------
+// Autenticação e assinatura vitalícia (Premium, pagamento único)
+// ---------------------------------------------------------------------------
+
+export interface AuthUser {
+  id: string;
+  email: string;
+  name: string | null;
+  isPremium: boolean;
+  premiumSince: string | null;
+  createdAt: string;
+}
+
+/** 'web' (padrão): refreshToken vai só em cookie HttpOnly, nunca no JSON (evita
+ * exposição a XSS). 'mobile': sem cookie jar de navegador — refreshToken vem
+ * no corpo da resposta para o app guardar em SecureStore. */
+export type ClientType = 'web' | 'mobile';
+
+export interface RegisterRequest {
+  email: string;
+  password: string;
+  name?: string;
+  clientType?: ClientType;
+}
+
+export interface LoginRequest {
+  email: string;
+  password: string;
+  clientType?: ClientType;
+}
+
+export interface RefreshRequest {
+  /** Obrigatório apenas para clientType 'mobile' (web usa o cookie). */
+  refreshToken?: string;
+  clientType?: ClientType;
+}
+
+/** accessToken sempre vai no corpo (Authorization: Bearer nas próximas
+ * chamadas). refreshToken só aparece no corpo para clientType 'mobile' — no
+ * web ele é setado como cookie HttpOnly e nunca é exposto ao JavaScript. */
+export interface TokenPair {
+  accessToken: string;
+  accessTokenExpiresAt: string;
+  refreshToken?: string;
+}
+
+export interface AuthResponse {
+  user: AuthUser;
+  tokens: TokenPair;
+}
+
+export type PurchaseStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
+
+export interface PremiumOffer {
+  amountCents: number;
+  currency: string;
+  label: string;
+}
+
+export interface CheckoutResponse {
+  checkoutUrl: string;
+  purchaseId: string;
+  simulated: boolean;
+}
+
+export interface PurchaseSummary {
+  id: string;
+  status: PurchaseStatus;
+  amountCents: number;
+  currency: string;
+  paidAt: string | null;
+  createdAt: string;
+}

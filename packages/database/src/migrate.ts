@@ -5,6 +5,7 @@
  * Prisma Migrate não expressa bem). Ordem:
  *   00_collector_bootstrap.sql  → apenas dev/teste (pulável em produção)
  *   01_app.sql                  → schema `app` da Fase 2 (sempre)
+ *   02_auth_billing.sql         → contas, tokens e compra do Premium (sempre)
  *
  * Uso:
  *   tsx src/migrate.ts            aplica as migrações
@@ -43,7 +44,7 @@ async function run(): Promise<void> {
 
     const files: string[] = [];
     if (!skipCollector) files.push('00_collector_bootstrap.sql');
-    files.push('01_app.sql');
+    files.push('01_app.sql', '02_auth_billing.sql');
 
     for (const file of files) {
       const sql = await readFile(join(sqlDir, file), 'utf8');

@@ -9,7 +9,7 @@ coletor, o Nota MT, evidências ou o banco diretamente.
 > Esta Fase 2 **lê** o banco através de uma camada pública derivada e o expõe
 > por uma API versionada. Ver [`docs/architecture/overview.md`](docs/architecture/overview.md).
 
-## Estado atual (incremento 1)
+## Estado atual (incrementos 1 e 2)
 
 ✅ Entregue e verificável nesta fase:
 
@@ -17,17 +17,21 @@ coletor, o Nota MT, evidências ou o banco diretamente.
 - **`packages/shared-types`** — contratos compartilhados.
 - **`packages/database`** — Prisma lendo o schema `collector` (parcial,
   somente-leitura) + schema `app` com **PostGIS** e a matview pública
-  **`app.public_latest_prices`** + seed demonstrativo (Rondonópolis/MT).
+  **`app.public_latest_prices`** + seed demonstrativo (Rondonópolis/MT) +
+  tabelas de conta/sessão/compra (`users`, `refresh_tokens`, `purchases`).
 - **`apps/api`** — API `/api/v1` (Fastify + Swagger + Zod): saúde, config,
   produtos, municípios, postos (proximidade/filtros/ordenação), detalhes,
   preços (latest/summary/compare) e histórico. Projeções públicas, classificação
   de frescor, rate limiting e paginação.
+- **Autenticação** (Argon2 + JWT + refresh token rotativo, cookie HttpOnly no
+  web / corpo no mobile) e **Premium vitalício** (compra única de R$ 9,99 via
+  Asaas, cobrança avulsa/Pix+cartão, webhook idempotente). Ver
+  [`docs/architecture/auth-billing.md`](docs/architecture/auth-billing.md).
 - **Docker Compose** (PostgreSQL+PostGIS, Redis, API), `.env.example` e docs.
 
 ⏳ Próximos incrementos (não incluídos aqui): app mobile (Expo), web/PWA
-(Next.js), autenticação, favoritos, alertas, veículos, recarga elétrica,
-contribuições, planos/assinatura/pagamento, notificações, LGPD e design system
-em código. Ver [seção "Roadmap"](#roadmap).
+(Next.js), favoritos, alertas, veículos, recarga elétrica, contribuições,
+notificações, LGPD e design system em código. Ver [seção "Roadmap"](#roadmap).
 
 ## Pré-requisitos
 
@@ -96,6 +100,7 @@ tempo real. Detalhes em [`docs/security/data-boundaries.md`](docs/security/data-
 ## Roadmap
 
 Ordem de implementação da seção 39 da especificação. Incremento 1 cobre os
-passos 1–10 (fundação + API de leitura + geo + Swagger). Próximos: clientes
-(mobile/web), autenticação, áreas logadas, recarga elétrica, planos/pagamento,
-notificações e observabilidade.
+passos 1–10 (fundação + API de leitura + geo + Swagger); incremento 2 cobre
+autenticação e o Premium vitalício (pagamento único). Próximos: clientes
+(mobile/web), favoritos/alertas/veículos, recarga elétrica, notificações e
+observabilidade.
