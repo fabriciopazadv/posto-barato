@@ -1,98 +1,101 @@
-# Posto Barato — Mobilidade e Economia
+# Posto Barato — Plataforma (Fase 2)
 
-Protótipos de interface (UI) do aplicativo **Posto Barato**, um app de comparação
-de preços de combustível e mobilidade, focado em ajudar motoristas a economizar
-encontrando os postos mais baratos e pontos de recarga de veículos elétricos (EV)
-por perto.
+Plataforma que entrega ao **cliente final** as informações do **Banco de Dados
+Posto Barato**: preços de combustíveis, postos próximos, comparação, economia
+real e histórico. O cliente acessa **exclusivamente a API oficial** — nunca o
+coletor, o Nota MT, evidências ou o banco diretamente.
 
-As telas foram geradas com **[Google Stitch](https://stitch.withgoogle.com/)** e
-exportadas como páginas HTML autônomas (Tailwind via CDN) acompanhadas de um
-_preview_ em PNG. Este repositório organiza esse export em uma estrutura navegável.
+> Fase 1 (coletor privado + banco): mantida em repositório/branch próprio.
+> Esta Fase 2 **lê** o banco através de uma camada pública derivada e o expõe
+> por uma API versionada. Ver [`docs/architecture/overview.md`](docs/architecture/overview.md).
 
-## Como visualizar
+## Estado atual (incremento 1)
 
-Cada tela é um `index.html` autocontido — basta abrir no navegador. Para ver todas
-as telas em uma galeria única, abra o `index.html` na raiz do projeto:
+✅ Entregue e verificável nesta fase:
+
+- **Monorepo** (pnpm + Turborepo + TypeScript strict).
+- **`packages/shared-types`** — contratos compartilhados.
+- **`packages/database`** — Prisma lendo o schema `collector` (parcial,
+  somente-leitura) + schema `app` com **PostGIS** e a matview pública
+  **`app.public_latest_prices`** + seed demonstrativo (Rondonópolis/MT).
+- **`apps/api`** — API `/api/v1` (Fastify + Swagger + Zod): saúde, config,
+  produtos, municípios, postos (proximidade/filtros/ordenação), detalhes,
+  preços (latest/summary/compare) e histórico. Projeções públicas, classificação
+  de frescor, rate limiting e paginação.
+- **Docker Compose** (PostgreSQL+PostGIS, Redis, API), `.env.example` e docs.
+
+⏳ Próximos incrementos (não incluídos aqui): app mobile (Expo), web/PWA
+(Next.js), autenticação, favoritos, alertas, veículos, recarga elétrica,
+contribuições, planos/assinatura/pagamento, notificações, LGPD e design system
+em código. Ver [seção "Roadmap"](#roadmap).
+
+## Pré-requisitos
+
+- Node.js ≥ 22, pnpm ≥ 10, Docker (para PostgreSQL+PostGIS e Redis).
+
+## Como rodar (dev)
 
 ```bash
-# opção simples: abrir direto
-open index.html            # macOS
-xdg-open index.html        # Linux
+pnpm install
+cp .env.example .env
 
-# ou servir localmente (recomendado)
-python3 -m http.server 8000
-# depois acesse http://localhost:8000
+# sobe PostgreSQL+PostGIS e Redis
+pnpm docker:up
+
+# aplica o schema (collector bootstrap p/ dev + schema app/PostGIS) e semeia demo
+pnpm db:generate
+pnpm db:migrate
+pnpm db:seed
+
+# inicia a API em http://localhost:3333/api/v1 (Swagger em /docs)
+pnpm dev:api
 ```
 
-> As telas usam Tailwind, Google Fonts e Material Symbols via CDN, portanto exigem
-> conexão com a internet para renderizar com o estilo completo.
+Exemplos:
 
-## Estrutura do repositório
-
-```
-.
-├── index.html              # Galeria com todas as telas
-├── README.md
-├── assets/
-│   └── logo.png            # Logo do app
-├── design-system/
-│   └── DESIGN.md           # Tokens (cores, tipografia, espaçamento) e diretrizes
-└── screens/                # Telas agrupadas por fluxo
-    ├── onboarding/         # Splash, apresentação e permissões
-    ├── auth/               # Login
-    ├── app/                # Telas principais do app
-    └── assinatura/         # Planos e assinatura premium
+```bash
+curl "http://localhost:3333/api/v1/health"
+curl "http://localhost:3333/api/v1/stations?municipality=Rondon%C3%B3polis&state=MT&product=ETANOL&sort=lowest_price"
+curl "http://localhost:3333/api/v1/stations?latitude=-16.47&longitude=-54.63&radiusKm=5&sort=nearest"
 ```
 
-Cada pasta de tela contém:
+## Scripts
 
-- `index.html` — código da tela (renderizável no navegador)
-- `preview.png` — captura estática da tela
+| Comando | Ação |
+|---|---|
+| `pnpm dev:api` | API em modo watch |
+| `pnpm build` | Build de todos os pacotes |
+| `pnpm typecheck` | Checagem de tipos |
+| `pnpm lint` | Lint |
+| `pnpm test` | Testes unitários |
+| `pnpm db:migrate` | Aplica migrações (SQL: collector bootstrap + app/PostGIS) |
+| `pnpm db:seed` | Semeia dados demonstrativos (Rondonópolis/MT) |
+| `pnpm db:reset` | Recria os schemas e semeia |
+| `pnpm docker:up` / `pnpm docker:down` | Sobe/derruba Postgres+Redis |
 
-## Telas
+## Estrutura
 
-### Onboarding
-| # | Tela | Descrição |
-|---|------|-----------|
-| 00 | [Splash](screens/onboarding/00-splash/) | Tela de abertura |
-| 01 | [Preços](screens/onboarding/01-precos/) | Apresentação: comparação de preços |
-| 02 | [Economia real](screens/onboarding/02-economia-real/) | Apresentação: economia comprovada |
-| 03 | [Combustível & EV](screens/onboarding/03-combustivel-ev/) | Apresentação: combustível e recarga elétrica |
-| 04 | [Preços (refinado)](screens/onboarding/04-precos-refinado/) | Versão refinada da tela de preços |
-| 05 | [Permissão de localização](screens/onboarding/05-permissao-localizacao/) | Solicitação de acesso à localização |
-| 06 | [Localização (refinado)](screens/onboarding/06-localizacao-refinado/) | Versão refinada da permissão de localização |
+```
+apps/api/               API pública de leitura
+packages/database/      Prisma + PostGIS + camada pública derivada + seed
+packages/shared-types/  Contratos TypeScript compartilhados
+docker/                 Dockerfile da API
+docs/                   architecture · security · api · product
+design-system/          Tokens de marca (DESIGN.md)
+screens/ · index.html   Referência visual (export do Google Stitch)
+```
 
-### Autenticação
-| # | Tela | Descrição |
-|---|------|-----------|
-| 01 | [Login](screens/auth/01-login/) | Tela de login |
-| 02 | [Login (refinado)](screens/auth/02-login-refinado/) | Versão moderna do login |
+A galeria de telas de referência abre em `index.html` (ver histórico do repo).
 
-### App principal
-| # | Tela | Descrição |
-|---|------|-----------|
-| 01 | [Home](screens/app/01-home/) | Tela inicial |
-| 02 | [Mapa](screens/app/02-mapa/) | Mapa de postos |
-| 03 | [Detalhes do posto](screens/app/03-detalhes-posto/) | Detalhes de um posto |
-| 04 | [Comparador](screens/app/04-comparador/) | Comparação de postos/preços |
-| 05 | [Perfil e veículos](screens/app/05-perfil-veiculos/) | Perfil do usuário e veículos |
-| 06 | [Mapa de recarga](screens/app/06-mapa-recarga/) | Mapa de pontos de recarga EV |
+## Segurança
 
-### Assinatura
-| # | Tela | Descrição |
-|---|------|-----------|
-| 01 | [Premium](screens/assinatura/01-premium/) | Plano premium |
-| 02 | [Economia total](screens/assinatura/02-economia-total/) | Plano economia total |
+Nenhum dado interno da coleta é exposto. A fonte pública é sempre
+**"Banco de Dados Posto Barato"**; os preços não são declarados oficiais nem em
+tempo real. Detalhes em [`docs/security/data-boundaries.md`](docs/security/data-boundaries.md).
 
-## Design System
+## Roadmap
 
-O arquivo [`design-system/DESIGN.md`](design-system/DESIGN.md) documenta a
-identidade visual do produto:
-
-- **Cores** — paleta baseada em Material Design 3 (verde vívido para economia,
-  azul petróleo para navegação/confiança, ciano elétrico para recarga EV).
-- **Tipografia** — estratégia com duas fontes: **Manrope** (títulos e preços) e
-  **Inter** (UI e corpo de texto).
-- **Layout** — grid de 8pt, mobile-first, alvos de toque de no mínimo 48px.
-- **Componentes** — botões, inputs, cards de posto/EV, chips de seleção,
-  marcadores de mapa e estados de feedback.
+Ordem de implementação da seção 39 da especificação. Incremento 1 cobre os
+passos 1–10 (fundação + API de leitura + geo + Swagger). Próximos: clientes
+(mobile/web), autenticação, áreas logadas, recarga elétrica, planos/pagamento,
+notificações e observabilidade.

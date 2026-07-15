@@ -1,0 +1,113 @@
+// Schema Prisma da Fase 2 (Plataforma Posto Barato).
+//
+// IMPORTANTE (seções 6, 7 e 8 da especificação):
+//   - O schema `collector` pertence à Fase 1. Aqui ele é espelhado APENAS de
+//     forma parcial e SOMENTE-LEITURA: declaramos exclusivamente os modelos e
+//     campos públicos que a API pode ler.
+//   - As tabelas sensíveis (collection_evidence, collection_errors,
+//     collection_runs, collection_locks) e os campos sensíveis
+//     (raw_visible_data, screenshot_path, html_snapshot_path, internal_name...)
+//     NÃO são declarados aqui de propósito — a API não tem como acessá-los.
+//   - As migrations do `collector` são de responsabilidade da Fase 1. A Fase 2
+//     nunca altera tabelas do collector (aplicamos DDL apenas no schema `app`).
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  schemas  = ["collector", "app"]
+}
+
+/// Fonte de dados (Fase 1). Somente `publicName` é exposto ao cliente final.
+model DataSource {
+  id           String             @id @db.Uuid
+  internalName String             @unique @map("internal_name")
+  publicName   String             @map("public_name")
+  sourceType   String             @map("source_type")
+  active       Boolean            @default(true)
+  observations PriceObservation[]
+
+  @@map("data_sources")
+  @@schema("collector")
+}
+
+/// Posto identificado pela coleta (Fase 1). Leitura pública.
+model Station {
+  id                String             @id @db.Uuid
+  displayName       String             @map("display_name")
+  displayAddress    String             @map("display_address")
+  neighborhood      String?
+  municipality      String
+  state             String
+  postalCode        String?            @map("postal_code")
+  latitude          Decimal?           @db.Decimal(9, 6)
+  longitude         Decimal?           @db.Decimal(9, 6)
+  active            Boolean            @default(true)
+  firstSeenAt       DateTime           @map("first_seen_at")
+  lastSeenAt        DateTime           @map("last_seen_at")
+  observations      PriceObservation[]
+
+  @@index([municipality, state])
+  @@map("stations")
+  @@schema("collector")
+}
+
+/// Produto canônico (Fase 1).
+model Product {
+  id            String             @id @db.Uuid
+  canonicalCode String             @unique @map("canonical_code")
+  canonicalName String             @map("canonical_name")
+  category      String
+  unit          String
+  active        Boolean            @default(true)
+  observations  PriceObservation[]
+
+  @@map("products")
+  @@schema("collector")
+}
+
+/// Observação de preço (Fase 1). Expomos apenas campos públicos derivados;
+/// raw_visible_data e evidence_id NÃO são declarados aqui.
+model PriceObservation {
+  id                  String     @id @db.Uuid
+  stationId           String     @map("station_id") @db.Uuid
+  productId           String     @map("product_id") @db.Uuid
+  dataSourceId        String     @map("data_source_id") @db.Uuid
+  priceDecimal        Decimal    @map("price_decimal") @db.Decimal(10, 3)
+  currency            String     @default("BRL")
+  unit                String     @default("L")
+  relativeTimeText    String?    @map("relative_time_text")
+  estimatedObservedAt DateTime?  @map("estimated_observed_at")
+  estimatedTime       Boolean    @default(false) @map("estimated_time")
+  collectedAt         DateTime   @map("collected_at")
+  sourcePosition      Int        @map("source_position")
+  confidenceScore     Decimal    @default(1) @map("confidence_score") @db.Decimal(3, 2)
+  station             Station    @relation(fields: [stationId], references: [id])
+  product             Product    @relation(fields: [productId], references: [id])
+  dataSource          DataSource @relation(fields: [dataSourceId], references: [id])
+
+  @@index([stationId])
+  @@index([productId])
+  @@index([collectedAt])
+  @@map("price_observations")
+  @@schema("collector")
+}
+
+// ---------------------------------------------------------------------------
+// Schema `app` — pertence à Fase 2.
+// ---------------------------------------------------------------------------
+
+/// Marca quais postos são dados demonstrativos (seed), para rotular
+/// "Dados demonstrativos" no cliente (seção 35). is_demo nunca deve misturar-se
+/// silenciosamente com dados reais em produção.
+model DemoStation {
+  stationId String   @id @map("station_id") @db.Uuid
+  note      String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("demo_stations")
+  @@schema("app")
+}
