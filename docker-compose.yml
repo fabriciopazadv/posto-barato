@@ -38,6 +38,13 @@ services:
       NODE_ENV: development
       API_HOST: 0.0.0.0
       API_PORT: "3333"
+      # Segredo de autenticação obrigatório (>= 32 caracteres). Sem ele a API
+      # falha na validação de ambiente e o container encerra com exit 1.
+      # Valor apenas para desenvolvimento/demonstração — troque em produção.
+      AUTH_ACCESS_SECRET: dev-secret-troque-em-producao-min-32-chars
+      # Sem HTTPS no ambiente local do compose.
+      COOKIE_SECURE: "false"
+      APP_URL: http://localhost:3333
     ports:
       - "3333:3333"
     depends_on:
