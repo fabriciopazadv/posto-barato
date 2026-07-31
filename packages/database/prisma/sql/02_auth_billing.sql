@@ -56,6 +56,10 @@ CREATE TABLE IF NOT EXISTS app.subscriptions (
   -- corre — a cobrança é emitida na virada, pelo cron.
   plano_escolhido app."SubscriptionPlan",
   valor_centavos  int,               -- preço travado no ato da escolha
+  -- CPF/CNPJ do pagador (só dígitos), pedido junto com a escolha do plano.
+  -- O Asaas exige documento para criar o cliente e o cadastro do app não o
+  -- coleta; sem ele guardado aqui, a virada do teste não vira cobrança sozinha.
+  cpf_cnpj_pagador text,
 
   primeira_cobranca_em timestamptz,  -- só quando a 1ª cobrança é criada
   proxima_cobranca_em  timestamptz,
@@ -69,6 +73,12 @@ CREATE TABLE IF NOT EXISTS app.subscriptions (
   created_at            timestamptz NOT NULL DEFAULT now(),
   updated_at            timestamptz NOT NULL DEFAULT now()
 );
+
+-- Bancos criados antes de o documento passar a ser pedido na escolha do plano:
+-- o CREATE TABLE acima não os alcança, então a coluna é adicionada aqui. Fica
+-- nula para quem já escolheu plano sem informar documento — o cron trata esse
+-- caso levando ao paywall em vez de tentar cobrar sem documento para sempre.
+ALTER TABLE app.subscriptions ADD COLUMN IF NOT EXISTS cpf_cnpj_pagador text;
 
 -- O cron da virada varre exatamente este par.
 CREATE INDEX IF NOT EXISTS subscriptions_status_trial_ends_at_idx

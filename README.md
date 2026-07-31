@@ -26,15 +26,17 @@ coletor, o Nota MT, evidências ou o banco diretamente.
 - **Autenticação** (Argon2 + JWT + refresh token rotativo, cookie HttpOnly no
   web / corpo no mobile) e **assinatura do Premium**: 7 dias grátis seguidos de
   ciclo mensal (R$ 9,99), semestral (R$ 49,99) ou anual (R$ 89,99) via Asaas,
-  com webhook idempotente, carência de 48h e reconciliação diária. Espelha o
-  sistema de cobrança do mei-facil. Ver
+  com webhook idempotente, carência de 48h e reconciliação diária. O CPF/CNPJ é
+  pedido junto com a escolha do plano, ainda durante o teste — é o que permite
+  ao cron virar o fim dos dias grátis em cobrança sozinho. Espelha o sistema de
+  cobrança do mei-facil. Ver
   [`docs/architecture/auth-billing.md`](docs/architecture/auth-billing.md).
 - **Docker Compose** (PostgreSQL+PostGIS, Redis, API), `.env.example` e docs.
 
 - **`packages/design-system`** — tokens do `DESIGN.md` como preset Tailwind e
   tema CSS (claro/escuro), reaproveitáveis pelo futuro `apps/mobile`.
-- **`packages/domain`** — regras puras (frescor, geo, economia) compartilhadas
-  entre a API e os clientes.
+- **`packages/domain`** — regras puras (frescor, geo, economia, ciclo de
+  cobrança, CPF/CNPJ) compartilhadas entre a API e os clientes.
 - **`apps/web`** — PWA em Next.js: início, mapa de postos, detalhes com
   histórico, comparador de economia real, favoritos, recarga elétrica, perfil,
   Premium e onboarding. Instalável, com modo escuro e tela offline.

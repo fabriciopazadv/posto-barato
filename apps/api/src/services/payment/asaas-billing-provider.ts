@@ -4,10 +4,11 @@
  *
  * Portado do mei-facil. O ciclo tem dois momentos deliberadamente separados:
  *
- *  1. **Durante o teste** (`registrarIntencao`): a pessoa escolhe o plano e o
- *     app grava só isso. Nada é criado no Asaas — nenhum cliente, nenhuma
- *     assinatura, nenhuma cobrança. É o que garante que não existe cobrança
- *     enquanto houver dia grátis por usar.
+ *  1. **Durante o teste** (`registrarIntencao`): a pessoa escolhe o plano,
+ *     informa o CPF/CNPJ e o app grava só isso. Nada é criado no Asaas —
+ *     nenhum cliente, nenhuma assinatura, nenhuma cobrança. É o que garante que
+ *     não existe cobrança enquanto houver dia grátis por usar. O documento fica
+ *     guardado justamente para o passo 2 não depender de o usuário voltar.
  *  2. **Na virada do teste** (`criarCobranca`, chamada pelo cron ou por quem
  *     assina depois do prazo): aí sim o cliente e a assinatura nascem no Asaas,
  *     com vencimento hoje.
@@ -19,7 +20,9 @@ import {
   TRIAL_DIAS,
   dataEmSaoPaulo,
   descreverPlano,
+  exigirDocumento,
   garantirCobrancaPermitida,
+  normalizarDocumento,
   proximoVencimento,
   type Plano,
   type TabelaPrecos,
@@ -42,7 +45,10 @@ export class CobrancaNaoConfiguradaError extends Error {
 export interface DadosPagador {
   nome: string;
   email: string;
-  /** Apenas dígitos. A rota garante que não vem vazio no modo real. */
+  /**
+   * Apenas dígitos. Pode vir vazio apenas no modo simulado (sem chave, fora de
+   * produção); com o Asaas configurado, `criarCobranca` exige documento válido.
+   */
   cpfCnpj: string;
 }
 
@@ -98,15 +104,27 @@ export class AsaasBillingProvider {
   }
 
   /**
-   * Registra o plano escolhido durante o teste, travando o preço vigente.
-   * Não toca no Asaas e não muda o status: a pessoa segue em TRIAL até a virada.
+   * Registra o plano escolhido durante o teste, travando o preço vigente e o
+   * documento do pagador. Não toca no Asaas e não muda o status: a pessoa segue
+   * em TRIAL até a virada.
+   *
+   * Guardar o documento aqui é o que fecha o ciclo automático: na virada o cron
+   * tem tudo o que o Asaas pede para criar o cliente, sem precisar de uma nova
+   * visita à tela de planos.
    */
-  async registrarIntencao(userId: string, plano: Plano): Promise<{ cobrancaEm: Date }> {
+  async registrarIntencao(
+    userId: string,
+    plano: Plano,
+    cpfCnpj: string | null,
+  ): Promise<{ cobrancaEm: Date }> {
     const sub = await prisma.subscription.update({
       where: { userId },
       data: {
         planoEscolhido: plano,
         valorCentavos: descreverPlano(plano, this.config.precos).valorCentavos,
+        // Documento ausente não apaga o que já estava guardado: quem só troca de
+        // plano não precisa digitar o CPF de novo.
+        ...(cpfCnpj ? { cpfCnpjPagador: cpfCnpj } : {}),
       },
       select: { trialEndsAt: true },
     });
@@ -133,11 +151,17 @@ export class AsaasBillingProvider {
         status: true,
         asaasCustomerId: true,
         asaasSubscriptionId: true,
+        cpfCnpjPagador: true,
       },
     });
     if (!sub) throw new Error(`Assinatura inexistente para o usuário ${userId}`);
 
     garantirCobrancaPermitida(sub.trialEndsAt);
+
+    // O documento recém-informado tem precedência; sem ele, vale o que foi
+    // guardado quando a pessoa escolheu o plano — é daí que a virada automática
+    // se alimenta.
+    const documento = normalizarDocumento(pagador.cpfCnpj) ?? sub.cpfCnpjPagador;
 
     const { valorCentavos } = descreverPlano(plano, this.config.precos);
     const hoje = new Date();
@@ -157,6 +181,7 @@ export class AsaasBillingProvider {
           proximaCobrancaEm: proximoVencimento(plano, hoje),
           ultimoPagamentoEm: hoje,
           inadimplenteDesde: null,
+          ...(documento ? { cpfCnpjPagador: documento } : {}),
         },
       });
       return { simulado: true, vencimento: hoje };
@@ -171,6 +196,10 @@ export class AsaasBillingProvider {
       return { simulado: false, vencimento: hoje };
     }
 
+    // Última barreira antes de gastar uma chamada ao Asaas: documento inválido
+    // é recusado lá com erro genérico, e aqui a mensagem ainda pode ser útil.
+    const cpfCnpj = exigirDocumento(documento);
+
     // 1) Cliente no Asaas. Persistido assim que criado: se o passo 2 falhar, a
     //    retentativa reaproveita este cliente em vez de duplicar o cadastro.
     let asaasCustomerId = sub.asaasCustomerId;
@@ -178,11 +207,14 @@ export class AsaasBillingProvider {
       const cliente = await this.postAsaas<{ id: string }>('/customers', {
         name: pagador.nome,
         email: pagador.email,
-        cpfCnpj: pagador.cpfCnpj,
+        cpfCnpj,
         externalReference: userId,
       });
       asaasCustomerId = cliente.id;
-      await prisma.subscription.update({ where: { userId }, data: { asaasCustomerId } });
+      await prisma.subscription.update({
+        where: { userId },
+        data: { asaasCustomerId, cpfCnpjPagador: cpfCnpj },
+      });
     }
 
     // 2) Assinatura recorrente com forma de pagamento aberta (Pix/cartão/boleto),
@@ -211,6 +243,7 @@ export class AsaasBillingProvider {
         status: 'AGUARDANDO_PAGAMENTO',
         asaasCustomerId,
         asaasSubscriptionId: assinatura.id,
+        cpfCnpjPagador: cpfCnpj,
         primeiraCobrancaEm: hoje,
         proximaCobrancaEm: hoje,
       },

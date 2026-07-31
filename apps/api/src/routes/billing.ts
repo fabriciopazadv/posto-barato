@@ -18,7 +18,7 @@ import { badRequest, notFound } from '../plugins/errors.js';
 import { parseAsaasWebhook } from '../domain/asaas-webhook.js';
 import { runBillingCron } from '../services/billing-cron.service.js';
 import {
-  DocumentoObrigatorioError,
+  DocumentoInvalidoError,
   SubscriptionNotFoundError,
   applyExternalStatus,
   cancelSubscription,
@@ -67,8 +67,10 @@ export function registerBillingRoutes(app: FastifyInstance, ctx: AppContext): vo
   );
 
   /**
-   * Assinar. Durante o teste apenas registra o plano escolhido; depois dele,
-   * cria a cobrança na hora. Ver `subscribe`.
+   * Assinar. Durante o teste apenas registra o plano escolhido e o CPF/CNPJ do
+   * pagador; depois dele, cria a cobrança na hora. O documento é pedido nos dois
+   * casos — é ele que permite ao cron virar o teste em cobrança sozinho. Ver
+   * `subscribe`.
    */
   app.post(
     '/billing/subscription',
@@ -98,7 +100,7 @@ export function registerBillingRoutes(app: FastifyInstance, ctx: AppContext): vo
         };
       } catch (err) {
         if (err instanceof SubscriptionNotFoundError) throw notFound(err.message);
-        if (err instanceof DocumentoObrigatorioError) throw badRequest(err.message);
+        if (err instanceof DocumentoInvalidoError) throw badRequest(err.message);
         // CobrancaAntesDoTrialError e CobrancaNaoConfiguradaError sobem como 500
         // com log: são erro de programação e erro de configuração, não do usuário.
         throw err;

@@ -6,8 +6,12 @@
  */
 import { prisma, type Prisma, type Subscription } from '@posto-barato/database';
 import {
+  DocumentoInvalidoError,
   assinaturaPermiteAcesso,
+  documentoValido,
   fimDoTrial,
+  mascararDocumento,
+  normalizarDocumento,
   proximoVencimento,
   transicaoExternaPermitida,
   trialVigente,
@@ -27,12 +31,7 @@ export class SubscriptionNotFoundError extends Error {
   }
 }
 
-export class DocumentoObrigatorioError extends Error {
-  constructor() {
-    super('Informe um CPF ou CNPJ válido para assinar.');
-    this.name = 'DocumentoObrigatorioError';
-  }
-}
+export { DocumentoInvalidoError };
 
 export function buildProvider(ctx: AppContext): AsaasBillingProvider {
   return new AsaasBillingProvider({
@@ -77,6 +76,9 @@ export function toSummary(sub: Subscription, agora: Date = new Date()): Subscrip
     acessoAte: sub.acessoAte?.toISOString() ?? null,
     acessoLiberado: assinaturaPermiteAcesso(sub, agora),
     diasRestantesTrial: sub.status === 'TRIAL' && restante > 0 ? restante : 0,
+    // Só a máscara sai do servidor: a tela precisa saber se já há documento (e
+    // mostrar qual, o bastante para a pessoa reconhecer), não do número inteiro.
+    cpfCnpjMascarado: mascararDocumento(sub.cpfCnpjPagador),
   };
 }
 
@@ -88,11 +90,17 @@ export async function getSubscription(userId: string): Promise<SubscriptionSumma
 /**
  * Assinar tem dois desfechos, decididos pelos dias gratuitos:
  *
- *  - **Teste vigente** → registra o plano escolhido e encerra. Nenhuma cobrança
- *    é criada; ela nasce na virada do teste, pelo cron. É o que garante que a
- *    cobrança só é efetivada depois de os dias grátis serem usados.
+ *  - **Teste vigente** → registra o plano escolhido e o documento do pagador, e
+ *    encerra. Nenhuma cobrança é criada; ela nasce na virada do teste, pelo
+ *    cron. É o que garante que a cobrança só é efetivada depois de os dias
+ *    grátis serem usados.
  *  - **Teste já usado** (TRIAL_EXPIRADO, INADIMPLENTE, CANCELADA) → cria a
  *    cobrança na hora, com vencimento hoje.
+ *
+ * Em ambos o CPF/CNPJ é exigido, e é essa a diferença que torna a virada
+ * automática: antes o documento só era pedido quando a cobrança nascia na hora,
+ * então o cron chegava na virada sem ele, falhava, e a pessoa ficava bloqueada
+ * até voltar à tela para assinar de novo.
  */
 export async function subscribe(
   userId: string,
@@ -102,15 +110,31 @@ export async function subscribe(
 ): Promise<{ efeito: 'plano_registrado' | 'cobranca_criada'; cobrancaEm: Date; simulado: boolean }> {
   const sub = await prisma.subscription.findUnique({
     where: { userId },
-    select: { trialEndsAt: true, status: true },
+    select: { trialEndsAt: true, status: true, cpfCnpjPagador: true },
   });
   if (!sub) throw new SubscriptionNotFoundError();
 
   const provider = buildProvider(ctx);
 
+  // Documento digitado errado é recusado na hora, e nunca cai de volta no que
+  // estava guardado: quem informou um documento novo espera que seja ele o
+  // cobrado, não o antigo.
+  const informado = (cpfCnpjInformado ?? '').trim();
+  if (informado && !documentoValido(informado)) throw new DocumentoInvalidoError();
+
+  // Sem documento novo vale o já guardado — quem só troca de plano não precisa
+  // digitar de novo.
+  const cpfCnpj = normalizarDocumento(informado) ?? sub.cpfCnpjPagador;
+  // No modo real o Asaas exige CPF ou CNPJ para criar o cliente. No modo
+  // simulado (sem chave, fora de produção) seguir sem documento é aceitável —
+  // não há cliente a criar em lugar nenhum.
+  if (provider.configurado && !cpfCnpj) {
+    throw new DocumentoInvalidoError();
+  }
+
   // ── Caminho 1: ainda há dias grátis por usar ────────────────────────────
   if (sub.status === 'TRIAL' && trialVigente(sub.trialEndsAt)) {
-    const { cobrancaEm } = await provider.registrarIntencao(userId, plano);
+    const { cobrancaEm } = await provider.registrarIntencao(userId, plano, cpfCnpj);
     return { efeito: 'plano_registrado', cobrancaEm, simulado: false };
   }
 
@@ -120,16 +144,10 @@ export async function subscribe(
     select: { name: true, email: true },
   });
 
-  const cpfCnpj = (cpfCnpjInformado ?? '').replace(/\D/g, '');
-  // No modo real o Asaas exige CPF (11) ou CNPJ (14) para criar o cliente.
-  if (provider.configurado && cpfCnpj.length !== 11 && cpfCnpj.length !== 14) {
-    throw new DocumentoObrigatorioError();
-  }
-
   const { simulado, vencimento } = await provider.criarCobranca(userId, plano, {
     nome: user.name ?? 'Cliente Posto Barato',
     email: user.email,
-    cpfCnpj,
+    cpfCnpj: cpfCnpj ?? '',
   });
 
   return { efeito: 'cobranca_criada', cobrancaEm: vencimento, simulado };
@@ -164,10 +182,16 @@ export async function cancelSubscription(
 
   if (emTeste) {
     // Ainda em teste: nenhuma cobrança existiu. Some a intenção de assinatura e
-    // os dias grátis restantes seguem valendo.
+    // os dias grátis restantes seguem valendo. O documento vai junto: sem
+    // cobrança à vista não há por que o app seguir guardando o CPF de alguém.
     await prisma.subscription.update({
       where: { userId },
-      data: { planoEscolhido: null, valorCentavos: null, asaasSubscriptionId: null },
+      data: {
+        planoEscolhido: null,
+        valorCentavos: null,
+        asaasSubscriptionId: null,
+        cpfCnpjPagador: null,
+      },
     });
     return { acessoAte: sub.trialEndsAt, jaCancelada: false };
   }
