@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Economia real — Posto Barato</title>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<link rel="preload" href="/assets/fonts/inter-latin-f11d729b.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/app.css"/>
+<link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png"/>
+<meta name="theme-color" content="#006c49"/>
+<meta name="robots" content="noindex, nofollow"/>
+<style>
+.pb-back-galeria{position:fixed;left:0;top:50%;transform:translateY(-50%);
+z-index:2147483647;display:inline-flex;align-items:center;gap:.3rem;
+padding:.5rem .6rem .5rem .45rem;border-radius:0 9999px 9999px 0;
+background:rgba(18,28,40,.8);color:#fff;font:600 11px/1 Inter,system-ui,sans-serif;
+text-decoration:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+opacity:.45;transition:opacity .15s ease}
+.pb-back-galeria:hover,.pb-back-galeria:focus-visible{opacity:1}
+.pb-back-galeria:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media print{.pb-back-galeria{display:none}}
+</style>
+<meta name="description" content="Economia real — protótipo de interface do aplicativo Posto Barato."/>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col antialiased">
+<!-- Main Content Canvas - No Nav for Onboarding -->
+<main class="flex-grow flex flex-col px-container-margin py-xl max-w-md mx-auto w-full">
+<!-- Illustration Container -->
+<div class="flex-grow flex items-center justify-center relative mb-lg">
+<div class="absolute inset-0 bg-secondary-container rounded-full opacity-20 filter blur-3xl"></div>
+<img alt="Rota com economia no abastecimento" loading="lazy" decoding="async" class="w-full h-auto max-h-[350px] object-contain relative z-10 drop-shadow-xl" src="/assets/img/illus-economia-rota.svg"/>
+</div>
+<!-- Text Content -->
+<div class="text-center mb-xl">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface mb-sm">
+                Economia que considera o seu caminho
+            </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                Veja quais opções realmente compensam considerando preço e deslocamento.
+            </p>
+</div>
+<!-- Pagination Indicators -->
+<div class="flex justify-center gap-sm mb-xl">
+<div class="w-2 h-2 rounded-full bg-surface-variant"></div>
+<div class="w-6 h-2 rounded-full bg-primary"></div>
+<div class="w-2 h-2 rounded-full bg-surface-variant"></div>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-md w-full mt-auto">
+<button type="button" class="w-full h-12 bg-primary text-on-primary rounded-xl font-label-bold text-label-bold flex items-center justify-center shadow-md active:scale-95 transition-transform duration-200">
+                Continuar
+            </button>
+<button type="button" class="w-full h-12 bg-transparent text-secondary border border-outline-variant rounded-xl font-label-bold text-label-bold flex items-center justify-center active:scale-95 transition-transform duration-200 hover:bg-surface-container-low">
+                Pular
+            </button>
+</div>
+</main>
+<a href="/" class="pb-back-galeria" title="Voltar para a galeria de telas">
+<span aria-hidden="true">&#x2190;</span> Galeria
+</a>
+</body></html>

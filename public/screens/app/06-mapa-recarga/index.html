@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Pontos de recarga elétrica — Posto Barato</title>
+<style>
+        .map-bg {
+            background-color: #e5e5e5;
+            background-image: radial-gradient(#d4d4d4 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        /* Custom scrollbar for horizontal chips */
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<link rel="preload" href="/assets/fonts/inter-latin-f11d729b.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/app.css"/>
+<link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png"/>
+<meta name="theme-color" content="#006c49"/>
+<meta name="robots" content="noindex, nofollow"/>
+<style>
+.pb-back-galeria{position:fixed;left:0;top:50%;transform:translateY(-50%);
+z-index:2147483647;display:inline-flex;align-items:center;gap:.3rem;
+padding:.5rem .6rem .5rem .45rem;border-radius:0 9999px 9999px 0;
+background:rgba(18,28,40,.8);color:#fff;font:600 11px/1 Inter,system-ui,sans-serif;
+text-decoration:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+opacity:.45;transition:opacity .15s ease}
+.pb-back-galeria:hover,.pb-back-galeria:focus-visible{opacity:1}
+.pb-back-galeria:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media print{.pb-back-galeria{display:none}}
+</style>
+<meta name="description" content="Pontos de recarga elétrica — protótipo de interface do aplicativo Posto Barato."/>
+</head>
+<body class="bg-background text-on-background h-screen overflow-hidden flex flex-col font-body-md relative">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-14 bg-surface border-b border-outline-variant shadow-sm transition-all duration-200">
+<button type="button" class="text-on-surface-variant hover:bg-surface-container active:scale-95 p-2 rounded-full transition-colors flex items-center justify-center" aria-label="Menu">
+<span aria-hidden="true" data-icon="menu" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">&#xe5d2;</span>
+</button>
+<div class="font-headline-md text-headline-md font-extrabold text-primary">Posto Barato</div>
+<button type="button" class="text-on-surface-variant hover:bg-surface-container active:scale-95 p-2 rounded-full transition-colors flex items-center justify-center" aria-label="Conta">
+<span aria-hidden="true" data-icon="account_circle" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">&#xe853;</span>
+</button>
+</header>
+<!-- Main Content Area (Map Canvas) -->
+<main class="flex-1 relative mt-14 map-bg w-full h-full">
+<!-- Interactive Map Placeholder -->
+<div class="absolute inset-0 w-full h-full" data-location="Seattle" style="background-image: url('/assets/img/map-abstract.svg'); background-size: cover; background-position: center;">
+<!-- Map Markers -->
+<!-- EV Marker 1 -->
+<div class="absolute top-[30%] left-[40%] transform -translate-x-1/2 -translate-y-1/2 group">
+<div class="relative flex flex-col items-center cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-125 z-10">
+<div class="bg-tertiary-container text-on-tertiary shadow-lg rounded-full w-12 h-12 flex items-center justify-center ring-4 ring-white relative z-10">
+<span aria-hidden="true" data-icon="electric_bolt" class="material-symbols-outlined text-white" style="font-variation-settings: 'FILL' 1;">&#xec1c;</span>
+</div>
+<div class="bg-white shadow-md rounded-full px-2 py-0.5 mt-1 border border-outline-variant font-label-bold text-label-bold text-on-surface">60kW</div>
+<!-- Ambient Glow -->
+<div class="absolute inset-0 bg-tertiary-container rounded-full blur-md opacity-40 -z-10 animate-pulse"></div>
+</div>
+</div>
+<!-- EV Marker 2 (Active/Selected) -->
+<div class="absolute top-[50%] left-[60%] transform -translate-x-1/2 -translate-y-1/2 group z-20">
+<div class="relative flex flex-col items-center cursor-pointer transition-transform duration-300 scale-125 z-10">
+<div class="bg-tertiary-container text-on-tertiary shadow-xl rounded-full w-14 h-14 flex items-center justify-center ring-4 ring-tertiary relative z-10">
+<span aria-hidden="true" data-icon="electric_bolt" class="material-symbols-outlined text-white text-2xl" style="font-variation-settings: 'FILL' 1;">&#xec1c;</span>
+</div>
+<div class="bg-white shadow-md rounded-full px-3 py-1 mt-1 border border-tertiary font-label-bold text-label-bold text-tertiary">150kW</div>
+<div class="absolute inset-0 bg-tertiary rounded-full blur-lg opacity-50 -z-10"></div>
+</div>
+</div>
+<!-- EV Marker 3 -->
+<div class="absolute top-[70%] left-[20%] transform -translate-x-1/2 -translate-y-1/2 group">
+<div class="relative flex flex-col items-center cursor-pointer transition-transform duration-300 hover:scale-110 active:scale-125 z-10">
+<div class="bg-surface-variant text-on-surface-variant shadow-sm rounded-full w-10 h-10 flex items-center justify-center ring-2 ring-white opacity-70 relative z-10">
+<span aria-hidden="true" data-icon="electric_bolt" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">&#xec1c;</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Floating Filters -->
+<div class="absolute top-4 left-0 w-full z-30 px-container-margin">
+<div class="flex space-x-2 overflow-x-auto hide-scrollbar py-2">
+<button type="button" class="flex items-center space-x-1 bg-surface shadow-md border border-outline-variant rounded-full px-4 py-2 h-12 flex-shrink-0 active:scale-95 transition-transform">
+<span aria-hidden="true" data-icon="filter_list" class="material-symbols-outlined text-on-surface-variant text-sm">&#xe152;</span>
+<span class="font-label-bold text-label-bold text-on-surface">Filtros</span>
+</button>
+<button type="button" class="flex items-center space-x-1 bg-secondary text-on-secondary shadow-md rounded-full px-4 py-2 h-12 flex-shrink-0 active:scale-95 transition-transform">
+<span class="font-label-bold text-label-bold">Carga rápida (&gt;50 kW)</span>
+</button>
+<button type="button" class="flex items-center space-x-1 bg-surface shadow-md border border-outline-variant rounded-full px-4 py-2 h-12 flex-shrink-0 active:scale-95 transition-transform hover:bg-surface-container">
+<span class="font-label-bold text-label-bold text-on-surface">Disponível agora</span>
+</button>
+<button type="button" class="flex items-center space-x-1 bg-surface shadow-md border border-outline-variant rounded-full px-4 py-2 h-12 flex-shrink-0 active:scale-95 transition-transform hover:bg-surface-container">
+<span class="font-label-bold text-label-bold text-on-surface">CCS2</span>
+</button>
+</div>
+</div>
+<!-- Locate FAB -->
+<button type="button" class="absolute bottom-[240px] right-container-margin z-30 bg-surface shadow-lg w-12 h-12 rounded-full flex items-center justify-center border border-outline-variant active:scale-95 transition-transform hover:bg-surface-container" aria-label="Minha localização">
+<span aria-hidden="true" data-icon="my_location" class="material-symbols-outlined text-on-surface-variant">&#xe1b3;</span>
+</button>
+</main>
+<!-- Bottom Sheet (Station Details) -->
+<div class="fixed bottom-0 left-0 w-full z-40 bg-surface/90 backdrop-blur-md rounded-t-[18px] shadow-[0_-4px_20px_rgba(0,0,0,0.1)] border-t border-outline-variant pb-20 md:pb-4 transition-transform duration-300 transform translate-y-0 flex flex-col max-h-[60vh]">
+<!-- Drag Handle -->
+<div class="w-full flex justify-center pt-3 pb-1 cursor-grab">
+<div class="w-10 h-1.5 bg-outline-variant rounded-full"></div>
+</div>
+<!-- Selected Station Info -->
+<div class="px-container-margin py-sm overflow-y-auto hide-scrollbar flex-1">
+<div class="flex justify-between items-start mb-md">
+<div>
+<h2 class="font-headline-md text-headline-md text-on-surface">ChargePoint Plaza</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Operado pela rede GreenGrid</p>
+</div>
+<div class="flex flex-col items-end">
+<div class="font-price-display text-price-display text-tertiary">150kW</div>
+<span class="font-body-md text-body-md text-on-surface-variant mt-1">a 2,4 km</span>
+</div>
+</div>
+<!-- Connectors Status -->
+<div class="bg-surface-container-low rounded-xl p-md border border-surface-variant mb-md">
+<h3 class="font-label-bold text-label-bold text-on-surface-variant mb-sm uppercase tracking-wider">Conectores disponíveis</h3>
+<div class="space-y-sm">
+<!-- Connector 1 -->
+<div class="flex items-center justify-between p-sm bg-surface rounded-lg border border-outline-variant shadow-sm">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-tertiary-container/20 flex items-center justify-center text-tertiary">
+<span aria-hidden="true" data-icon="ev_charger" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">&#xe209;</span>
+</div>
+<div>
+<div class="font-body-lg text-body-lg font-bold text-on-surface">CCS2</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Até 150 kW</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="inline-flex items-center space-x-1 px-2 py-1 rounded-md bg-primary-container text-on-primary-container font-label-bold text-label-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+<span>Disponíveis (2)</span>
+</span>
+</div>
+</div>
+<!-- Connector 2 -->
+<div class="flex items-center justify-between p-sm bg-surface rounded-lg border border-outline-variant shadow-sm">
+<div class="flex items-center space-x-3">
+<div class="w-10 h-10 rounded-full bg-surface-variant flex items-center justify-center text-on-surface-variant">
+<span aria-hidden="true" data-icon="avg_time" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 0;">&#xf813;</span>
+</div>
+<div>
+<div class="font-body-lg text-body-lg font-bold text-on-surface">Type 2</div>
+<div class="font-body-md text-body-md text-on-surface-variant">Até 22 kW</div>
+</div>
+</div>
+<div class="flex flex-col items-end">
+<span class="inline-flex items-center space-x-1 px-2 py-1 rounded-md bg-error-container text-on-error-container font-label-bold text-label-bold">
+<span>Em uso (1)</span>
+</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex space-x-3 mt-md">
+<button type="button" class="flex-1 bg-tertiary text-on-tertiary h-12 rounded-xl font-label-bold text-label-bold flex items-center justify-center shadow-md active:scale-95 transition-transform">
+<span aria-hidden="true" data-icon="directions" class="material-symbols-outlined mr-2">&#xe52e;</span>Navegar</button>
+<button type="button" class="w-12 h-12 border-2 border-outline-variant rounded-xl flex items-center justify-center text-on-surface-variant active:scale-95 transition-transform hover:bg-surface-container" aria-label="Salvar">
+<span aria-hidden="true" data-icon="bookmark_add" class="material-symbols-outlined">&#xe598;</span>
+</button>
+</div>
+</div>
+</div>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl md:hidden">
+<button type="button" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform duration-300 ease-out active:scale-90">
+<span aria-hidden="true" data-icon="home" class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">&#xe88a;</span>
+<span class="font-label-bold text-label-bold">Início</span>
+</button>
+<button type="button" class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-3 py-1.5 transition-transform duration-300 ease-out active:scale-90">
+<span aria-hidden="true" data-icon="explore" class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 1;">&#xe87a;</span>
+<span class="font-label-bold text-label-bold">Explorar</span>
+</button>
+<button type="button" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform duration-300 ease-out active:scale-90">
+<span aria-hidden="true" data-icon="compare_arrows" class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">&#xe915;</span>
+<span class="font-label-bold text-label-bold">Comparar</span>
+</button>
+<button type="button" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform duration-300 ease-out active:scale-90">
+<span aria-hidden="true" data-icon="favorite" class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">&#xe87d;</span>
+<span class="font-label-bold text-label-bold">Favoritos</span>
+</button>
+<button type="button" class="flex flex-col items-center justify-center text-on-surface-variant hover:text-primary transition-transform duration-300 ease-out active:scale-90">
+<span aria-hidden="true" data-icon="person" class="material-symbols-outlined mb-1" style="font-variation-settings: 'FILL' 0;">&#xe7fd;</span>
+<span class="font-label-bold text-label-bold">Perfil</span>
+</button>
+</nav>
+<a href="/" class="pb-back-galeria" title="Voltar para a galeria de telas">
+<span aria-hidden="true">&#x2190;</span> Galeria
+</a>
+</body></html>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img"
+     aria-label="Ilustração de uma rota de carro com indicação de economia no abastecimento">
+  <title>Rota com economia no abastecimento</title>
+
+  <!-- Camadas tonais de fundo -->
+  <circle cx="240" cy="180" r="168" fill="#eef4ff"/>
+  <circle cx="240" cy="180" r="118" fill="#e5eeff"/>
+
+  <!-- Rota -->
+  <path d="M62 296C62 236 148 250 168 208s-4-92 62-100 122 22 150-8"
+        stroke="#bbcabf" stroke-width="26" fill="none" stroke-linecap="round"/>
+  <path d="M62 296C62 236 148 250 168 208s-4-92 62-100 122 22 150-8"
+        stroke="#006c49" stroke-width="8" fill="none" stroke-linecap="round"
+        stroke-dasharray="22 16"/>
+
+  <!-- Destino -->
+  <g transform="translate(360 62)">
+    <path d="M20 0C9 0 0 9 0 20c0 12.5 20 28 20 28s20-15.5 20-28C40 9 31 0 20 0Z" fill="#006c49"/>
+    <circle cx="20" cy="19" r="8" fill="#fff"/>
+  </g>
+
+  <!-- Carro -->
+  <g transform="translate(40 262)">
+    <path d="M8 34c-4.4 0-8-3.6-8-8v-9c0-3.4 2.1-6.4 5.3-7.5l6.9-2.4 6.6-9.6A9 9 0 0 1 26.2 0h21.4a9 9 0 0 1 7.4 3.9l6.9 10.1 5.2 1.9A8 8 0 0 1 72 23.4V26c0 4.4-3.6 8-8 8H8Z" fill="#0f5064"/>
+    <path d="M22.6 8.4 17.9 15h15.6V6.6h-7.6a4 4 0 0 0-3.3 1.8ZM39.5 6.6V15h15.9l-5-7.3a4 4 0 0 0-3.3-1.7h-7.6Z" fill="#d9e3f4"/>
+    <circle cx="20" cy="34" r="8.5" fill="#121c28"/><circle cx="20" cy="34" r="3.6" fill="#8fa0ad"/>
+    <circle cx="55" cy="34" r="8.5" fill="#121c28"/><circle cx="55" cy="34" r="3.6" fill="#8fa0ad"/>
+  </g>
+
+  <!-- Etiqueta: preço anterior (riscado) -->
+  <g transform="translate(196 60)">
+    <rect width="118" height="46" rx="12" fill="#fff" stroke="#d1dbec" stroke-width="2"/>
+    <text x="16" y="30" font-family="Manrope, Inter, sans-serif" font-size="20" font-weight="700" fill="#6c7a71">R$ 6,29</text>
+    <path d="M12 24h94" stroke="#ba1a1a" stroke-width="3" stroke-linecap="round"/>
+  </g>
+
+  <!-- Etiqueta: melhor preço -->
+  <g transform="translate(238 128)">
+    <rect width="150" height="60" rx="14" fill="#006c49"/>
+    <text x="18" y="27" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#6ffbbe" letter-spacing=".08em">MELHOR PREÇO</text>
+    <text x="18" y="49" font-family="Manrope, Inter, sans-serif" font-size="22" font-weight="800" fill="#fff">R$ 5,47</text>
+  </g>
+
+  <!-- Selo de economia -->
+  <g transform="translate(46 96)">
+    <rect width="150" height="66" rx="16" fill="#fff" stroke="#bbcabf" stroke-width="2"/>
+    <path d="M22 40l12-13 9 8 15-17" stroke="#10b981" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M52 18h11v11" stroke="#10b981" stroke-width="5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="22" y="58" font-family="Inter, sans-serif" font-size="13" font-weight="700" fill="#121c28">Economia real</text>
+  </g>
+
+  <!-- Bomba de combustível -->
+  <g transform="translate(300 232)">
+    <rect x="0" y="14" width="52" height="70" rx="8" fill="#0f5064"/>
+    <rect x="10" y="26" width="32" height="24" rx="5" fill="#6ffbbe"/>
+    <path d="M52 34h10a6 6 0 0 1 6 6v22a7 7 0 0 0 14 0V44" stroke="#0f5064" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <rect x="-6" y="84" width="64" height="10" rx="5" fill="#0f5064"/>
+  </g>
+</svg>

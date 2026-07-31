@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Posto Barato — Galeria de Telas</title>
+
+  <meta name="description" content="Galeria de protótipos de interface do Posto Barato: onboarding, autenticação, mapa de postos, comparador de preços e assinatura Premium." />
+  <!-- Protótipo, não o produto. Não deve ser indexado como se fosse o app. -->
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="theme-color" content="#006c49" />
+  <link rel="canonical" href="https://postobarato.netlify.app/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Posto Barato" />
+  <meta property="og:title" content="Posto Barato — Galeria de Telas" />
+  <meta property="og:description" content="Protótipos de interface do Posto Barato: onboarding, mapa de postos, comparador de preços e assinatura Premium." />
+  <meta property="og:url" content="https://postobarato.netlify.app/" />
+  <meta property="og:image" content="https://postobarato.netlify.app/assets/img/og-image.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:locale" content="pt_BR" />
+  <meta name="twitter:card" content="summary_large_image" />
+
+  <link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png" />
+  <link rel="preload" href="/assets/fonts/inter-latin-f11d729b.woff2" as="font" type="font/woff2" crossorigin />
+  <link rel="stylesheet" href="/assets/fonts/fonts.css" />
+
+  <style>
+    :root {
+      --primary: #006c49;
+      --on-primary: #ffffff;
+      --surface: #f8f9ff;
+      --surface-card: #ffffff;
+      --surface-container: #e5eeff;
+      --on-surface: #121c28;
+      --on-surface-variant: #3c4a42;
+      --outline: #bbcabf;
+      --shadow: rgba(18, 28, 40, 0.12);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --primary: #4edea3;
+        --on-primary: #002113;
+        --surface: #101820;
+        --surface-card: #18222c;
+        --surface-container: #27313e;
+        --on-surface: #eaf1ff;
+        --on-surface-variant: #bbcabf;
+        --outline: #3c4a42;
+        --shadow: rgba(0, 0, 0, 0.5);
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, sans-serif;
+      background: var(--surface);
+      color: var(--on-surface);
+      -webkit-text-size-adjust: 100%;
+    }
+    a:focus-visible {
+      outline: 3px solid var(--primary);
+      outline-offset: 3px;
+    }
+    .skip {
+      position: absolute; left: -9999px; top: 0;
+      background: var(--primary); color: var(--on-primary);
+      padding: 10px 16px; border-radius: 0 0 8px 0; z-index: 10;
+    }
+    .skip:focus { left: 0; }
+    header {
+      background: var(--primary);
+      color: var(--on-primary);
+      padding: 32px 24px;
+    }
+    .head-inner {
+      max-width: 1200px; margin: 0 auto;
+      display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    }
+    header img { width: 48px; height: 48px; flex: none; }
+    header h1 { margin: 0 0 4px; font-family: Manrope, Inter, sans-serif; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; }
+    header p { margin: 0; opacity: 0.92; font-size: 15px; }
+    .aviso {
+      max-width: 1152px; margin: 24px auto 0; padding: 12px 16px;
+      background: var(--surface-container); color: var(--on-surface-variant);
+      border-left: 4px solid var(--primary); border-radius: 8px;
+      font-size: 14px; line-height: 1.55;
+    }
+    main { max-width: 1200px; margin: 0 auto; padding: 24px; }
+    section { margin-bottom: 40px; }
+    h2 {
+      font-family: Manrope, Inter, sans-serif;
+      font-size: 20px; font-weight: 700;
+      border-bottom: 2px solid var(--outline);
+      padding-bottom: 8px; margin-bottom: 20px;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--outline);
+      border-radius: 16px;
+      overflow: hidden;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 8px 24px var(--shadow); }
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: none; }
+      .card:hover { transform: none; }
+    }
+    .card img {
+      width: 100%;
+      /* height:auto é obrigatório: os atributos width/height do <img> viram
+         presentation hints e, sem isto, a altura fixa anula o aspect-ratio. */
+      height: auto;
+      aspect-ratio: 9 / 16;
+      object-fit: cover; object-position: top;
+      background: var(--surface-container);
+      display: block;
+    }
+    .card .label { padding: 12px 14px; font-size: 14px; font-weight: 700; }
+    .card .num { color: var(--primary); font-weight: 800; margin-right: 6px; }
+    footer {
+      text-align: center; padding: 24px;
+      color: var(--on-surface-variant); font-size: 13px; line-height: 1.7;
+    }
+    footer a { color: var(--primary); }
+    footer code {
+      background: var(--surface-container); padding: 1px 5px;
+      border-radius: 4px; font-size: 12px;
+    }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header>
+    <div class="head-inner">
+      <img src="/assets/img/logo-mark.svg" alt="" width="48" height="48" />
+      <div>
+        <h1>Posto Barato</h1>
+        <p>Galeria de protótipos de interface — mobilidade e economia de combustível</p>
+      </div>
+    </div>
+  </header>
+
+  <p class="aviso">
+    <strong>Estes são protótipos de interface</strong>, não o aplicativo em funcionamento.
+    Os preços e postos exibidos são fictícios e servem apenas como referência visual.
+    A plataforma real (API pública de leitura, autenticação e Premium) está em desenvolvimento.
+  </p>
+
+  <main id="conteudo">
+    <section aria-labelledby="s-onboarding">
+      <h2 id="s-onboarding">Onboarding</h2>
+      <div class="grid">
+        <a class="card" href="/screens/onboarding/00-splash/"><img src="/screens/onboarding/00-splash/preview.webp" alt="Tela de splash do Posto Barato" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">00</span>Splash</div></a>
+        <a class="card" href="/screens/onboarding/01-precos/"><img src="/screens/onboarding/01-precos/preview.webp" alt="Tela de onboarding sobre preços" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Preços</div></a>
+        <a class="card" href="/screens/onboarding/02-economia-real/"><img src="/screens/onboarding/02-economia-real/preview.webp" alt="Tela de onboarding sobre economia real" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Economia real</div></a>
+        <a class="card" href="/screens/onboarding/03-combustivel-ev/"><img src="/screens/onboarding/03-combustivel-ev/preview.webp" alt="Tela de onboarding sobre combustível e veículos elétricos" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">03</span>Combustível &amp; EV</div></a>
+        <a class="card" href="/screens/onboarding/04-precos-refinado/"><img src="/screens/onboarding/04-precos-refinado/preview.webp" alt="Tela de onboarding sobre preços, versão refinada" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">04</span>Preços (refinado)</div></a>
+        <a class="card" href="/screens/onboarding/05-permissao-localizacao/"><img src="/screens/onboarding/05-permissao-localizacao/preview.webp" alt="Tela de permissão de localização" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">05</span>Permissão de localização</div></a>
+        <a class="card" href="/screens/onboarding/06-localizacao-refinado/"><img src="/screens/onboarding/06-localizacao-refinado/preview.webp" alt="Tela de localização, versão refinada" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">06</span>Localização (refinado)</div></a>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-auth">
+      <h2 id="s-auth">Autenticação</h2>
+      <div class="grid">
+        <a class="card" href="/screens/auth/01-login/"><img src="/screens/auth/01-login/preview.webp" alt="Tela de login" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Login</div></a>
+        <a class="card" href="/screens/auth/02-login-refinado/"><img src="/screens/auth/02-login-refinado/preview.webp" alt="Tela de login, versão refinada" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Login (refinado)</div></a>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-app">
+      <h2 id="s-app">App principal</h2>
+      <div class="grid">
+        <a class="card" href="/screens/app/01-home/"><img src="/screens/app/01-home/preview.webp" alt="Tela inicial do aplicativo" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Home</div></a>
+        <a class="card" href="/screens/app/02-mapa/"><img src="/screens/app/02-mapa/preview.webp" alt="Tela de mapa de postos" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Mapa</div></a>
+        <a class="card" href="/screens/app/03-detalhes-posto/"><img src="/screens/app/03-detalhes-posto/preview.webp" alt="Tela de detalhes do posto" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">03</span>Detalhes do posto</div></a>
+        <a class="card" href="/screens/app/04-comparador/"><img src="/screens/app/04-comparador/preview.webp" alt="Tela do comparador de preços" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">04</span>Comparador</div></a>
+        <a class="card" href="/screens/app/05-perfil-veiculos/"><img src="/screens/app/05-perfil-veiculos/preview.webp" alt="Tela de perfil e veículos" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">05</span>Perfil e veículos</div></a>
+        <a class="card" href="/screens/app/06-mapa-recarga/"><img src="/screens/app/06-mapa-recarga/preview.webp" alt="Tela de mapa de pontos de recarga elétrica" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">06</span>Mapa de recarga</div></a>
+      </div>
+    </section>
+
+    <section aria-labelledby="s-assinatura">
+      <h2 id="s-assinatura">Assinatura</h2>
+      <div class="grid">
+        <a class="card" href="/screens/assinatura/01-premium/"><img src="/screens/assinatura/01-premium/preview.webp" alt="Tela da assinatura Premium" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Premium</div></a>
+        <a class="card" href="/screens/assinatura/02-economia-total/"><img src="/screens/assinatura/02-economia-total/preview.webp" alt="Tela de economia total acumulada" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Economia total</div></a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    Protótipos gerados com Google Stitch.<br />
+    O design system fica em <code>design-system/DESIGN.md</code> no
+    <a href="https://github.com/fabriciopazadv/posto-barato">repositório do projeto</a>.
+  </footer>
+</body>
+</html>

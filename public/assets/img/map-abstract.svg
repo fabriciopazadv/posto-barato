@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" role="img" aria-label="Ilustração abstrata de mapa com rota">
+  <title>Ilustração abstrata de mapa com rota</title>
+  <rect width="800" height="800" fill="#eef4ff"/>
+
+  <!-- Quadras -->
+  <g fill="#dfe9fa">
+    <rect x="40" y="40" width="180" height="150" rx="10"/>
+    <rect x="250" y="40" width="230" height="150" rx="10"/>
+    <rect x="510" y="40" width="250" height="95" rx="10"/>
+    <rect x="40" y="220" width="180" height="200" rx="10"/>
+    <rect x="250" y="220" width="230" height="200" rx="10"/>
+    <rect x="590" y="220" width="170" height="130" rx="10"/>
+    <rect x="40" y="450" width="120" height="180" rx="10"/>
+    <rect x="190" y="450" width="290" height="180" rx="10"/>
+    <rect x="590" y="380" width="170" height="250" rx="10"/>
+    <rect x="40" y="660" width="290" height="100" rx="10"/>
+    <rect x="360" y="660" width="180" height="100" rx="10"/>
+    <rect x="570" y="660" width="190" height="100" rx="10"/>
+  </g>
+
+  <!-- Áreas verdes -->
+  <g fill="#cfead9">
+    <rect x="510" y="165" width="250" height="25" rx="12"/>
+    <path d="M510 380h60v250h-60z" opacity=".85"/>
+    <circle cx="150" cy="330" r="46" opacity=".9"/>
+  </g>
+
+  <!-- Curso d'água -->
+  <path d="M0 560c120 0 150-70 260-70s160 90 300 70 240-40 240-40" stroke="#cfe4f2" stroke-width="34"
+        fill="none" stroke-linecap="round" opacity=".85"/>
+
+  <!-- Vias -->
+  <g stroke="#ffffff" stroke-width="22" fill="none" stroke-linecap="round">
+    <path d="M232 0v800M492 0v800M0 205h800M0 435h800M0 645h800"/>
+  </g>
+  <g stroke="#ffffff" stroke-width="12" fill="none" stroke-linecap="round" opacity=".9">
+    <path d="M575 0v800M0 130h800M0 370h800"/>
+  </g>
+
+  <!-- Rota -->
+  <path d="M120 735 120 560 355 560 355 300 640 300 640 120" stroke="#006c49" stroke-width="16"
+        fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M120 735 120 560 355 560 355 300 640 300 640 120" stroke="#4edea3" stroke-width="6"
+        fill="none" stroke-linecap="round" stroke-linejoin="round" opacity=".7"/>
+
+  <!-- Origem -->
+  <circle cx="120" cy="735" r="17" fill="#fff"/>
+  <circle cx="120" cy="735" r="10" fill="#00687a"/>
+
+  <!-- Destino -->
+  <g transform="translate(616 62)">
+    <path d="M24 0C10.7 0 0 10.7 0 24c0 15 24 34 24 34s24-19 24-34C48 10.7 37.3 0 24 0Z" fill="#006c49"/>
+    <circle cx="24" cy="23" r="10" fill="#fff"/>
+  </g>
+
+  <!-- Postos ao longo do trajeto -->
+  <g>
+    <circle cx="355" cy="435" r="13" fill="#fff" stroke="#10b981" stroke-width="5"/>
+    <circle cx="232" cy="560" r="13" fill="#fff" stroke="#10b981" stroke-width="5"/>
+    <circle cx="492" cy="300" r="13" fill="#fff" stroke="#00b2d0" stroke-width="5"/>
+  </g>
+</svg>

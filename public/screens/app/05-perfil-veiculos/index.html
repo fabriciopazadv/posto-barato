@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+
+<html class="light" lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Perfil e veículos — Posto Barato</title>
+<style>
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 0px); }
+    </style>
+<link rel="preload" href="/assets/fonts/inter-latin-f11d729b.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/app.css"/>
+<link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png"/>
+<meta name="theme-color" content="#006c49"/>
+<meta name="robots" content="noindex, nofollow"/>
+<style>
+.pb-back-galeria{position:fixed;left:0;top:50%;transform:translateY(-50%);
+z-index:2147483647;display:inline-flex;align-items:center;gap:.3rem;
+padding:.5rem .6rem .5rem .45rem;border-radius:0 9999px 9999px 0;
+background:rgba(18,28,40,.8);color:#fff;font:600 11px/1 Inter,system-ui,sans-serif;
+text-decoration:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+opacity:.45;transition:opacity .15s ease}
+.pb-back-galeria:hover,.pb-back-galeria:focus-visible{opacity:1}
+.pb-back-galeria:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media print{.pb-back-galeria{display:none}}
+</style>
+<meta name="description" content="Perfil e veículos — protótipo de interface do aplicativo Posto Barato."/>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pt-14 pb-safe flex flex-col md:flex-row">
+<!-- TopAppBar (Mobile & Desktop) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-14 bg-surface dark:bg-on-background border-b border-outline-variant shadow-sm pt-safe">
+<button type="button" class="text-primary dark:text-primary-fixed hover:bg-surface-container dark:hover:bg-inverse-surface p-2 rounded-full transition-all duration-200 active:scale-95 flex items-center justify-center" aria-label="Menu">
+<span aria-hidden="true" data-icon="menu" class="material-symbols-outlined" data-icon="menu">&#xe5d2;</span>
+</button>
+<div class="font-headline-md text-headline-md font-extrabold text-primary dark:text-primary-fixed text-center flex-1">
+            Posto Barato
+        </div>
+<button type="button" class="text-on-surface-variant dark:text-surface-variant hover:bg-surface-container dark:hover:bg-inverse-surface p-2 rounded-full transition-all duration-200 active:scale-95 flex items-center justify-center" aria-label="Conta">
+<span aria-hidden="true" data-icon="account_circle" class="material-symbols-outlined" data-icon="account_circle">&#xe853;</span>
+</button>
+</header>
+<!-- SideNav (Desktop Only - Implicit based on Drawer/Nav requirements) -->
+<nav class="hidden md:flex fixed inset-y-0 left-0 z-[60] flex-col p-md w-80 rounded-r-xl bg-surface dark:bg-on-background border-r border-outline-variant shadow-xl top-14">
+<!-- Profile Header -->
+<div class="flex items-center gap-md mb-xl p-2">
+<img alt="Foto de perfil" loading="lazy" decoding="async" class="w-16 h-16 rounded-full object-cover border-2 border-primary" src="/assets/img/avatar.svg"/>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary dark:text-primary-fixed">Membro Premium</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">120 pontos acumulados</p>
+<span class="inline-block mt-1 px-2 py-0.5 bg-primary-container text-on-primary-container text-xs rounded-full font-label-bold">Status Verde</span>
+</div>
+</div>
+<div class="flex-1 space-y-2">
+<a class="flex items-center gap-md px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full transition-colors duration-200 font-body-lg text-body-lg" href="#">
+<span aria-hidden="true" data-icon="workspace_premium" class="material-symbols-outlined" data-icon="workspace_premium">&#xe7af;</span>Programa de Pontos</a>
+<a class="flex items-center gap-md px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full transition-colors duration-200 font-body-lg text-body-lg" href="/screens/app/02-mapa/">
+<span aria-hidden="true" data-icon="local_gas_station" class="material-symbols-outlined" data-icon="local_gas_station">&#xe546;</span>Serviços do Posto</a>
+<a class="flex items-center gap-md px-4 py-3 bg-secondary-container dark:bg-secondary text-on-secondary-container dark:text-on-secondary rounded-full transition-colors duration-200 font-body-lg text-body-lg" href="#">
+<span aria-hidden="true" data-icon="settings" class="material-symbols-outlined" data-icon="settings">&#xe8b8;</span>Configurações</a>
+<a class="flex items-center gap-md px-4 py-3 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high dark:hover:bg-inverse-surface rounded-full transition-colors duration-200 font-body-lg text-body-lg" href="#">
+<span aria-hidden="true" data-icon="help_outline" class="material-symbols-outlined" data-icon="help_outline">&#xe887;</span>Ajuda</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 w-full max-w-3xl mx-auto px-container-margin py-lg md:ml-80 md:pl-lg mt-4 mb-20 md:mb-0">
+<!-- Profile Header (Mobile visible, Desktop hidden as it's in nav) -->
+<section class="md:hidden flex items-center gap-md mb-xl p-4 bg-surface rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant/30">
+<img alt="Foto de perfil" loading="lazy" decoding="async" class="w-16 h-16 rounded-full object-cover border-2 border-primary" src="/assets/img/avatar.svg"/>
+<div>
+<h2 class="font-headline-md text-headline-md text-on-background">Membro Premium</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">120 pontos acumulados</p>
+<span class="inline-block mt-1 px-2 py-0.5 bg-primary-container text-on-primary-container text-xs rounded-full font-label-bold">Status Verde</span>
+</div>
+</section>
+<!-- Meus Veículos Section -->
+<section class="mb-xl">
+<div class="flex justify-between items-end mb-sm">
+<h3 class="font-headline-md text-headline-md text-on-background">Meus Veículos</h3>
+<button type="button" class="text-primary font-label-bold text-label-bold flex items-center gap-1 hover:text-primary-container">
+<span aria-hidden="true" data-icon="add" class="material-symbols-outlined text-sm" data-icon="add">&#xe145;</span> Adicionar
+                </button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-sm">
+<!-- Vehicle Card 1 -->
+<div class="bg-surface rounded-xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex items-start gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-primary shrink-0">
+<span aria-hidden="true" data-icon="directions_car" class="material-symbols-outlined" data-icon="directions_car">&#xe531;</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-label-bold text-label-bold text-on-background text-base">Meu SUV</h4>
+<p class="text-on-surface-variant text-sm">Gasolina • Placa ABC-1234</p>
+</div>
+<button type="button" class="text-on-surface-variant hover:text-primary" aria-label="Mais opções"><span aria-hidden="true" data-icon="more_vert" class="material-symbols-outlined text-xl" data-icon="more_vert">&#xe5d4;</span></button>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2 text-sm text-on-surface-variant bg-surface-container-low p-2 rounded-lg">
+<div><span class="block text-xs text-secondary">Consumo</span>10.5 km/l</div>
+<div><span class="block text-xs text-secondary">Tanque</span>55 L</div>
+</div>
+</div>
+</div>
+<!-- Vehicle Card 2 -->
+<div class="bg-surface rounded-xl p-4 shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant/30 flex items-start gap-4 relative overflow-hidden">
+<div class="absolute -right-4 -top-4 w-16 h-16 bg-tertiary-container/10 rounded-full blur-xl"></div>
+<div class="w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-tertiary-container shrink-0">
+<span aria-hidden="true" data-icon="electric_car" class="material-symbols-outlined" data-icon="electric_car">&#xeb1c;</span>
+</div>
+<div class="flex-1 relative z-10">
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-label-bold text-label-bold text-on-background text-base">Eco Car</h4>
+<p class="text-on-surface-variant text-sm">Elétrico • CCS2</p>
+</div>
+<button type="button" class="text-on-surface-variant hover:text-primary" aria-label="Mais opções"><span aria-hidden="true" data-icon="more_vert" class="material-symbols-outlined text-xl" data-icon="more_vert">&#xe5d4;</span></button>
+</div>
+<div class="mt-3 grid grid-cols-2 gap-2 text-sm text-on-surface-variant bg-surface-container-low p-2 rounded-lg">
+<div><span class="block text-xs text-secondary">Consumo</span>15 kWh/100</div>
+<div><span class="block text-xs text-secondary">Bateria</span>60 kWh</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Navigation Links List -->
+<section class="bg-surface rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.05)] border border-outline-variant/30 overflow-hidden">
+<a class="flex items-center justify-between p-4 border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors" href="#">
+<div class="flex items-center gap-3 text-on-background">
+<span aria-hidden="true" data-icon="notifications_active" class="material-symbols-outlined text-primary" data-icon="notifications_active">&#xe7f7;</span>
+<span class="font-body-lg text-body-lg">Alertas de Preço</span>
+</div>
+<span aria-hidden="true" data-icon="chevron_right" class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">&#xe409;</span>
+</a>
+<a class="flex items-center justify-between p-4 border-b border-outline-variant/30 hover:bg-surface-container-low transition-colors" href="#">
+<div class="flex items-center gap-3 text-on-background">
+<span aria-hidden="true" data-icon="history" class="material-symbols-outlined text-primary" data-icon="history">&#xe28e;</span>
+<span class="font-body-lg text-body-lg">Histórico de Contribuições</span>
+</div>
+<span aria-hidden="true" data-icon="chevron_right" class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">&#xe409;</span>
+</a>
+<a class="flex items-center justify-between p-4 hover:bg-surface-container-low transition-colors" href="#">
+<div class="flex items-center gap-3 text-on-background">
+<span aria-hidden="true" data-icon="manage_accounts" class="material-symbols-outlined text-primary" data-icon="manage_accounts">&#xf02e;</span>
+<span class="font-body-lg text-body-lg">Configurações da Conta</span>
+</div>
+<span aria-hidden="true" data-icon="chevron_right" class="material-symbols-outlined text-on-surface-variant" data-icon="chevron_right">&#xe409;</span>
+</a>
+</section>
+<div class="mt-lg flex justify-center">
+<button type="button" class="h-12 px-6 rounded-xl border border-outline text-secondary hover:bg-surface-container-low font-label-bold text-label-bold transition-colors w-full md:w-auto">
+                Sair da Conta
+            </button>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface dark:bg-on-background shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-transform duration-300 ease-out active:scale-90 font-label-bold text-label-bold" href="/screens/app/01-home/">
+<span aria-hidden="true" data-icon="home" class="material-symbols-outlined mb-1" data-icon="home">&#xe88a;</span>Início</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-transform duration-300 ease-out active:scale-90 font-label-bold text-label-bold" href="/screens/app/02-mapa/">
+<span aria-hidden="true" data-icon="explore" class="material-symbols-outlined mb-1" data-icon="explore">&#xe87a;</span>Explorar</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-transform duration-300 ease-out active:scale-90 font-label-bold text-label-bold" href="/screens/app/04-comparador/">
+<span aria-hidden="true" data-icon="compare_arrows" class="material-symbols-outlined mb-1" data-icon="compare_arrows">&#xe915;</span>Comparar</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-transform duration-300 ease-out active:scale-90 font-label-bold text-label-bold" href="#">
+<span aria-hidden="true" data-icon="favorite" class="material-symbols-outlined mb-1" data-icon="favorite">&#xe87d;</span>Favoritos</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary-fixed text-on-primary-container dark:text-on-primary-fixed rounded-2xl px-3 py-1.5 transition-transform duration-300 ease-out active:scale-90 font-label-bold text-label-bold" aria-current="page">
+<span aria-hidden="true" data-icon="person" class="material-symbols-outlined mb-1" data-icon="person" data-weight="fill">&#xe7fd;</span>Perfil</a>
+</nav>
+<a href="/" class="pb-back-galeria" title="Voltar para a galeria de telas">
+<span aria-hidden="true">&#x2190;</span> Galeria
+</a>
+</body></html>

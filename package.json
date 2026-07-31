@@ -22,10 +22,16 @@
     "db:seed": "pnpm --filter @posto-barato/database seed",
     "db:reset": "pnpm --filter @posto-barato/database reset",
     "docker:up": "docker compose up -d postgres redis",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "css:build": "tailwindcss -c tools/tailwind/tailwind.config.cjs -i tools/tailwind/input.css -o public/assets/css/app.css --minify",
+    "css:watch": "tailwindcss -c tools/tailwind/tailwind.config.cjs -i tools/tailwind/input.css -o public/assets/css/app.css --watch",
+    "site:serve": "npx --yes serve public -l 4173"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
+    "@tailwindcss/container-queries": "^0.1.1",
+    "@tailwindcss/forms": "^0.5.10",
+    "tailwindcss": "^3.4.17",
     "eslint": "^9.17.0",
     "globals": "^15.14.0",
     "prettier": "^3.4.2",

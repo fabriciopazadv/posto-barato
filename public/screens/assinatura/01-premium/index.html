@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Premium — Posto Barato</title>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<link rel="preload" href="/assets/fonts/inter-latin-f11d729b.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/app.css"/>
+<link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png"/>
+<meta name="theme-color" content="#006c49"/>
+<meta name="robots" content="noindex, nofollow"/>
+<style>
+.pb-back-galeria{position:fixed;left:0;top:50%;transform:translateY(-50%);
+z-index:2147483647;display:inline-flex;align-items:center;gap:.3rem;
+padding:.5rem .6rem .5rem .45rem;border-radius:0 9999px 9999px 0;
+background:rgba(18,28,40,.8);color:#fff;font:600 11px/1 Inter,system-ui,sans-serif;
+text-decoration:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+opacity:.45;transition:opacity .15s ease}
+.pb-back-galeria:hover,.pb-back-galeria:focus-visible{opacity:1}
+.pb-back-galeria:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media print{.pb-back-galeria{display:none}}
+</style>
+<meta name="description" content="Premium — protótipo de interface do aplicativo Posto Barato."/>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen flex flex-col antialiased">
+<!-- Top App Bar -->
+<header class="w-full top-0 sticky bg-surface dark:bg-on-background text-primary dark:text-primary-fixed shadow-sm z-50">
+<div class="flex items-center justify-between px-container-margin h-14 w-full">
+<button type="button" class="flex items-center justify-center p-sm hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant rounded-full transition-colors duration-200 ease-in-out" aria-label="Menu">
+<span aria-hidden="true" data-icon="menu" class="material-symbols-outlined">&#xe5d2;</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary dark:text-primary-fixed">Posto Barato</h1>
+<button type="button" class="flex items-center justify-center p-sm hover:bg-surface-variant dark:hover:bg-on-secondary-fixed-variant rounded-full transition-colors duration-200 ease-in-out" aria-label="Conta">
+<span aria-hidden="true" data-icon="account_circle" class="material-symbols-outlined">&#xe853;</span>
+</button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-grow flex flex-col items-center justify-center p-container-margin pb-24 md:pb-container-margin">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-xl shadow-lg border border-surface-variant p-lg flex flex-col gap-lg relative overflow-hidden">
+<!-- Decorative background blob -->
+<div class="absolute top-0 right-0 -mr-16 -mt-16 w-48 h-48 bg-primary-container opacity-20 rounded-full blur-2xl pointer-events-none"></div>
+<!-- Header Section -->
+<div class="text-center z-10 space-y-md">
+<div class="inline-flex items-center justify-center bg-primary-container text-on-primary-container font-label-bold text-label-bold px-md py-xs rounded-full mb-sm shadow-sm">
+<span aria-hidden="true" data-icon="star" class="material-symbols-outlined text-[16px] mr-xs">&#xe838;</span>
+                    10 DIAS GRÁTIS
+                </div>
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">
+                    Economize ainda mais com o Plano Premium
+                </h2>
+<p class="font-body-lg text-body-lg text-on-surface-variant">
+                    Apenas <span class="font-price-display text-price-display text-primary">R$ 3,99</span>/mês após o período de teste.
+                </p>
+</div>
+<!-- Benefits List -->
+<div class="bg-surface rounded-lg p-md border border-surface-variant space-y-sm z-10">
+<ul class="space-y-sm font-body-md text-body-md text-on-surface-variant">
+<li class="flex items-start gap-sm">
+<span aria-hidden="true" data-icon="check_circle" class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs">&#xe86c;</span>
+<span>Alertas de preço em tempo real.</span>
+</li>
+<li class="flex items-start gap-sm">
+<span aria-hidden="true" data-icon="check_circle" class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs">&#xe86c;</span>
+<span>Histórico completo de preços.</span>
+</li>
+<li class="flex items-start gap-sm">
+<span aria-hidden="true" data-icon="check_circle" class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs">&#xe86c;</span>
+<span>Comparação avançada de economia real.</span>
+</li>
+<li class="flex items-start gap-sm">
+<span aria-hidden="true" data-icon="check_circle" class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs">&#xe86c;</span>
+<span>Sem anúncios.</span>
+</li>
+<li class="flex items-start gap-sm">
+<span aria-hidden="true" data-icon="check_circle" class="material-symbols-outlined text-primary text-[20px] shrink-0 mt-xs">&#xe86c;</span>
+<span>Suporte prioritário.</span>
+</li>
+</ul>
+</div>
+<!-- Actions -->
+<div class="flex flex-col gap-md z-10 pt-md">
+<button type="button" class="w-full h-12 bg-primary-container hover:bg-primary text-on-primary-container hover:text-on-primary font-label-bold text-label-bold rounded-xl shadow-md transition-all duration-200 active:scale-95 flex items-center justify-center">
+                    Assinar agora - 10 dias grátis
+                </button>
+<button type="button" class="w-full h-12 border-2 border-on-tertiary-container text-on-tertiary-container font-label-bold text-label-bold rounded-xl hover:bg-surface-variant transition-all duration-200 active:scale-95 flex items-center justify-center">
+                    Continuar com plano limitado
+                </button>
+</div>
+<!-- Trust Indicators -->
+<div class="text-center z-10 flex flex-col items-center gap-xs pt-sm opacity-80">
+<p class="font-body-md text-body-md text-on-surface-variant text-xs">
+                    Cancele quando quiser.
+                </p>
+<div class="flex items-center justify-center text-on-surface-variant text-xs gap-xs">
+<span aria-hidden="true" data-icon="lock" class="material-symbols-outlined text-[14px]">&#xe88d;</span>
+                    Pagamento seguro via gateway integrado.
+                </div>
+</div>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-surface dark:bg-on-background border-t border-outline-variant dark:border-outline shadow-lg flex justify-around items-center h-16 px-gutter">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest active:scale-95 transition-transform duration-150 p-sm rounded-xl" href="/screens/app/02-mapa/">
+<span aria-hidden="true" data-icon="local_gas_station" class="material-symbols-outlined">&#xe546;</span>
+<span class="font-label-bold text-label-bold mt-1">Postos</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest active:scale-95 transition-transform duration-150 p-sm rounded-xl" href="/screens/app/04-comparador/">
+<span aria-hidden="true" data-icon="sell" class="material-symbols-outlined">&#xe54e;</span>
+<span class="font-label-bold text-label-bold mt-1">Preços</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary dark:text-primary-fixed bg-primary-container/20 rounded-xl px-3 py-1 active:scale-95 transition-transform duration-150" aria-current="page">
+<span aria-hidden="true" data-icon="card_membership" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">&#xe8f7;</span>
+<span class="font-label-bold text-label-bold mt-1">Assinatura</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-secondary-fixed-dim hover:bg-surface-container-high dark:hover:bg-surface-container-highest active:scale-95 transition-transform duration-150 p-sm rounded-xl" href="/screens/app/05-perfil-veiculos/">
+<span aria-hidden="true" data-icon="person" class="material-symbols-outlined">&#xe7fd;</span>
+<span class="font-label-bold text-label-bold mt-1">Perfil</span>
+</a>
+</nav>
+<a href="/" class="pb-back-galeria" title="Voltar para a galeria de telas">
+<span aria-hidden="true">&#x2190;</span> Galeria
+</a>
+</body></html>
