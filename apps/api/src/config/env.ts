@@ -49,12 +49,17 @@ const schema = z.object({
   // URL pública da API/app, usada nos callbacks de checkout (seção 16).
   APP_URL: z.string().url().default('http://localhost:3333'),
 
-  // Premium vitalício — pagamento único via Asaas (chargeType DETACHED).
-  PREMIUM_PRICE_CENTS: z.coerce.number().int().positive().default(999),
-  PREMIUM_LABEL: z.string().default('Posto Barato Premium (vitalício)'),
+  // Assinatura do Premium via Asaas (API de Assinaturas, recorrente).
+  // Preços em reais, sobrescritíveis sem deploy. Os padrões vivem em
+  // @posto-barato/domain (PRECOS_PADRAO) — aqui só a sobrescrita opcional.
+  ASAAS_VALUE_MENSAL: z.coerce.number().positive().optional(),
+  ASAAS_VALUE_SEMESTRAL: z.coerce.number().positive().optional(),
+  ASAAS_VALUE_ANUAL: z.coerce.number().positive().optional(),
   ASAAS_API_KEY: z.string().optional(),
   ASAAS_ENV: z.enum(['sandbox', 'production']).default('sandbox'),
   ASAAS_WEBHOOK_TOKEN: z.string().optional(),
+  // Segredo exigido por POST /billing/cron (virada do teste + reconciliação).
+  CRON_SECRET: z.string().optional(),
 });
 
 export type Env = z.infer<typeof schema>;

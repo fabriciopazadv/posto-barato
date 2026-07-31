@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto';
 import type { FastifyError, FastifyInstance } from 'fastify';
 import { ZodError } from 'zod';
-import { PremiumRequiredError } from '../domain/premium-policy.js';
+import { AssinaturaInativaError } from '@posto-barato/domain';
 import { UnauthorizedError } from '../services/auth.service.js';
 
 /** Erro de API com código estável e status HTTP. */
@@ -42,9 +42,11 @@ export function registerErrorHandling(app: FastifyInstance): void {
       return;
     }
 
-    if (error instanceof PremiumRequiredError) {
+    // 402 Payment Required: a conta existe e está autenticada, mas a assinatura
+    // não está em dia. O cliente usa este código para levar à tela de planos.
+    if (error instanceof AssinaturaInativaError) {
       reply.status(402).send({
-        error: { code: 'PREMIUM_REQUIRED', message: error.message, requestId },
+        error: { code: 'SUBSCRIPTION_REQUIRED', message: error.message, requestId },
       });
       return;
     }

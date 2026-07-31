@@ -1,4 +1,5 @@
 import { prisma } from '@posto-barato/database';
+import { createTrialSubscription, getSubscription } from './billing.service.js';
 import type { AuthUser, TokenPair } from '@posto-barato/shared-types';
 import { hashPassword, verifyPassword } from '../domain/password.js';
 import {
@@ -32,18 +33,21 @@ interface UserRecord {
   id: string;
   email: string;
   name: string | null;
-  premiumSince: Date | null;
   createdAt: Date;
 }
 
-export function toAuthUser(user: UserRecord): AuthUser {
+/**
+ * A conta vai sempre acompanhada do estado da assinatura: o cliente precisa
+ * dos dois juntos para decidir o que mostrar, e buscá-los em chamadas
+ * separadas abriria janela para eles divergirem.
+ */
+export async function toAuthUser(user: UserRecord): Promise<AuthUser> {
   return {
     id: user.id,
     email: user.email,
     name: user.name,
-    isPremium: user.premiumSince !== null,
-    premiumSince: user.premiumSince ? user.premiumSince.toISOString() : null,
     createdAt: user.createdAt.toISOString(),
+    subscription: await getSubscription(user.id),
   };
 }
 
@@ -55,10 +59,16 @@ export async function registerUser(
   const existing = await prisma.user.findUnique({ where: { email } });
   if (existing) throw new EmailInUseError();
 
-  return prisma.user.create({
+  const user = await prisma.user.create({
     data: { email, passwordHash: await hashPassword(password), name },
-    select: { id: true, email: true, name: true, premiumSince: true, createdAt: true },
+    select: { id: true, email: true, name: true, createdAt: true },
   });
+
+  // Único lugar onde o teste grátis é concedido. Os marcos gravados aqui nunca
+  // são reescritos, e é isso que impede alguém de ganhar dias grátis de novo.
+  await createTrialSubscription(user.id, user.createdAt);
+
+  return user;
 }
 
 export async function authenticateUser(email: string, password: string): Promise<UserRecord> {
@@ -72,7 +82,7 @@ export async function authenticateUser(email: string, password: string): Promise
 export async function getUserById(userId: string): Promise<UserRecord> {
   const user = await prisma.user.findUnique({
     where: { id: userId },
-    select: { id: true, email: true, name: true, premiumSince: true, createdAt: true },
+    select: { id: true, email: true, name: true, createdAt: true },
   });
   if (!user) throw new UnauthorizedError();
   return user;

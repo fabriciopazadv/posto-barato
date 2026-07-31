@@ -185,16 +185,20 @@ export const STATION_SORTS = [
 export type StationSort = (typeof STATION_SORTS)[number];
 
 // ---------------------------------------------------------------------------
-// Autenticação e assinatura vitalícia (Premium, pagamento único)
+// Autenticação e assinatura do Premium (recorrente, com teste grátis)
 // ---------------------------------------------------------------------------
 
 export interface AuthUser {
   id: string;
   email: string;
   name: string | null;
-  isPremium: boolean;
-  premiumSince: string | null;
   createdAt: string;
+  /**
+   * Estado da assinatura no momento da resposta. Vem junto com a conta para o
+   * cliente não precisar de uma segunda chamada só para saber se pode usar os
+   * recursos pagos — e para os dois nunca ficarem fora de sincronia.
+   */
+  subscription: SubscriptionSummary | null;
 }
 
 /** 'web' (padrão): refreshToken vai só em cookie HttpOnly, nunca no JSON (evita
@@ -235,25 +239,87 @@ export interface AuthResponse {
   tokens: TokenPair;
 }
 
-export type PurchaseStatus = 'PENDING' | 'PAID' | 'FAILED' | 'REFUNDED';
+/** Ciclos de cobrança oferecidos. */
+export type SubscriptionPlan = 'MENSAL' | 'SEMESTRAL' | 'ANUAL';
 
-export interface PremiumOffer {
-  amountCents: number;
-  currency: string;
-  label: string;
+/**
+ * Estado da assinatura.
+ *
+ * - `TRIAL` — dias grátis correndo; nenhuma cobrança existe no provedor.
+ * - `TRIAL_EXPIRADO` — dias grátis usados sem plano escolhido; sem cobrança.
+ * - `AGUARDANDO_PAGAMENTO` — 1ª cobrança emitida, ainda não compensada.
+ * - `ATIVA` — em dia.
+ * - `INADIMPLENTE` — cobrança vencida; há carência antes de cortar o acesso.
+ * - `CANCELADA` — encerrada; o período já pago ainda vale (`acessoAte`).
+ */
+export type SubscriptionStatus =
+  | 'TRIAL'
+  | 'TRIAL_EXPIRADO'
+  | 'AGUARDANDO_PAGAMENTO'
+  | 'ATIVA'
+  | 'CANCELADA'
+  | 'INADIMPLENTE';
+
+export interface PlanDescription {
+  id: SubscriptionPlan;
+  titulo: string;
+  valorCentavos: number;
+  cicloMeses: number;
+  /** Equivalente por mês, para comparação honesta entre os ciclos. */
+  valorMensalCentavos: number;
+  /** Economia percentual frente ao mensal; 0 no próprio mensal. */
+  economiaPercent: number;
 }
 
-export interface CheckoutResponse {
-  checkoutUrl: string;
-  purchaseId: string;
-  simulated: boolean;
+/** Resposta de `GET /billing/planos` — a UI nunca anuncia preço próprio. */
+export interface PlansResponse {
+  planos: PlanDescription[];
+  trialDias: number;
+  carenciaHoras: number;
 }
 
-export interface PurchaseSummary {
-  id: string;
-  status: PurchaseStatus;
-  amountCents: number;
-  currency: string;
-  paidAt: string | null;
-  createdAt: string;
+export interface SubscriptionSummary {
+  status: SubscriptionStatus;
+  /** Ciclo contratado; nulo enquanto ninguém escolheu. */
+  plano: SubscriptionPlan | null;
+  /** Ciclo escolhido durante o teste, cobrado só na virada. */
+  planoEscolhido: SubscriptionPlan | null;
+  valorCentavos: number | null;
+  trialEndsAt: string;
+  proximaCobrancaEm: string | null;
+  ultimoPagamentoEm: string | null;
+  canceladaEm: string | null;
+  acessoAte: string | null;
+  /** Resultado do gate agora: se os recursos pagos estão liberados. */
+  acessoLiberado: boolean;
+  /** Dias restantes de teste; 0 fora do teste. */
+  diasRestantesTrial: number;
+}
+
+export interface SubscribeRequest {
+  plano: SubscriptionPlan;
+  /** CPF/CNPJ do pagador. Exigido só quando a cobrança é criada na hora. */
+  cpfCnpj?: string;
+}
+
+/**
+ * Assinar tem dois desfechos, decididos pelos dias gratuitos:
+ * `plano_registrado` (teste vigente, nada cobrado ainda) ou `cobranca_criada`.
+ */
+export type SubscribeEffect = 'plano_registrado' | 'cobranca_criada';
+
+export interface SubscribeResponse {
+  efeito: SubscribeEffect;
+  /** Quando a cobrança nasce (fim do teste) ou nasceu (agora). */
+  cobrancaEm: string;
+  /** true quando rodou sem provedor configurado, fora de produção. */
+  simulado: boolean;
+  subscription: SubscriptionSummary;
+}
+
+export interface CancelSubscriptionResponse {
+  ok: boolean;
+  /** Até quando o acesso ainda vale; nulo quando não há período a preservar. */
+  acessoAte: string | null;
+  subscription: SubscriptionSummary;
 }

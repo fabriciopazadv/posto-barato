@@ -24,8 +24,10 @@ coletor, o Nota MT, evidências ou o banco diretamente.
   preços (latest/summary/compare) e histórico. Projeções públicas, classificação
   de frescor, rate limiting e paginação.
 - **Autenticação** (Argon2 + JWT + refresh token rotativo, cookie HttpOnly no
-  web / corpo no mobile) e **Premium vitalício** (compra única de R$ 9,99 via
-  Asaas, cobrança avulsa/Pix+cartão, webhook idempotente). Ver
+  web / corpo no mobile) e **assinatura do Premium**: 7 dias grátis seguidos de
+  ciclo mensal (R$ 9,99), semestral (R$ 49,99) ou anual (R$ 89,99) via Asaas,
+  com webhook idempotente, carência de 48h e reconciliação diária. Espelha o
+  sistema de cobrança do mei-facil. Ver
   [`docs/architecture/auth-billing.md`](docs/architecture/auth-billing.md).
 - **Docker Compose** (PostgreSQL+PostGIS, Redis, API), `.env.example` e docs.
 
@@ -96,7 +98,7 @@ apps/
   web/                  PWA em Next.js — o aplicativo em si
 packages/
   database/             Prisma + PostGIS + camada pública derivada + seed
-  domain/               Regras puras: frescor, geo e cálculo de economia
+  domain/               Regras puras: frescor, geo, economia e ciclo de cobrança
   design-system/        Tokens do DESIGN.md como preset Tailwind + tema CSS
   shared-types/         Contratos TypeScript compartilhados (API ↔ clientes)
 docker/                 Dockerfile da API
@@ -183,7 +185,7 @@ tempo real. Detalhes em [`docs/security/data-boundaries.md`](docs/security/data-
 
 Ordem de implementação da seção 39 da especificação. Incremento 1 cobre os
 passos 1–10 (fundação + API de leitura + geo + Swagger); incremento 2 cobre
-autenticação e o Premium vitalício (pagamento único); incremento 3 entrega o
+autenticação e a assinatura do Premium; incremento 3 entrega o
 cliente web (PWA), o design system em código e o domínio compartilhado.
 Próximos: publicação da API, app mobile (Expo), alertas de preço,
 contribuições da comunidade, notificações e observabilidade.

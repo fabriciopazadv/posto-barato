@@ -26,3 +26,36 @@ export {
   type CompareCandidate,
   type CompareParams,
 } from './savings.js';
+
+export {
+  CARENCIA_HORAS,
+  CARENCIA_MS,
+  CICLO_ASAAS,
+  CICLO_MESES,
+  CobrancaAntesDoTrialError,
+  PLANOS,
+  TRIAL_DIAS,
+  dataEmSaoPaulo,
+  fimDoTrial,
+  garantirCobrancaPermitida,
+  isPlano,
+  proximoVencimento,
+  transicaoExternaPermitida,
+  trialVigente,
+  type Plano,
+  type StatusAssinatura,
+} from './billing-policy.js';
+
+export {
+  AssinaturaInativaError,
+  assinaturaPermiteAcesso,
+  type EstadoAssinatura,
+} from './subscription-policy.js';
+
+export {
+  PRECOS_PADRAO,
+  descreverPlano,
+  listarPlanos,
+  type DescricaoPlano,
+  type TabelaPrecos,
+} from './planos.js';

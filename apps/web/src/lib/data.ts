@@ -7,6 +7,7 @@
  * diferença — só leem `usingMock` quando precisam avisar o usuário.
  */
 import type {
+  CancelSubscriptionResponse,
   CompareInput,
   CompareResult,
   Municipality,
@@ -18,7 +19,12 @@ import type {
   PublicPrice,
   PublicStationDetail,
   PublicStationSummary,
+  PlansResponse,
+  SubscribeResponse,
+  SubscriptionPlan,
+  SubscriptionSummary,
 } from '@posto-barato/shared-types';
+import { CARENCIA_HORAS, TRIAL_DIAS, listarPlanos } from '@posto-barato/domain';
 
 import { USING_MOCK } from './config';
 import { apiFetch, buildQuery, PostoBaratoApiError } from './http';
@@ -118,6 +124,57 @@ export async function getChargingPoints(origin?: {
 }): Promise<ChargingPoint[]> {
   if (USING_MOCK) return mock.mockChargingPoints(origin);
   return [];
+}
+
+// ---------------------------------------------------------------------------
+// Assinatura
+// ---------------------------------------------------------------------------
+
+/**
+ * Planos e parâmetros do ciclo. É rota pública na API — a tela nunca anuncia
+ * preço próprio. Sem API, os mesmos valores vêm de `@posto-barato/domain`, que
+ * é a fonte que o servidor também usa.
+ */
+export async function getPlans(): Promise<PlansResponse> {
+  if (USING_MOCK) {
+    return { planos: listarPlanos(), trialDias: TRIAL_DIAS, carenciaHoras: CARENCIA_HORAS };
+  }
+  return apiFetch<PlansResponse>('/api/v1/billing/planos');
+}
+
+/**
+ * Estado da assinatura da conta. Sem API não há conta, então não há assinatura
+ * — a tela mostra os planos e explica que assinar depende do login.
+ */
+export async function getSubscription(): Promise<SubscriptionSummary | null> {
+  if (USING_MOCK) return null;
+  try {
+    return await apiFetch<SubscriptionSummary>('/api/v1/billing/subscription');
+  } catch (error) {
+    if (
+      error instanceof PostoBaratoApiError &&
+      (error.code === 'UNAUTHORIZED' || error.code === 'NOT_FOUND')
+    ) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export async function subscribe(
+  plano: SubscriptionPlan,
+  cpfCnpj?: string,
+): Promise<SubscribeResponse> {
+  return apiFetch<SubscribeResponse>('/api/v1/billing/subscription', {
+    method: 'POST',
+    body: JSON.stringify({ plano, cpfCnpj }),
+  });
+}
+
+export async function cancelSubscription(): Promise<CancelSubscriptionResponse> {
+  return apiFetch<CancelSubscriptionResponse>('/api/v1/billing/subscription', {
+    method: 'DELETE',
+  });
 }
 
 export const NOTICES = mock.NOTICES;
