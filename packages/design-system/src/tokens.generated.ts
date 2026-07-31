@@ -1,0 +1,177 @@
+/* Gerado por sync.mjs a partir de tokens.json — não edite à mão. */
+/* Fonte de verdade dos valores: design-system/DESIGN.md */
+
+export const colors = {
+  "surface": "#f8f9ff",
+  "surface-dim": "#d1dbec",
+  "surface-bright": "#f8f9ff",
+  "surface-container-lowest": "#ffffff",
+  "surface-container-low": "#eef4ff",
+  "surface-container": "#e5eeff",
+  "surface-container-high": "#dfe9fa",
+  "surface-container-highest": "#d9e3f4",
+  "on-surface": "#121c28",
+  "on-surface-variant": "#3c4a42",
+  "inverse-surface": "#27313e",
+  "inverse-on-surface": "#eaf1ff",
+  "outline": "#6c7a71",
+  "outline-variant": "#bbcabf",
+  "surface-tint": "#006c49",
+  "primary": "#006c49",
+  "on-primary": "#ffffff",
+  "primary-container": "#10b981",
+  "on-primary-container": "#00422b",
+  "inverse-primary": "#4edea3",
+  "secondary": "#545f73",
+  "on-secondary": "#ffffff",
+  "secondary-container": "#d5e0f8",
+  "on-secondary-container": "#586377",
+  "tertiary": "#00687a",
+  "on-tertiary": "#ffffff",
+  "tertiary-container": "#00b2d0",
+  "on-tertiary-container": "#003f4b",
+  "error": "#ba1a1a",
+  "on-error": "#ffffff",
+  "error-container": "#ffdad6",
+  "on-error-container": "#93000a",
+  "primary-fixed": "#6ffbbe",
+  "primary-fixed-dim": "#4edea3",
+  "on-primary-fixed": "#002113",
+  "on-primary-fixed-variant": "#005236",
+  "secondary-fixed": "#d8e3fb",
+  "secondary-fixed-dim": "#bcc7de",
+  "on-secondary-fixed": "#111c2d",
+  "on-secondary-fixed-variant": "#3c475a",
+  "tertiary-fixed": "#acedff",
+  "tertiary-fixed-dim": "#4cd7f6",
+  "on-tertiary-fixed": "#001f26",
+  "on-tertiary-fixed-variant": "#004e5c",
+  "background": "#f8f9ff",
+  "on-background": "#121c28",
+  "surface-variant": "#d9e3f4"
+} as const;
+
+export const darkColors: Record<string, string> = {
+  "surface": "#0f1720",
+  "surface-dim": "#0b1219",
+  "surface-bright": "#1b2733",
+  "surface-container-lowest": "#0a1017",
+  "surface-container-low": "#141e28",
+  "surface-container": "#18222c",
+  "surface-container-high": "#222d38",
+  "surface-container-highest": "#2d3844",
+  "on-surface": "#e3ecf7",
+  "on-surface-variant": "#b6c3cf",
+  "inverse-surface": "#e3ecf7",
+  "inverse-on-surface": "#1b2733",
+  "outline": "#8b98a5",
+  "outline-variant": "#3c4a56",
+  "surface-tint": "#4edea3",
+  "primary": "#4edea3",
+  "on-primary": "#003521",
+  "primary-container": "#005236",
+  "on-primary-container": "#6ffbbe",
+  "inverse-primary": "#006c49",
+  "secondary": "#bcc7de",
+  "on-secondary": "#2a3446",
+  "secondary-container": "#3c475a",
+  "on-secondary-container": "#d8e3fb",
+  "tertiary": "#4cd7f6",
+  "on-tertiary": "#00363f",
+  "tertiary-container": "#004e5c",
+  "on-tertiary-container": "#acedff",
+  "error": "#ffb4ab",
+  "on-error": "#690005",
+  "error-container": "#93000a",
+  "on-error-container": "#ffdad6",
+  "primary-fixed": "#6ffbbe",
+  "primary-fixed-dim": "#4edea3",
+  "on-primary-fixed": "#002113",
+  "on-primary-fixed-variant": "#005236",
+  "secondary-fixed": "#d8e3fb",
+  "secondary-fixed-dim": "#bcc7de",
+  "on-secondary-fixed": "#111c2d",
+  "on-secondary-fixed-variant": "#3c475a",
+  "tertiary-fixed": "#acedff",
+  "tertiary-fixed-dim": "#4cd7f6",
+  "on-tertiary-fixed": "#001f26",
+  "on-tertiary-fixed-variant": "#004e5c",
+  "background": "#0f1720",
+  "on-background": "#e3ecf7",
+  "surface-variant": "#3c4a56"
+};
+
+export const typography = {
+  "headline-lg": {
+    "fontFamily": "Manrope",
+    "fontSize": "32px",
+    "fontWeight": "800",
+    "lineHeight": "40px",
+    "letterSpacing": "-0.02em"
+  },
+  "headline-lg-mobile": {
+    "fontFamily": "Manrope",
+    "fontSize": "24px",
+    "fontWeight": "800",
+    "lineHeight": "32px",
+    "letterSpacing": "-0.02em"
+  },
+  "headline-md": {
+    "fontFamily": "Manrope",
+    "fontSize": "20px",
+    "fontWeight": "700",
+    "lineHeight": "28px"
+  },
+  "body-lg": {
+    "fontFamily": "Inter",
+    "fontSize": "16px",
+    "fontWeight": "400",
+    "lineHeight": "24px"
+  },
+  "body-md": {
+    "fontFamily": "Inter",
+    "fontSize": "14px",
+    "fontWeight": "400",
+    "lineHeight": "20px"
+  },
+  "label-bold": {
+    "fontFamily": "Inter",
+    "fontSize": "12px",
+    "fontWeight": "700",
+    "lineHeight": "16px"
+  },
+  "price-display": {
+    "fontFamily": "Manrope",
+    "fontSize": "24px",
+    "fontWeight": "800",
+    "lineHeight": "24px",
+    "letterSpacing": "-0.01em"
+  }
+} as const;
+
+export const spacing = {
+  "xs": "4px",
+  "sm": "8px",
+  "md": "16px",
+  "lg": "24px",
+  "xl": "32px",
+  "container-margin": "16px",
+  "gutter": "12px"
+} as const;
+
+export const rounded = {
+  "sm": "0.25rem",
+  "DEFAULT": "0.5rem",
+  "md": "0.75rem",
+  "lg": "1rem",
+  "xl": "1.5rem",
+  "full": "9999px"
+} as const;
+
+export const elevation = {
+  "card": "0 4px 20px rgba(0,0,0,0.05)",
+  "floating": "0 6px 24px rgba(18,28,40,0.16)",
+  "sheet": "0 -8px 32px rgba(18,28,40,0.18)"
+} as const;
+
+export const touchTargetMin = "48px";

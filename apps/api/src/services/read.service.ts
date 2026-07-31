@@ -11,9 +11,9 @@ import type {
   PublicStationDetail,
   PublicStationSummary,
 } from '@posto-barato/shared-types';
-import type { FreshnessThresholds } from '../domain/freshness.js';
+import type { FreshnessThresholds } from '@posto-barato/domain';
 import { groupStations, toStationDetail } from '../domain/projection.js';
-import { computeComparison, type CompareCandidate } from '../domain/savings.js';
+import { computeComparison, type CompareCandidate } from '@posto-barato/domain';
 import {
   countStations,
   queryHistory,

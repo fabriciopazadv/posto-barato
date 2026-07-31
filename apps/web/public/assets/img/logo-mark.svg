@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Posto Barato">
+  <title>Posto Barato</title>
+  <path d="M32 2C18.7 2 8 12.7 8 26c0 6.6 3.7 13.4 8.6 19.4A103 103 0 0 0 32 61s7.6-6.7 15.4-15.6C52.3 39.4 56 32.6 56 26 56 12.7 45.3 2 32 2Z" fill="#0f5064"/>
+  <circle cx="32" cy="25.5" r="15.5" fill="#fff"/>
+  <path d="M32 13.5c0 0-9 10.2-9 15.7a9 9 0 0 0 18 0c0-5.5-9-15.7-9-15.7Z" fill="#15cc5a"/>
+  <path d="M33.9 20.6 27 30.2h3.9l-1.6 6.6 6.9-9.9h-3.9l1.6-6.3Z" fill="#00f1f8"/>
+</svg>

@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 360" role="img"
+     aria-label="Ilustração de uma bomba de combustível ao lado de um carregador de veículo elétrico">
+  <title>Combustível e recarga elétrica</title>
+
+  <rect width="480" height="360" fill="#f8f9ff"/>
+  <ellipse cx="240" cy="308" rx="196" ry="26" fill="#e5eeff"/>
+
+  <!-- Bomba de combustível -->
+  <g transform="translate(74 92)">
+    <rect x="0" y="0" width="104" height="196" rx="16" fill="#0f5064"/>
+    <rect x="16" y="20" width="72" height="56" rx="10" fill="#f8f9ff"/>
+    <rect x="26" y="34" width="52" height="8" rx="4" fill="#10b981"/>
+    <rect x="26" y="50" width="36" height="8" rx="4" fill="#bbcabf"/>
+    <rect x="16" y="92" width="72" height="10" rx="5" fill="#3c4a42"/>
+    <rect x="16" y="112" width="52" height="10" rx="5" fill="#3c4a42"/>
+    <!-- Mangueira e bico (recolhidos na lateral da própria bomba) -->
+    <path d="M104 78h10a10 10 0 0 1 10 10v46a11 11 0 0 0 22 0V104" stroke="#0f5064" stroke-width="11"
+          fill="none" stroke-linecap="round"/>
+    <rect x="135" y="74" width="22" height="32" rx="7" fill="#15cc5a"/>
+    <rect x="-10" y="196" width="124" height="16" rx="8" fill="#0f5064"/>
+  </g>
+
+  <!-- Carregador elétrico -->
+  <g transform="translate(288 108)">
+    <rect x="0" y="0" width="96" height="180" rx="16" fill="#00687a"/>
+    <rect x="14" y="18" width="68" height="60" rx="10" fill="#f8f9ff"/>
+    <path d="M52 28 34 56h13l-4 20 20-30H50l2-18Z" fill="#00b2d0"/>
+    <rect x="14" y="94" width="68" height="8" rx="4" fill="#acedff" opacity=".7"/>
+    <rect x="14" y="110" width="44" height="8" rx="4" fill="#acedff" opacity=".45"/>
+    <!-- Cabo e conector (recolhidos na lateral do próprio carregador) -->
+    <path d="M0 74h-10a10 10 0 0 0-10 10v46a11 11 0 0 1-22 0V100" stroke="#00687a" stroke-width="11"
+          fill="none" stroke-linecap="round"/>
+    <rect x="-53" y="70" width="22" height="32" rx="7" fill="#4cd7f6"/>
+    <rect x="-10" y="180" width="116" height="16" rx="8" fill="#00687a"/>
+  </g>
+
+  <!-- Marcadores de comparação -->
+  <g transform="translate(190 46)">
+    <rect width="104" height="38" rx="19" fill="#fff" stroke="#d1dbec" stroke-width="2"/>
+    <text x="52" y="25" text-anchor="middle" font-family="Inter, sans-serif" font-size="14"
+          font-weight="700" fill="#121c28">Compare</text>
+  </g>
+</svg>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { haversineKm, isValidLatitude, isValidLongitude } from '../src/domain/geo.js';
+import { haversineKm, isValidLatitude, isValidLongitude } from '@posto-barato/domain';
 
 describe('haversineKm', () => {
   it('retorna 0 para o mesmo ponto', () => {
