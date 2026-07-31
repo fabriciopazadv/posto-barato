@@ -189,6 +189,11 @@ model Subscription {
   planoEscolhido SubscriptionPlan? @map("plano_escolhido")
   /// Preço travado no ato da escolha: mudar a tabela não altera contrato firmado.
   valorCentavos  Int?              @map("valor_centavos")
+  /// CPF/CNPJ do pagador, só dígitos, pedido junto com a escolha do plano.
+  /// O Asaas exige documento para criar o cliente e o app não o coleta no
+  /// cadastro; guardá-lo aqui é o que permite ao cron virar o teste em cobrança
+  /// sem precisar de uma segunda visita do usuário. Uso restrito à cobrança.
+  cpfCnpjPagador String?           @map("cpf_cnpj_pagador")
 
   primeiraCobrancaEm DateTime? @map("primeira_cobranca_em")
   proximaCobrancaEm  DateTime? @map("proxima_cobranca_em")

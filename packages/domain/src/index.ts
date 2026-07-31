@@ -47,6 +47,18 @@ export {
 } from './billing-policy.js';
 
 export {
+  DocumentoInvalidoError,
+  documentoValido,
+  exigirDocumento,
+  formatarDocumento,
+  mascararDocumento,
+  normalizarDocumento,
+  somenteDigitos,
+  tipoDocumento,
+  type TipoDocumento,
+} from './documento.js';
+
+export {
   AssinaturaInativaError,
   assinaturaPermiteAcesso,
   type EstadoAssinatura,

@@ -94,13 +94,37 @@ de ficar aberto para sempre.
 
 O desenho separa deliberadamente escolher de cobrar:
 
-1. **Durante o teste** — a pessoa escolhe o plano e o app grava só isso
-   (`plano_escolhido` + preço travado). **Nada é criado no Asaas**: nenhum
-   cliente, nenhuma assinatura, nenhuma cobrança. É o que sustenta a invariante 1.
+1. **Durante o teste** — a pessoa escolhe o plano, informa o CPF/CNPJ e o app
+   grava só isso (`plano_escolhido` + preço travado + `cpf_cnpj_pagador`).
+   **Nada é criado no Asaas**: nenhum cliente, nenhuma assinatura, nenhuma
+   cobrança. É o que sustenta a invariante 1.
 2. **Na virada do teste** — o cron cria o cliente e a assinatura recorrente no
    Asaas com vencimento hoje, e o status passa a `AGUARDANDO_PAGAMENTO`.
 
 Quem assina **depois** do teste pula direto para o passo 2.
+
+### Por que o CPF/CNPJ é pedido na escolha do plano
+
+O Asaas exige documento para criar o cliente, e o cadastro do Posto Barato não
+o coleta — diferente do mei-facil, onde o CNPJ vem do perfil do MEI. Enquanto o
+documento só era pedido no ato do pagamento, o cron chegava na virada sem ele: a
+chamada falhava, o usuário ficava em teste vencido (bloqueado pelo gate) e só
+saía dali voltando à tela para assinar de novo. Pedi-lo junto com o plano, ainda
+durante o teste, é o que torna a virada automática — na virada o app já tem tudo
+o que o provedor pede.
+
+O documento é validado por dígito verificador
+(`packages/domain/src/documento.ts`), não por contagem de caracteres: o Asaas
+recusa documento errado só na virada, dias depois, quando ninguém está olhando a
+tela. Uso restrito à cobrança; para a tela e para o log sai apenas mascarado
+(`***.982.247-**`), e cancelar durante o teste apaga o documento junto com a
+intenção de assinatura — sem cobrança à vista não há motivo para guardá-lo.
+
+Assinaturas anteriores a esta mudança podem ter plano escolhido sem documento.
+Nesse caso o cron **não** insiste: marca `TRIAL_EXPIRADO` (paywall) e registra o
+aviso no log, contando o caso em `semDocumento`. Tentar cobrar sem documento
+falharia em toda execução seguinte, e o desfecho para o usuário seria o mesmo —
+reassinar pela tela, agora informando o CPF.
 
 A assinatura no Asaas usa `billingType: UNDEFINED` (forma de pagamento aberta):
 a cada ciclo o cliente escolhe Pix, cartão ou boleto. `externalReference` viaja
@@ -136,9 +160,10 @@ do agendador da plataforma que a hospedar (uma vez por dia).
 
 Faz duas coisas:
 
-- **Virada** — de quem já usou os dias grátis: com plano escolhido, cria a
-  cobrança; sem plano, marca `TRIAL_EXPIRADO`. Idempotente, porque a transição
-  tira o usuário do conjunto varrido. Uma falha individual não derruba os demais.
+- **Virada** — de quem já usou os dias grátis: com plano escolhido e documento
+  guardado, cria a cobrança; sem plano (ou com plano sem documento, de antes
+  desta mudança), marca `TRIAL_EXPIRADO`. Idempotente, porque a transição tira o
+  usuário do conjunto varrido. Uma falha individual não derruba os demais.
 - **Reconciliação** — rede de segurança para webhooks perdidos. Sem ela, todo o
   estado dependeria de o evento chegar: um webhook entregue enquanto a env
   estava ausente deixaria cliente pagante bloqueado, e uma assinatura excluída
@@ -182,11 +207,13 @@ Nunca armazenamos número de cartão ou CVV: a tokenização é toda do Asaas
 | `packages/domain/src/billing-policy.ts` | ciclo, trial, carência, transições — puro |
 | `packages/domain/src/subscription-policy.ts` | o gate de acesso — puro |
 | `packages/domain/src/planos.ts` | preços e rótulos — fonte única |
+| `packages/domain/src/documento.ts` | CPF/CNPJ do pagador: validação e máscara — puro |
 | `apps/api/src/services/payment/asaas-billing-provider.ts` | integração com o Asaas |
 | `apps/api/src/services/billing.service.ts` | orquestração (banco + provedor) |
 | `apps/api/src/services/billing-cron.service.ts` | virada e reconciliação |
 | `apps/api/src/domain/asaas-webhook.ts` | parsing dos eventos — puro |
 | `apps/api/src/services/subscription-gate.ts` | `requireAssinaturaAtiva` |
 
-As regras são puras e testadas isoladamente: 38 casos em
-`billing-policy.test.ts`, `subscription-gate.test.ts` e `planos.test.ts`.
+As regras são puras e testadas isoladamente: 57 casos em
+`billing-policy.test.ts`, `subscription-gate.test.ts`, `planos.test.ts` e
+`documento.test.ts`.

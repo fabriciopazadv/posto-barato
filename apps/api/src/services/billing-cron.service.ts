@@ -8,6 +8,7 @@
  */
 import { prisma } from '@posto-barato/database';
 import {
+  documentoValido,
   proximoVencimento,
   transicaoExternaPermitida,
   type Plano,
@@ -24,6 +25,8 @@ export interface CronResult {
   avaliados: number;
   cobrancas: number;
   expirados: number;
+  /** Escolheram plano antes de o documento passar a ser pedido na escolha. */
+  semDocumento: number;
   falhas: number;
   reconciliadas: number;
 }
@@ -36,6 +39,10 @@ export interface CronResult {
  *    hoje e passa a AGUARDANDO_PAGAMENTO (acesso mantido durante a carência);
  *  - não escolheu → TRIAL_EXPIRADO, paywall, sem nenhuma cobrança criada.
  *
+ * A virada é automática porque o CPF/CNPJ é pedido junto com a escolha do plano,
+ * ainda durante o teste: o documento que o Asaas exige para criar o cliente já
+ * está guardado quando o cron chega aqui, sem depender de o usuário voltar.
+ *
  * Idempotente: reexecutar no mesmo dia não cria cobrança duplicada, porque a
  * transição tira o usuário do conjunto `status = TRIAL AND trialEndsAt <= agora`.
  */
@@ -46,6 +53,7 @@ export async function runBillingCron(ctx: AppContext, log: Logger): Promise<Cron
     select: {
       userId: true,
       planoEscolhido: true,
+      cpfCnpjPagador: true,
       user: { select: { name: true, email: true } },
     },
   });
@@ -54,6 +62,7 @@ export async function runBillingCron(ctx: AppContext, log: Logger): Promise<Cron
     avaliados: vencidos.length,
     cobrancas: 0,
     expirados: 0,
+    semDocumento: 0,
     falhas: 0,
     reconciliadas: 0,
   };
@@ -73,18 +82,33 @@ export async function runBillingCron(ctx: AppContext, log: Logger): Promise<Cron
       continue;
     }
 
+    // Assinaturas de antes desta mudança podem ter plano sem documento. Tentar
+    // cobrar assim falharia hoje, amanhã e em toda execução seguinte; leva ao
+    // paywall de uma vez, onde a pessoa reassina informando o CPF. O aviso fica
+    // no log para o suporte saber que não é indisponibilidade do Asaas.
+    if (provider.configurado && !documentoValido(sub.cpfCnpjPagador)) {
+      await prisma.subscription.update({
+        where: { userId: sub.userId },
+        data: { status: 'TRIAL_EXPIRADO' },
+      });
+      resultado.semDocumento += 1;
+      log.warn(
+        { userId: sub.userId, plano },
+        '[billing-cron] plano escolhido sem CPF/CNPJ guardado — paywall em vez de cobrança',
+      );
+      continue;
+    }
+
     try {
       await provider.criarCobranca(sub.userId, plano, {
         nome: sub.user.name ?? 'Cliente Posto Barato',
         email: sub.user.email,
-        // O app não coleta CPF/CNPJ no cadastro; quem assina depois do teste
-        // informa no checkout. Na virada automática, sem documento, a chamada
-        // falha e cai no catch — o usuário segue bloqueado até assinar pela tela.
-        cpfCnpj: '',
+        // Guardado quando a pessoa escolheu o plano, durante o teste.
+        cpfCnpj: sub.cpfCnpjPagador ?? '',
       });
       resultado.cobrancas += 1;
     } catch (err) {
-      // Uma falha (documento ausente, indisponibilidade do Asaas) não pode
+      // Uma falha (indisponibilidade do Asaas, recusa do documento) não pode
       // derrubar a virada dos demais. O usuário segue em TRIAL vencido — o gate
       // já bloqueia — e a próxima execução tenta de novo.
       resultado.falhas += 1;

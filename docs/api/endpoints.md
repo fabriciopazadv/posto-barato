@@ -79,3 +79,14 @@ Códigos: `VALIDATION_ERROR` (400), `BAD_REQUEST` (400), `NOT_FOUND` (404),
 
 Recurso pago sem assinatura em dia responde **402** com código
 `SUBSCRIPTION_REQUIRED`.
+
+`POST /billing/subscription` recebe `{ "plano": "MENSAL", "cpfCnpj": "…" }`. O
+documento é exigido **também durante o teste grátis**, quando nada é cobrado: é
+o dado que o Asaas pede para criar o cliente, e tê-lo guardado é o que permite
+ao cron transformar o fim do teste em cobrança sem uma segunda visita do
+usuário. Só pode ser omitido por quem já o informou antes. CPF/CNPJ ausente ou
+com dígito verificador errado responde **400** (`BAD_REQUEST`).
+
+`GET /billing/subscription` devolve `cpfCnpjMascarado` (`***.982.247-**`, ou
+`null`) para a tela saber se ainda precisa pedir o documento — o número inteiro
+nunca sai do servidor.

@@ -67,6 +67,24 @@ hasheadas com Argon2id e refresh tokens são armazenados só como hash SHA-256
 — nenhum dos dois é reversível a partir do banco. Nenhum desses valores é
 logado (ver redação de `authorization`/`cookie` em `app.ts`).
 
+## Dado pessoal do pagador (CPF/CNPJ)
+
+`subscriptions.cpf_cnpj_pagador` guarda o documento informado quando a pessoa
+escolhe o plano. Existe por uma razão só: o Asaas exige documento para criar o
+cliente, e sem ele guardado a virada do teste não vira cobrança sozinha.
+
+Limites que acompanham esse dado:
+
+- **Sai do banco em uma direção só** — o Asaas, ao criar o cliente. Para tela,
+  log e suporte sai apenas mascarado (`***.982.247-**`, via
+  `mascararDocumento`); a API nunca devolve o número inteiro.
+- **Cancelar durante o teste apaga o documento** junto com a intenção de
+  assinatura: sem cobrança à vista, não há por que continuar guardando.
+- **Nunca é chave de busca nem identificador** — a conta é identificada por
+  `user_id`; o documento não tem índice e não aparece em nenhum filtro.
+
+Cartão e CVV seguem fora do escopo: a tokenização é toda do Asaas (seção 16).
+
 ## Proteções da API
 
 - **Rate limiting** por IP (`@fastify/rate-limit`), configurável.

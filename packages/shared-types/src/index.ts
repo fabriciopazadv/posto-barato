@@ -294,11 +294,22 @@ export interface SubscriptionSummary {
   acessoLiberado: boolean;
   /** Dias restantes de teste; 0 fora do teste. */
   diasRestantesTrial: number;
+  /**
+   * CPF/CNPJ do pagador já guardado, mascarado (`***.456.789-**`); nulo quando
+   * ainda não há documento. A tela usa isto para saber se precisa pedi-lo — o
+   * número inteiro nunca sai do servidor.
+   */
+  cpfCnpjMascarado: string | null;
 }
 
 export interface SubscribeRequest {
   plano: SubscriptionPlan;
-  /** CPF/CNPJ do pagador. Exigido só quando a cobrança é criada na hora. */
+  /**
+   * CPF/CNPJ do pagador, exigido para assinar — inclusive durante o teste, em
+   * que nada é cobrado. É o que o Asaas pede para criar o cliente na virada, e
+   * pedi-lo aqui é o que dispensa uma segunda visita à tela quando o teste
+   * acaba. Opcional apenas para quem já o informou antes.
+   */
   cpfCnpj?: string;
 }
 
