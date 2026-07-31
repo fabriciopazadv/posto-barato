@@ -1,0 +1,14 @@
+/* Fontes auto-hospedadas — precisa vir antes das camadas do Tailwind. */
+@import '../../public/assets/fonts/fonts.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  /* O Stitch usava scroll do body; mantém o comportamento sem depender do CDN. */
+  html { -webkit-text-size-adjust: 100%; }
+  body { text-rendering: optimizeLegibility; }
+  /* Foco visível — as telas do Stitch removiam o outline padrão. */
+  :focus-visible { outline: 2px solid theme('colors.primary'); outline-offset: 2px; }
+}

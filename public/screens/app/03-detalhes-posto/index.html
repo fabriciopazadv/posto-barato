@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Detalhes do posto — Posto Barato</title>
+<!-- Material Symbols -->
+<!-- Google Fonts -->
+<!-- Tailwind CSS -->
+<!-- Tailwind Config from Guidelines -->
+<link rel="preload" href="/assets/fonts/inter-latin-f11d729b.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/app.css"/>
+<link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png"/>
+<meta name="theme-color" content="#006c49"/>
+<meta name="robots" content="noindex, nofollow"/>
+<style>
+.pb-back-galeria{position:fixed;left:0;top:50%;transform:translateY(-50%);
+z-index:2147483647;display:inline-flex;align-items:center;gap:.3rem;
+padding:.5rem .6rem .5rem .45rem;border-radius:0 9999px 9999px 0;
+background:rgba(18,28,40,.8);color:#fff;font:600 11px/1 Inter,system-ui,sans-serif;
+text-decoration:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+opacity:.45;transition:opacity .15s ease}
+.pb-back-galeria:hover,.pb-back-galeria:focus-visible{opacity:1}
+.pb-back-galeria:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media print{.pb-back-galeria{display:none}}
+</style>
+<meta name="description" content="Detalhes do posto — protótipo de interface do aplicativo Posto Barato."/>
+</head>
+<body class="bg-surface text-on-surface antialiased">
+<!-- App Container (Simulating Mobile on larger screens) -->
+<div class="max-w-md mx-auto bg-surface min-h-screen relative shadow-2xl overflow-hidden flex flex-col">
+<!-- Contextual Header (Departure from main nav, so suppressed Shared Component TopAppBar, using specific contextual back nav) -->
+<header class="absolute top-0 w-full z-10 flex items-center justify-between px-container-margin h-14 bg-gradient-to-b from-black/50 to-transparent">
+<button type="button" aria-label="Voltar" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface/20 backdrop-blur-md text-white active:scale-95 transition-transform">
+<span aria-hidden="true" data-icon="arrow_back" class="material-symbols-outlined" data-weight="fill">&#xe5c4;</span>
+</button>
+<div class="flex gap-sm">
+<button type="button" aria-label="Favoritar" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface/20 backdrop-blur-md text-white active:scale-95 transition-transform">
+<span aria-hidden="true" data-icon="favorite" class="material-symbols-outlined">&#xe87d;</span>
+</button>
+<button type="button" aria-label="Compartilhar" class="w-10 h-10 flex items-center justify-center rounded-full bg-surface/20 backdrop-blur-md text-white active:scale-95 transition-transform">
+<span aria-hidden="true" data-icon="share" class="material-symbols-outlined">&#xe80d;</span>
+</button>
+</div>
+</header>
+<!-- Hero Image -->
+<div class="w-full h-56 bg-cover bg-center bg-no-repeat relative" style="background-image: url('/assets/img/map-abstract.svg')">
+<div class="absolute bottom-0 w-full h-24 bg-gradient-to-t from-surface to-transparent"></div>
+</div>
+<!-- Main Content Canvas -->
+<main class="flex-1 px-container-margin pb-xl -mt-6 relative z-10 flex flex-col gap-lg">
+<!-- Header Info -->
+<section class="flex flex-col gap-xs">
+<div class="flex justify-between items-start">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">Posto Rodoep</h1>
+<div class="flex items-center gap-xs bg-surface-container-high px-2 py-1 rounded-full">
+<span aria-hidden="true" data-icon="star" class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">&#xe838;</span>
+<span class="font-label-bold text-label-bold text-on-surface">4.8</span>
+</div>
+</div>
+<div class="flex items-center gap-md font-body-md text-body-md text-on-surface-variant">
+<span class="flex items-center gap-1 text-primary font-label-bold text-label-bold">
+<span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                        Aberto agora
+                    </span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="flex items-center gap-1">
+<span aria-hidden="true" data-icon="directions_car" class="material-symbols-outlined text-[16px]">&#xe531;</span>
+                        2.5 km
+                    </span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span>Bandeira Branca</span>
+</div>
+</section>
+<!-- Action Buttons -->
+<section class="flex gap-gutter">
+<button type="button" class="flex-1 min-h-[48px] bg-primary text-on-primary rounded-xl flex items-center justify-center gap-2 font-label-bold text-label-bold active:scale-95 transition-transform shadow-md">
+<span aria-hidden="true" data-icon="navigation" class="material-symbols-outlined text-[20px]" style="font-variation-settings: 'FILL' 1;">&#xe55d;</span>
+                    Ir até o posto
+                </button>
+<div class="flex gap-gutter w-auto">
+<button type="button" aria-label="Comparar" class="w-12 h-12 flex items-center justify-center rounded-xl border border-outline-variant text-primary active:bg-surface-container transition-colors">
+<span aria-hidden="true" data-icon="compare_arrows" class="material-symbols-outlined">&#xe915;</span>
+</button>
+<button type="button" aria-label="Informar preço" class="w-12 h-12 flex items-center justify-center rounded-xl border border-outline-variant text-on-surface-variant active:bg-surface-container transition-colors">
+<span aria-hidden="true" data-icon="edit_note" class="material-symbols-outlined">&#xe745;</span>
+</button>
+</div>
+</section>
+<!-- Pricing List -->
+<section class="flex flex-col gap-sm">
+<h2 class="font-headline-md text-headline-md text-on-surface mb-2">Preços Atuais</h2>
+<!-- Gasolina Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between shadow-sm relative overflow-hidden">
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-primary"></div>
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface font-semibold">Gasolina Comum</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-xs">Atualizado há 2h</span>
+</div>
+<div class="flex items-end gap-2">
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1 text-primary">
+<span aria-hidden="true" data-icon="trending_down" class="material-symbols-outlined text-[16px]">&#xe8e3;</span>
+<span class="font-label-bold text-label-bold">-0.05</span>
+</div>
+<span class="font-price-display text-price-display text-on-surface">R$ 5,49</span>
+</div>
+</div>
+</div>
+<!-- Etanol Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between shadow-sm">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface font-semibold">Etanol</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-xs">Atualizado há 5h</span>
+</div>
+<div class="flex items-end gap-2">
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span aria-hidden="true" data-icon="horizontal_rule" class="material-symbols-outlined text-[16px]">&#xf108;</span>
+<span class="font-label-bold text-label-bold">Estável</span>
+</div>
+<span class="font-price-display text-price-display text-on-surface">R$ 3,69</span>
+</div>
+</div>
+</div>
+<!-- Diesel Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-xl p-md flex items-center justify-between shadow-sm">
+<div class="flex flex-col">
+<span class="font-body-lg text-body-lg text-on-surface font-semibold">Diesel S10</span>
+<span class="font-body-md text-body-md text-on-surface-variant text-xs">Atualizado ontem</span>
+</div>
+<div class="flex items-end gap-2">
+<div class="flex flex-col items-end">
+<div class="flex items-center gap-1 text-error">
+<span aria-hidden="true" data-icon="trending_up" class="material-symbols-outlined text-[16px]">&#xe8e5;</span>
+<span class="font-label-bold text-label-bold">+0.12</span>
+</div>
+<span class="font-price-display text-price-display text-on-surface">R$ 6,10</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Vale a pena para você? Section -->
+<section class="bg-surface-container rounded-xl p-md flex flex-col gap-md border border-surface-container-highest shadow-sm mt-2">
+<div class="flex items-center gap-2">
+<span aria-hidden="true" data-icon="calculate" class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">&#xea5f;</span>
+<h3 class="font-headline-md text-headline-md text-on-surface text-[18px]">Vale a pena para você?</h3>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                    Baseado no seu veículo (10km/l) e na distância (2.5km):
+                </p>
+<div class="flex flex-col gap-sm bg-surface-container-lowest p-sm rounded-lg border border-outline-variant/50">
+<div class="flex justify-between items-center font-body-md text-body-md">
+<span class="text-on-surface-variant">Economia no tanque (50L)</span>
+<span class="text-primary font-bold">+ R$ 15,00</span>
+</div>
+<div class="flex justify-between items-center font-body-md text-body-md">
+<span class="text-on-surface-variant">Custo do deslocamento</span>
+<span class="text-error font-bold">- R$ 2,74</span>
+</div>
+<hr class="border-outline-variant/50 my-1"/>
+<div class="flex justify-between items-center">
+<span class="font-label-bold text-label-bold text-on-surface">Economia Real Estimada</span>
+<span class="font-headline-md text-headline-md text-primary">R$ 12,26</span>
+</div>
+</div>
+</section>
+<!-- Footer -->
+<footer class="mt-4 pt-md border-t border-outline-variant flex justify-center pb-8">
+<span class="font-label-bold text-label-bold text-on-surface-variant flex items-center gap-1">
+<span aria-hidden="true" data-icon="database" class="material-symbols-outlined text-[14px]">&#xf20e;</span>
+                    Fonte: Banco de Dados Posto Barato
+                </span>
+</footer>
+</main>
+</div>
+<a href="/" class="pb-back-galeria" title="Voltar para a galeria de telas">
+<span aria-hidden="true">&#x2190;</span> Galeria
+</a>
+</body></html>

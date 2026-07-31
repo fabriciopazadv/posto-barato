@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Início — Posto Barato</title>
+<style>
+        .hide-scroll::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scroll {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<link rel="preload" href="/assets/fonts/inter-latin-f11d729b.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/app.css"/>
+<link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png"/>
+<meta name="theme-color" content="#006c49"/>
+<meta name="robots" content="noindex, nofollow"/>
+<style>
+.pb-back-galeria{position:fixed;left:0;top:50%;transform:translateY(-50%);
+z-index:2147483647;display:inline-flex;align-items:center;gap:.3rem;
+padding:.5rem .6rem .5rem .45rem;border-radius:0 9999px 9999px 0;
+background:rgba(18,28,40,.8);color:#fff;font:600 11px/1 Inter,system-ui,sans-serif;
+text-decoration:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+opacity:.45;transition:opacity .15s ease}
+.pb-back-galeria:hover,.pb-back-galeria:focus-visible{opacity:1}
+.pb-back-galeria:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media print{.pb-back-galeria{display:none}}
+</style>
+<meta name="description" content="Início — protótipo de interface do aplicativo Posto Barato."/>
+</head>
+<body class="bg-background text-on-background font-body-md min-h-screen pb-24 md:pb-0 md:pt-14 md:pl-80 flex flex-col items-center">
+<!-- Top App Bar (Web) / Header (Mobile) -->
+<header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-container-margin h-14 bg-surface border-b border-outline-variant shadow-sm md:hidden">
+<button type="button" aria-label="Menu" class="text-on-surface-variant p-2 rounded-full hover:bg-surface-container transition-all duration-200 active:scale-95">
+<span aria-hidden="true" data-icon="menu" class="material-symbols-outlined">&#xe5d2;</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-extrabold text-primary">Posto Barato</h1>
+<button type="button" aria-label="Perfil" class="text-on-surface-variant p-2 rounded-full hover:bg-surface-container transition-all duration-200 active:scale-95">
+<span aria-hidden="true" data-icon="account_circle" class="material-symbols-outlined">&#xe853;</span>
+</button>
+</header>
+<!-- Side Navigation (Web Only) -->
+<nav class="hidden md:flex fixed inset-y-0 left-0 z-[60] flex-col p-md h-full w-80 rounded-r-xl bg-surface border-r border-outline-variant shadow-xl">
+<div class="flex items-center gap-4 mb-lg px-4">
+<div class="w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img alt="Foto de perfil" loading="lazy" decoding="async" class="w-full h-full object-cover" src="/assets/img/avatar.svg"/>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary">Membro Premium</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">120 pontos acumulados</p>
+<p class="font-label-bold text-label-bold text-primary-container mt-1">Status Verde</p>
+</div>
+</div>
+<ul class="flex flex-col gap-2 mt-4 font-body-lg text-body-lg">
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" aria-current="page">
+<span aria-hidden="true" data-icon="home" class="material-symbols-outlined">&#xe88a;</span>Início</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="/screens/app/02-mapa/">
+<span aria-hidden="true" data-icon="explore" class="material-symbols-outlined">&#xe87a;</span>Explorar</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="/screens/app/04-comparador/">
+<span aria-hidden="true" data-icon="compare_arrows" class="material-symbols-outlined">&#xe915;</span>Comparar</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full bg-secondary-container text-on-secondary-container rounded-full transition-colors duration-200" href="#">
+<span aria-hidden="true" data-icon="favorite" class="material-symbols-outlined">&#xe87d;</span>Favoritos</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="/screens/app/05-perfil-veiculos/">
+<span aria-hidden="true" data-icon="person" class="material-symbols-outlined">&#xe7fd;</span>Perfil</a>
+</li>
+</ul>
+<div class="mt-auto border-t border-outline-variant pt-4">
+<ul class="flex flex-col gap-2 font-body-lg text-body-lg">
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span aria-hidden="true" data-icon="workspace_premium" class="material-symbols-outlined">&#xe7af;</span>Programa de Pontos</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="/screens/app/02-mapa/">
+<span aria-hidden="true" data-icon="local_gas_station" class="material-symbols-outlined">&#xe546;</span>Serviços do Posto</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span aria-hidden="true" data-icon="settings" class="material-symbols-outlined">&#xe8b8;</span>Configurações</a>
+</li>
+<li>
+<a class="flex items-center gap-3 p-3 rounded-full text-on-surface-variant hover:bg-surface-container-high transition-colors duration-200" href="#">
+<span aria-hidden="true" data-icon="help_outline" class="material-symbols-outlined">&#xe887;</span>Ajuda</a>
+</li>
+</ul>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="w-full max-w-3xl px-container-margin pt-20 md:pt-8 md:px-lg flex-1">
+<!-- Location Header -->
+<section class="flex justify-between items-center mb-lg">
+<div>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1">
+<span aria-hidden="true" data-icon="location_on" class="material-symbols-outlined text-[16px]">&#xe0c8;</span> Localização atual
+                </p>
+<h2 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-on-background">Rondonópolis - MT</h2>
+</div>
+<div class="hidden md:block w-12 h-12 rounded-full overflow-hidden bg-surface-container">
+<img alt="Foto de perfil" loading="lazy" decoding="async" class="w-full h-full object-cover" src="/assets/img/avatar.svg"/>
+</div>
+</section>
+<!-- Search Bar -->
+<section class="mb-lg">
+<div class="relative flex items-center h-[56px] bg-surface-container-low rounded-xl border border-transparent focus-within:border-primary transition-colors duration-200 px-4 shadow-[0_4px_20px_rgba(0,0,0,0.02)]">
+<span aria-hidden="true" data-icon="search" class="material-symbols-outlined text-on-surface-variant mr-3">&#xe8b6;</span>
+<input class="w-full bg-transparent border-none focus:ring-0 text-on-background placeholder-on-surface-variant font-body-lg text-body-lg h-full outline-none" placeholder="Busque posto, combustível, bairro ou endereço" type="text"/>
+<button type="button" class="ml-3 p-2 rounded-full hover:bg-surface-variant text-on-surface-variant transition-colors" aria-label="Busca por voz">
+<span aria-hidden="true" data-icon="mic" class="material-symbols-outlined">&#xe029;</span>
+</button>
+</div>
+</section>
+<!-- Segmented Control -->
+<section class="mb-md">
+<div class="flex p-1 bg-surface-container rounded-xl w-full max-w-sm mx-auto shadow-sm">
+<button type="button" class="flex-1 py-2 px-4 rounded-lg bg-tertiary text-on-tertiary font-label-bold text-label-bold shadow-sm transition-all duration-200">
+                    Combustíveis
+                </button>
+<button type="button" class="flex-1 py-2 px-4 rounded-lg text-on-surface-variant hover:bg-surface-variant/50 font-label-bold text-label-bold transition-all duration-200">
+                    Recarga Elétrica
+                </button>
+</div>
+</section>
+<!-- Quick Filters -->
+<section class="mb-xl">
+<div class="flex gap-3 overflow-x-auto hide-scroll pb-2">
+<button type="button" class="flex-shrink-0 h-12 px-6 rounded-full bg-tertiary text-on-tertiary font-label-bold text-label-bold shadow-md flex items-center gap-2">
+                    Gasolina
+                </button>
+<button type="button" class="flex-shrink-0 h-12 px-6 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-bold text-label-bold flex items-center gap-2 transition-colors">
+                    Etanol
+                </button>
+<button type="button" class="flex-shrink-0 h-12 px-6 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-bold text-label-bold flex items-center gap-2 transition-colors">
+                    Diesel
+                </button>
+<button type="button" class="flex-shrink-0 h-12 px-6 rounded-full bg-surface border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-bold text-label-bold flex items-center gap-2 transition-colors">
+                    GNV
+                </button>
+</div>
+</section>
+<!-- Best Options -->
+<section class="mb-xl">
+<div class="flex justify-between items-end mb-md">
+<h3 class="font-headline-md text-headline-md text-on-background">Melhores opções perto de você</h3>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-md">
+<!-- Station Card 1 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col gap-4 group hover:shadow-lg transition-shadow duration-300">
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-block px-2 py-1 rounded bg-surface-container-high text-on-surface-variant font-label-bold text-[10px] mb-1">Gasolina</span>
+<h4 class="font-headline-md text-headline-md text-on-background">Posto Rodoep</h4>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+<span aria-hidden="true" data-icon="schedule" class="material-symbols-outlined text-[16px]">&#xe192;</span> há 4 horas
+                            </p>
+</div>
+<div class="text-right">
+<span class="font-price-display text-price-display text-primary block">R$ 3,49<span class="text-sm font-normal">/l</span></span>
+<span class="font-label-bold text-[10px] text-primary-container bg-primary-container/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1 mt-1">
+<span aria-hidden="true" data-icon="trending_down" class="material-symbols-outlined text-[12px]">&#xe8e3;</span> Economia R$ 11,20
+                            </span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-outline-variant/30">
+<div class="flex items-center gap-4 text-on-surface-variant font-body-md text-body-md">
+<span class="flex items-center gap-1"><span aria-hidden="true" data-icon="directions_car" class="material-symbols-outlined text-[18px]">&#xe531;</span> 4,8 km</span>
+<span class="flex items-center gap-1"><span aria-hidden="true" data-icon="timer" class="material-symbols-outlined text-[18px]">&#xe425;</span> 9 min</span>
+</div>
+<button type="button" class="h-10 px-4 rounded-lg bg-surface border border-tertiary text-tertiary font-label-bold text-label-bold hover:bg-tertiary hover:text-on-tertiary transition-colors duration-200">
+                            Ver no mapa
+                        </button>
+</div>
+</div>
+<!-- Station Card 2 -->
+<div class="bg-surface border border-outline-variant rounded-xl p-md shadow-[0_4px_20px_rgba(0,0,0,0.05)] relative overflow-hidden flex flex-col gap-4 group hover:shadow-lg transition-shadow duration-300">
+<div class="flex justify-between items-start">
+<div>
+<span class="inline-block px-2 py-1 rounded bg-surface-container-high text-on-surface-variant font-label-bold text-[10px] mb-1">Gasolina</span>
+<h4 class="font-headline-md text-headline-md text-on-background">Posto Ipiranga Centro</h4>
+<p class="font-body-md text-body-md text-on-surface-variant flex items-center gap-1 mt-1">
+<span aria-hidden="true" data-icon="schedule" class="material-symbols-outlined text-[16px]">&#xe192;</span> há 2 horas
+                            </p>
+</div>
+<div class="text-right">
+<span class="font-price-display text-price-display text-on-background block">R$ 3,55<span class="text-sm font-normal">/l</span></span>
+<span class="font-label-bold text-[10px] text-primary-container bg-primary-container/10 px-2 py-0.5 rounded-full inline-flex items-center gap-1 mt-1">
+<span aria-hidden="true" data-icon="trending_down" class="material-symbols-outlined text-[12px]">&#xe8e3;</span> Economia R$ 8,50
+                            </span>
+</div>
+</div>
+<div class="flex items-center justify-between mt-auto pt-4 border-t border-outline-variant/30">
+<div class="flex items-center gap-4 text-on-surface-variant font-body-md text-body-md">
+<span class="flex items-center gap-1"><span aria-hidden="true" data-icon="directions_car" class="material-symbols-outlined text-[18px]">&#xe531;</span> 2,1 km</span>
+<span class="flex items-center gap-1"><span aria-hidden="true" data-icon="timer" class="material-symbols-outlined text-[18px]">&#xe425;</span> 5 min</span>
+</div>
+<button type="button" class="h-10 px-4 rounded-lg bg-surface border border-tertiary text-tertiary font-label-bold text-label-bold hover:bg-tertiary hover:text-on-tertiary transition-colors duration-200">
+                            Ver no mapa
+                        </button>
+</div>
+</div>
+</div>
+</section>
+<!-- Summary Widget -->
+<section class="mb-xl">
+<div class="bg-surface-container-low rounded-xl p-md border border-outline-variant/50 shadow-sm flex flex-col sm:flex-row gap-4 items-center justify-between">
+<div>
+<h3 class="font-headline-md text-headline-md text-on-background">Menores preços hoje</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mt-1">Baseado em 42 postos próximos</p>
+</div>
+<div class="flex gap-6 w-full sm:w-auto">
+<div class="flex flex-col items-start sm:items-end">
+<span class="font-body-md text-body-md text-on-surface-variant">Menor preço</span>
+<span class="font-price-display text-price-display text-primary">R$ 3,49</span>
+</div>
+<div class="w-px bg-outline-variant/50"></div>
+<div class="flex flex-col items-start sm:items-end">
+<span class="font-body-md text-body-md text-on-surface-variant">Média da região</span>
+<span class="font-price-display text-price-display text-on-surface-variant">R$ 3,82</span>
+</div>
+</div>
+</div>
+</section>
+<footer class="text-center py-6 border-t border-outline-variant/30 mb-8 md:mb-0">
+<p class="font-body-md text-body-md text-on-surface-variant/70">Fonte: Banco de Dados Posto Barato</p>
+</footer>
+</main>
+<!-- Bottom Navigation Bar (Mobile) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-2 pb-safe bg-surface shadow-[0_-4px_20px_rgba(0,0,0,0.05)] rounded-t-xl font-label-bold text-label-bold text-on-surface-variant">
+<a class="flex flex-col items-center justify-center bg-primary-container text-on-primary-container rounded-2xl px-3 py-1.5 transition-transform duration-300 ease-out active:scale-90" aria-current="page">
+<span aria-hidden="true" data-icon="home" class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">&#xe88a;</span>
+<span class="mt-1">Início</span>
+</a>
+<a class="flex flex-col items-center justify-center hover:text-primary transition-transform duration-300 ease-out active:scale-90" href="/screens/app/02-mapa/">
+<span aria-hidden="true" data-icon="explore" class="material-symbols-outlined">&#xe87a;</span>
+<span class="mt-1">Explorar</span>
+</a>
+<a class="flex flex-col items-center justify-center hover:text-primary transition-transform duration-300 ease-out active:scale-90" href="/screens/app/04-comparador/">
+<span aria-hidden="true" data-icon="compare_arrows" class="material-symbols-outlined">&#xe915;</span>
+<span class="mt-1">Comparar</span>
+</a>
+<a class="flex flex-col items-center justify-center hover:text-primary transition-transform duration-300 ease-out active:scale-90" href="#">
+<span aria-hidden="true" data-icon="favorite" class="material-symbols-outlined">&#xe87d;</span>
+<span class="mt-1">Favoritos</span>
+</a>
+<a class="flex flex-col items-center justify-center hover:text-primary transition-transform duration-300 ease-out active:scale-90" href="/screens/app/05-perfil-veiculos/">
+<span aria-hidden="true" data-icon="person" class="material-symbols-outlined">&#xe7fd;</span>
+<span class="mt-1">Perfil</span>
+</a>
+</nav>
+<a href="/" class="pb-back-galeria" title="Voltar para a galeria de telas">
+<span aria-hidden="true">&#x2190;</span> Galeria
+</a>
+</body></html>

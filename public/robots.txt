@@ -1,0 +1,8 @@
+# Posto Barato — galeria de protótipos de interface.
+# Este site NÃO é o aplicativo em funcionamento: as telas são estáticas e os
+# preços exibidos são fictícios. Indexá-lo faria com que um protótipo
+# aparecesse na busca como se fosse o produto, então ele fica fora dos índices
+# até a plataforma real entrar no ar.
+
+User-agent: *
+Disallow: /

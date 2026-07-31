@@ -76,6 +76,8 @@ curl "http://localhost:3333/api/v1/stations?latitude=-16.47&longitude=-54.63&rad
 | `pnpm db:seed` | Semeia dados demonstrativos (Rondonópolis/MT) |
 | `pnpm db:reset` | Recria os schemas e semeia |
 | `pnpm docker:up` / `pnpm docker:down` | Sobe/derruba Postgres+Redis |
+| `pnpm css:build` | Compila o CSS do site estático |
+| `pnpm site:serve` | Serve `public/` localmente |
 
 ## Estrutura
 
@@ -86,10 +88,39 @@ packages/shared-types/  Contratos TypeScript compartilhados
 docker/                 Dockerfile da API
 docs/                   architecture · security · api · product
 design-system/          Tokens de marca (DESIGN.md)
-screens/ · index.html   Referência visual (export do Google Stitch)
+brand/                  Arte-mestra da marca (logo original)
+tools/                  Build do site estático (Tailwind + normalização das telas)
+public/                 >>> ÚNICO diretório publicado no Netlify <<<
+netlify.toml            publish = public, headers de segurança, redirects
 ```
 
-A galeria de telas de referência abre em `index.html` (ver histórico do repo).
+## Site estático (galeria de protótipos)
+
+`public/` é o **único** diretório publicado. Nada de `apps/`, `packages/`,
+`docs/` ou `docker/` vai para o CDN — o `netlify.toml` fixa `publish = "public"`
+e ainda devolve 404 para esses caminhos, caso alguém tenha um link antigo de
+quando a raiz do repositório era publicada.
+
+O que está no ar é a **galeria de protótipos de interface**, não a plataforma:
+as telas são estáticas e os preços exibidos são fictícios. Por isso o site sai
+com `noindex` (`robots.txt` + header `X-Robots-Tag`) até a plataforma real
+entrar no ar.
+
+O site não faz nenhuma chamada a terceiros: Tailwind é compilado localmente,
+as fontes são auto-hospedadas e as ilustrações são SVGs versionados no repo.
+
+```bash
+pnpm css:build      # compila public/assets/css/app.css
+pnpm site:serve     # serve public/ em http://localhost:4173
+node tools/build-screens.mjs           # normaliza as telas do Stitch
+node tools/build-screens.mjs --check   # falha se algo estiver fora do padrão
+```
+
+`tools/build-screens.mjs` é idempotente e cuida do que o export do Stitch
+deixava quebrado: remove o Tailwind Play CDN e os links do Google Fonts, troca
+as URLs efêmeras de imagem por assets locais, converte os ícones para
+codepoints (a fonte é subsetada), liga a navegação inferior às telas reais,
+adiciona rótulos acessíveis e devolve o link de volta para a galeria.
 
 ## Segurança
 

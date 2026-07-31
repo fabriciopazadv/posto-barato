@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+
+<html lang="pt-BR"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Combustível e recarga elétrica — Posto Barato</title>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        
+        .onboarding-gradient {
+            background: linear-gradient(135deg, theme('colors.surface-container-low') 0%, theme('colors.surface-container-high') 100%);
+        }
+    </style>
+<link rel="preload" href="/assets/fonts/inter-latin-f11d729b.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="/assets/css/app.css"/>
+<link rel="icon" href="/assets/img/logo-mark.svg" type="image/svg+xml"/>
+<link rel="apple-touch-icon" href="/assets/img/apple-touch-icon.png"/>
+<meta name="theme-color" content="#006c49"/>
+<meta name="robots" content="noindex, nofollow"/>
+<style>
+.pb-back-galeria{position:fixed;left:0;top:50%;transform:translateY(-50%);
+z-index:2147483647;display:inline-flex;align-items:center;gap:.3rem;
+padding:.5rem .6rem .5rem .45rem;border-radius:0 9999px 9999px 0;
+background:rgba(18,28,40,.8);color:#fff;font:600 11px/1 Inter,system-ui,sans-serif;
+text-decoration:none;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
+opacity:.45;transition:opacity .15s ease}
+.pb-back-galeria:hover,.pb-back-galeria:focus-visible{opacity:1}
+.pb-back-galeria:focus-visible{outline:2px solid #fff;outline-offset:2px}
+@media print{.pb-back-galeria{display:none}}
+</style>
+<meta name="description" content="Combustível e recarga elétrica — protótipo de interface do aplicativo Posto Barato."/>
+</head>
+<body class="bg-background text-on-background min-h-screen flex flex-col font-body-md antialiased md:items-center md:justify-center md:bg-surface-dim">
+<!-- Mobile View / Responsive Wrapper -->
+<main class="flex-1 flex flex-col h-full w-full max-w-[480px] bg-surface relative overflow-hidden md:h-[850px] md:rounded-[32px] md:shadow-2xl md:border md:border-outline-variant/30">
+<!-- Illustration Area (Top Half) -->
+<div class="relative flex-1 min-h-[50vh] flex flex-col items-center justify-center p-xl onboarding-gradient">
+<!-- Decorative Elements -->
+<div class="absolute top-10 left-10 w-24 h-24 bg-primary/5 rounded-full blur-xl"></div>
+<div class="absolute bottom-10 right-10 w-32 h-32 bg-tertiary-container/10 rounded-full blur-xl"></div>
+<!-- Main Illustration (Placeholder for Fuel Pump/EV Charger) -->
+<div class="relative w-full max-w-[280px] aspect-square rounded-[32px] overflow-hidden shadow-lg border border-surface/50 bg-surface-container-lowest">
+<img alt="Bomba de combustível e carregador elétrico" loading="lazy" decoding="async" class="w-full h-full object-cover mix-blend-multiply opacity-90" src="/assets/img/illus-combustivel-ev.svg"/>
+</div>
+<!-- Page Indicators -->
+<div class="absolute bottom-lg left-0 right-0 flex justify-center gap-2">
+<div class="w-2 h-2 rounded-full bg-outline-variant transition-all"></div>
+<div class="w-2 h-2 rounded-full bg-outline-variant transition-all"></div>
+<div class="w-6 h-2 rounded-full bg-primary transition-all"></div>
+</div>
+</div>
+<!-- Content Area (Bottom Half) -->
+<div class="bg-surface flex-shrink-0 pt-xl px-container-margin pb-xl flex flex-col gap-lg z-10 rounded-t-[32px] -mt-6 shadow-[0_-8px_30px_rgba(0,0,0,0.04)] relative">
+<div class="flex flex-col gap-md text-center">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">
+                    Combustível e energia em um só lugar
+                </h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-[320px] mx-auto">
+                    Localize postos e pontos de recarga para veículos elétricos.
+                </p>
+</div>
+<div class="mt-xl flex flex-col gap-sm w-full">
+<button type="button" class="w-full h-[56px] rounded-xl bg-primary text-on-primary font-label-bold text-[16px] tracking-wide flex items-center justify-center gap-sm hover:bg-on-primary-fixed-variant active:scale-[0.98] transition-all shadow-md">
+                    Começar agora
+                    <span aria-hidden="true" data-icon="arrow_forward" class="material-symbols-outlined" style="font-size: 20px;">&#xe5c8;</span>
+</button>
+</div>
+</div>
+</main>
+<a href="/" class="pb-back-galeria" title="Voltar para a galeria de telas">
+<span aria-hidden="true">&#x2190;</span> Galeria
+</a>
+</body></html>

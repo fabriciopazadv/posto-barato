@@ -1,0 +1,75 @@
+[build]
+  # Somente a pasta public/ vai para o CDN. O código da API, migrations SQL,
+  # schema Prisma, docker-compose e docs internos NUNCA são publicados.
+  publish = "public"
+  command = ""
+
+[build.environment]
+  NODE_VERSION = "22"
+
+# ---------------------------------------------------------------------------
+# Cabeçalhos de segurança (aplicados a todas as respostas)
+# ---------------------------------------------------------------------------
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains; preload"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    Cross-Origin-Resource-Policy = "same-origin"
+    # Protótipo: todo CSS/JS/fonte/imagem é servido do próprio domínio.
+    # 'unsafe-inline' em style-src é necessário pelos style="" das telas do Stitch.
+    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
+    # Galeria de protótipos: não deve ser indexada como se fosse o produto final.
+    X-Robots-Tag = "noindex, nofollow"
+
+# Assets versionados podem ter cache longo.
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/assets/fonts/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+    Access-Control-Allow-Origin = "*"
+
+# HTML sempre revalidado, para que um novo deploy apareça na hora.
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# ---------------------------------------------------------------------------
+# Redirects
+# ---------------------------------------------------------------------------
+# Caminhos do código-fonte que existiam no deploy anterior (quando a raiz do
+# repositório era publicada). Fecha o vazamento sem quebrar quem tenha o link.
+[[redirects]]
+  from = "/apps/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/packages/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/docs/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/docker/*"
+  to = "/404.html"
+  status = 404
+
+[[redirects]]
+  from = "/design-system/*"
+  to = "/404.html"
+  status = 404
