@@ -2,13 +2,13 @@
   "name": "@posto-barato/web",
   "version": "0.2.0",
   "private": true,
-  "description": "PWA do Posto Barato \u2014 cliente web da API p\u00fablica /api/v1",
+  "description": "PWA do Posto Barato — cliente web da API pública /api/v1",
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
     "start": "npx serve out -l 3000",
     "typecheck": "tsc --noEmit",
-    "lint": "next lint"
+    "lint": "eslint src"
   },
   "dependencies": {
     "@posto-barato/design-system": "workspace:*",
@@ -19,11 +19,11 @@
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@next/eslint-plugin-next": "^15.1.4",
     "@types/node": "^22.10.5",
     "@types/react": "^19.0.7",
     "@types/react-dom": "^19.0.3",
     "autoprefixer": "^10.4.20",
-    "eslint-config-next": "^15.1.4",
     "postcss": "^8.4.49",
     "tailwindcss": "^3.4.17",
     "typescript": "^5.7.2"

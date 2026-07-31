@@ -62,7 +62,7 @@ export async function apiFetch<T>(path: string, init?: RequestInit): Promise<T> 
         ...init?.headers,
       },
     });
-  } catch (cause) {
+  } catch {
     throw new PostoBaratoApiError(
       'NETWORK_ERROR',
       'Não foi possível falar com o servidor. Verifique sua conexão.',
