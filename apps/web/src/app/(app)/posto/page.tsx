@@ -42,7 +42,7 @@ function Loading() {
 function PostoContent() {
   const params = useSearchParams();
   const id = params.get('id') ?? '';
-  const { isFavorite, toggleFavorite, origin } = usePrefs();
+  const { isFavorite, toggleFavorite } = usePrefs();
   const [windowDays, setWindowDays] = useState<7 | 30 | 90>(30);
 
   const station = useAsync(() => (id ? getStation(id) : Promise.resolve(null)), [id]);
