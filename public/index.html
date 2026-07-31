@@ -118,7 +118,11 @@
       .card:hover { transform: none; }
     }
     .card img {
-      width: 100%; aspect-ratio: 9 / 16;
+      width: 100%;
+      /* height:auto é obrigatório: os atributos width/height do <img> viram
+         presentation hints e, sem isto, a altura fixa anula o aspect-ratio. */
+      height: auto;
+      aspect-ratio: 9 / 16;
       object-fit: cover; object-position: top;
       background: var(--surface-container);
       display: block;
@@ -159,41 +163,41 @@
     <section aria-labelledby="s-onboarding">
       <h2 id="s-onboarding">Onboarding</h2>
       <div class="grid">
-        <a class="card" href="/screens/onboarding/00-splash/"><img src="/screens/onboarding/00-splash/preview.webp" alt="Tela de splash do Posto Barato" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">00</span>Splash</div></a>
-        <a class="card" href="/screens/onboarding/01-precos/"><img src="/screens/onboarding/01-precos/preview.webp" alt="Tela de onboarding sobre preços" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Preços</div></a>
-        <a class="card" href="/screens/onboarding/02-economia-real/"><img src="/screens/onboarding/02-economia-real/preview.webp" alt="Tela de onboarding sobre economia real" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Economia real</div></a>
-        <a class="card" href="/screens/onboarding/03-combustivel-ev/"><img src="/screens/onboarding/03-combustivel-ev/preview.webp" alt="Tela de onboarding sobre combustível e veículos elétricos" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">03</span>Combustível &amp; EV</div></a>
-        <a class="card" href="/screens/onboarding/04-precos-refinado/"><img src="/screens/onboarding/04-precos-refinado/preview.webp" alt="Tela de onboarding sobre preços, versão refinada" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">04</span>Preços (refinado)</div></a>
-        <a class="card" href="/screens/onboarding/05-permissao-localizacao/"><img src="/screens/onboarding/05-permissao-localizacao/preview.webp" alt="Tela de permissão de localização" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">05</span>Permissão de localização</div></a>
-        <a class="card" href="/screens/onboarding/06-localizacao-refinado/"><img src="/screens/onboarding/06-localizacao-refinado/preview.webp" alt="Tela de localização, versão refinada" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">06</span>Localização (refinado)</div></a>
+        <a class="card" href="/screens/onboarding/00-splash/"><img src="/screens/onboarding/00-splash/preview.webp" alt="Tela de splash do Posto Barato" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">00</span>Splash</div></a>
+        <a class="card" href="/screens/onboarding/01-precos/"><img src="/screens/onboarding/01-precos/preview.webp" alt="Tela de onboarding sobre preços" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Preços</div></a>
+        <a class="card" href="/screens/onboarding/02-economia-real/"><img src="/screens/onboarding/02-economia-real/preview.webp" alt="Tela de onboarding sobre economia real" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Economia real</div></a>
+        <a class="card" href="/screens/onboarding/03-combustivel-ev/"><img src="/screens/onboarding/03-combustivel-ev/preview.webp" alt="Tela de onboarding sobre combustível e veículos elétricos" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">03</span>Combustível &amp; EV</div></a>
+        <a class="card" href="/screens/onboarding/04-precos-refinado/"><img src="/screens/onboarding/04-precos-refinado/preview.webp" alt="Tela de onboarding sobre preços, versão refinada" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">04</span>Preços (refinado)</div></a>
+        <a class="card" href="/screens/onboarding/05-permissao-localizacao/"><img src="/screens/onboarding/05-permissao-localizacao/preview.webp" alt="Tela de permissão de localização" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">05</span>Permissão de localização</div></a>
+        <a class="card" href="/screens/onboarding/06-localizacao-refinado/"><img src="/screens/onboarding/06-localizacao-refinado/preview.webp" alt="Tela de localização, versão refinada" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">06</span>Localização (refinado)</div></a>
       </div>
     </section>
 
     <section aria-labelledby="s-auth">
       <h2 id="s-auth">Autenticação</h2>
       <div class="grid">
-        <a class="card" href="/screens/auth/01-login/"><img src="/screens/auth/01-login/preview.webp" alt="Tela de login" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Login</div></a>
-        <a class="card" href="/screens/auth/02-login-refinado/"><img src="/screens/auth/02-login-refinado/preview.webp" alt="Tela de login, versão refinada" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Login (refinado)</div></a>
+        <a class="card" href="/screens/auth/01-login/"><img src="/screens/auth/01-login/preview.webp" alt="Tela de login" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Login</div></a>
+        <a class="card" href="/screens/auth/02-login-refinado/"><img src="/screens/auth/02-login-refinado/preview.webp" alt="Tela de login, versão refinada" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Login (refinado)</div></a>
       </div>
     </section>
 
     <section aria-labelledby="s-app">
       <h2 id="s-app">App principal</h2>
       <div class="grid">
-        <a class="card" href="/screens/app/01-home/"><img src="/screens/app/01-home/preview.webp" alt="Tela inicial do aplicativo" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Home</div></a>
-        <a class="card" href="/screens/app/02-mapa/"><img src="/screens/app/02-mapa/preview.webp" alt="Tela de mapa de postos" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Mapa</div></a>
-        <a class="card" href="/screens/app/03-detalhes-posto/"><img src="/screens/app/03-detalhes-posto/preview.webp" alt="Tela de detalhes do posto" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">03</span>Detalhes do posto</div></a>
-        <a class="card" href="/screens/app/04-comparador/"><img src="/screens/app/04-comparador/preview.webp" alt="Tela do comparador de preços" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">04</span>Comparador</div></a>
-        <a class="card" href="/screens/app/05-perfil-veiculos/"><img src="/screens/app/05-perfil-veiculos/preview.webp" alt="Tela de perfil e veículos" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">05</span>Perfil e veículos</div></a>
-        <a class="card" href="/screens/app/06-mapa-recarga/"><img src="/screens/app/06-mapa-recarga/preview.webp" alt="Tela de mapa de pontos de recarga elétrica" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">06</span>Mapa de recarga</div></a>
+        <a class="card" href="/screens/app/01-home/"><img src="/screens/app/01-home/preview.webp" alt="Tela inicial do aplicativo" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Home</div></a>
+        <a class="card" href="/screens/app/02-mapa/"><img src="/screens/app/02-mapa/preview.webp" alt="Tela de mapa de postos" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Mapa</div></a>
+        <a class="card" href="/screens/app/03-detalhes-posto/"><img src="/screens/app/03-detalhes-posto/preview.webp" alt="Tela de detalhes do posto" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">03</span>Detalhes do posto</div></a>
+        <a class="card" href="/screens/app/04-comparador/"><img src="/screens/app/04-comparador/preview.webp" alt="Tela do comparador de preços" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">04</span>Comparador</div></a>
+        <a class="card" href="/screens/app/05-perfil-veiculos/"><img src="/screens/app/05-perfil-veiculos/preview.webp" alt="Tela de perfil e veículos" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">05</span>Perfil e veículos</div></a>
+        <a class="card" href="/screens/app/06-mapa-recarga/"><img src="/screens/app/06-mapa-recarga/preview.webp" alt="Tela de mapa de pontos de recarga elétrica" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">06</span>Mapa de recarga</div></a>
       </div>
     </section>
 
     <section aria-labelledby="s-assinatura">
       <h2 id="s-assinatura">Assinatura</h2>
       <div class="grid">
-        <a class="card" href="/screens/assinatura/01-premium/"><img src="/screens/assinatura/01-premium/preview.webp" alt="Tela da assinatura Premium" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Premium</div></a>
-        <a class="card" href="/screens/assinatura/02-economia-total/"><img src="/screens/assinatura/02-economia-total/preview.webp" alt="Tela de economia total acumulada" width="498" height="1600" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Economia total</div></a>
+        <a class="card" href="/screens/assinatura/01-premium/"><img src="/screens/assinatura/01-premium/preview.webp" alt="Tela da assinatura Premium" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">01</span>Premium</div></a>
+        <a class="card" href="/screens/assinatura/02-economia-total/"><img src="/screens/assinatura/02-economia-total/preview.webp" alt="Tela de economia total acumulada" width="600" height="1298" loading="lazy" decoding="async"><div class="label"><span class="num">02</span>Economia total</div></a>
       </div>
     </section>
   </main>
