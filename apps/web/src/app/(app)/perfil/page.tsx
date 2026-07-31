@@ -54,7 +54,7 @@ export default function PerfilPage() {
             <span className="min-w-0 flex-1">
               <span className="block text-body-lg font-bold">Posto Barato Premium</span>
               <span className="block text-body-md opacity-90">
-                Pagamento único, acesso vitalício.
+                7 dias grátis. Cancele quando quiser.
               </span>
             </span>
             <Icon name="chevron_right" />

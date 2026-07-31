@@ -59,7 +59,7 @@ export async function buildApp(env: Env): Promise<FastifyInstance> {
         { name: 'postos', description: 'Consulta de postos e preços' },
         { name: 'preços', description: 'Resumos, comparação e histórico' },
         { name: 'auth', description: 'Conta, login e sessão' },
-        { name: 'billing', description: 'Compra do Premium vitalício' },
+        { name: 'billing', description: 'Assinatura do Premium' },
       ],
     },
   });

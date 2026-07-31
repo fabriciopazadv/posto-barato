@@ -3,8 +3,10 @@
 Base: `/api/v1` · Documentação interativa (Swagger UI): `/docs` ·
 OpenAPI JSON: `/docs/json`
 
-Todos os endpoints deste incremento são **públicos e somente-leitura**. Áreas
-autenticadas (favoritos, alertas, veículos, assinatura) virão nos próximos.
+Os endpoints de catálogo, postos e preços são **públicos e somente-leitura**.
+Autenticação (`/auth/*`) e assinatura (`/billing/*`) estão documentadas em
+[`docs/architecture/auth-billing.md`](../architecture/auth-billing.md).
+Favoritos, alertas e veículos virão nos próximos incrementos.
 
 ## Sistema
 | Método | Rota | Descrição |
@@ -63,3 +65,17 @@ Ver a fórmula em [`docs/product/calculo-economia.md`](../product/calculo-econom
 ```
 Códigos: `VALIDATION_ERROR` (400), `BAD_REQUEST` (400), `NOT_FOUND` (404),
 `RATE_LIMITED` (429), `INTERNAL_ERROR` (500).
+
+## Assinatura
+
+| Método | Rota | Auth | Descrição |
+|---|---|---|---|
+| GET | `/billing/planos` | — | Planos, dias de teste e carência |
+| GET | `/billing/subscription` | access token | Estado da assinatura |
+| POST | `/billing/subscription` | access token | Escolhe o plano ou cria a cobrança |
+| DELETE | `/billing/subscription` | access token | Cancela |
+| POST | `/billing/webhook` | token do Asaas | Sinal do provedor |
+| POST | `/billing/cron` | `CRON_SECRET` | Virada do teste + reconciliação |
+
+Recurso pago sem assinatura em dia responde **402** com código
+`SUBSCRIPTION_REQUIRED`.

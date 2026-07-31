@@ -6,7 +6,6 @@ interface AuthUserRecord {
   id: string;
   email: string;
   name: string | null;
-  premiumSince: Date | null;
   createdAt: Date;
 }
 

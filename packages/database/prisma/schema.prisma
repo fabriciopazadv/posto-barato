@@ -36,19 +36,19 @@ model DataSource {
 
 /// Posto identificado pela coleta (Fase 1). Leitura pública.
 model Station {
-  id                String             @id @db.Uuid
-  displayName       String             @map("display_name")
-  displayAddress    String             @map("display_address")
-  neighborhood      String?
-  municipality      String
-  state             String
-  postalCode        String?            @map("postal_code")
-  latitude          Decimal?           @db.Decimal(9, 6)
-  longitude         Decimal?           @db.Decimal(9, 6)
-  active            Boolean            @default(true)
-  firstSeenAt       DateTime           @map("first_seen_at")
-  lastSeenAt        DateTime           @map("last_seen_at")
-  observations      PriceObservation[]
+  id             String             @id @db.Uuid
+  displayName    String             @map("display_name")
+  displayAddress String             @map("display_address")
+  neighborhood   String?
+  municipality   String
+  state          String
+  postalCode     String?            @map("postal_code")
+  latitude       Decimal?           @db.Decimal(9, 6)
+  longitude      Decimal?           @db.Decimal(9, 6)
+  active         Boolean            @default(true)
+  firstSeenAt    DateTime           @map("first_seen_at")
+  lastSeenAt     DateTime           @map("last_seen_at")
+  observations   PriceObservation[]
 
   @@index([municipality, state])
   @@map("stations")
@@ -113,18 +113,18 @@ model DemoStation {
 }
 
 /// Conta do cliente final. Sem multi-tenant — cada usuário é a própria conta.
-/// `premiumSince` é a fonte única de verdade do gate de acesso: não nulo ==
-/// Premium vitalício (comprado uma única vez, seção "assinatura vitalícia").
+/// O acesso aos recursos pagos é decidido pela `Subscription` relacionada,
+/// nunca por um campo booleano na conta: o estado da assinatura tem seis
+/// valores e depende do tempo (teste, carência, período pago pós-cancelamento).
 model User {
   id            String         @id @default(uuid()) @db.Uuid
   email         String         @unique
   passwordHash  String         @map("password_hash")
   name          String?
-  premiumSince  DateTime?      @map("premium_since")
   createdAt     DateTime       @default(now()) @map("created_at")
   updatedAt     DateTime       @updatedAt @map("updated_at")
   refreshTokens RefreshToken[]
-  purchases     Purchase[]
+  subscription  Subscription?
 
   @@map("users")
   @@schema("app")
@@ -148,35 +148,80 @@ model RefreshToken {
   @@schema("app")
 }
 
-enum PurchaseStatus {
-  PENDING
-  PAID
-  FAILED
-  REFUNDED
+enum SubscriptionPlan {
+  MENSAL
+  SEMESTRAL
+  ANUAL
 
   @@schema("app")
 }
 
-/// Compra única do Premium vitalício (R$ 9,99, sem recorrência). O
-/// pagamento real acontece via Asaas (Checkout hospedado, chargeType
-/// DETACHED); em desenvolvimento sem ASAAS_API_KEY o fluxo roda simulado.
-model Purchase {
-  id                 String         @id @default(uuid()) @db.Uuid
-  userId             String         @map("user_id") @db.Uuid
-  user               User           @relation(fields: [userId], references: [id])
-  amountCents        Int            @map("amount_cents")
-  currency           String         @default("BRL")
-  status             PurchaseStatus @default(PENDING)
-  provider           String         @default("asaas")
-  providerCheckoutId String?        @map("provider_checkout_id")
-  providerPaymentId  String?        @map("provider_payment_id")
-  paidAt             DateTime?      @map("paid_at")
-  createdAt          DateTime       @default(now()) @map("created_at")
-  updatedAt          DateTime       @updatedAt @map("updated_at")
+enum SubscriptionStatus {
+  TRIAL
+  TRIAL_EXPIRADO
+  AGUARDANDO_PAGAMENTO
+  ATIVA
+  CANCELADA
+  INADIMPLENTE
+
+  @@schema("app")
+}
+
+/// Assinatura do Premium: teste grátis seguido de ciclo mensal, semestral ou
+/// anual, cobrado pelo Asaas (API de Assinaturas, forma de pagamento aberta —
+/// a cada ciclo o cliente escolhe Pix, cartão ou boleto).
+///
+/// Os marcos do teste (`trialStartedAt`/`trialEndsAt`) são gravados no cadastro
+/// e nunca reescritos: é o que garante que ninguém ganha dias grátis de novo.
+/// Nenhuma cobrança existe no Asaas enquanto o teste corre — a intenção fica em
+/// `planoEscolhido` e a cobrança nasce na virada.
+model Subscription {
+  id     String @id @default(uuid()) @db.Uuid
+  userId String @unique @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  status SubscriptionStatus @default(TRIAL)
+  plano  SubscriptionPlan?
+
+  trialStartedAt DateTime @default(now()) @map("trial_started_at")
+  trialEndsAt    DateTime @map("trial_ends_at")
+
+  planoEscolhido SubscriptionPlan? @map("plano_escolhido")
+  /// Preço travado no ato da escolha: mudar a tabela não altera contrato firmado.
+  valorCentavos  Int?              @map("valor_centavos")
+
+  primeiraCobrancaEm DateTime? @map("primeira_cobranca_em")
+  proximaCobrancaEm  DateTime? @map("proxima_cobranca_em")
+  ultimoPagamentoEm  DateTime? @map("ultimo_pagamento_em")
+  /// Início da carência de 48h aberta pelo aviso de vencimento.
+  inadimplenteDesde  DateTime? @map("inadimplente_desde")
+  canceladaEm        DateTime? @map("cancelada_em")
+  /// Cancelada: até quando o período já pago ainda vale.
+  acessoAte          DateTime? @map("acesso_ate")
+
+  asaasCustomerId     String?  @map("asaas_customer_id")
+  asaasSubscriptionId String?  @unique @map("asaas_subscription_id")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@index([status, trialEndsAt])
+  @@index([updatedAt])
+  @@index([asaasCustomerId])
+  @@map("subscriptions")
+  @@schema("app")
+}
+
+/// Evento de cobrança já processado. Chave primária é o id do evento no Asaas:
+/// como ele reentrega em caso de falha, gravar antes de agir é o que impede um
+/// segundo envio de reprocessar o mesmo pagamento.
+model BillingEvent {
+  id           String   @id
+  userId       String?  @map("user_id") @db.Uuid
+  evento       String
+  payload      Json
+  processadoEm DateTime @default(now()) @map("processado_em")
 
   @@index([userId])
-  @@index([providerCheckoutId])
-  @@index([providerPaymentId])
-  @@map("purchases")
+  @@map("billing_events")
   @@schema("app")
 }

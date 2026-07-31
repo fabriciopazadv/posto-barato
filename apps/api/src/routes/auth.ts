@@ -52,7 +52,7 @@ export function registerAuthRoutes(app: FastifyInstance, ctx: AppContext): void 
         throw err;
       }
       const tokens = await issueTokenPair(user.id, ctx.auth);
-      const response = respond(user, tokens, body.clientType, reply, ctx);
+      const response = await respond(user, tokens, body.clientType, reply, ctx);
       reply.status(201);
       return response;
     },
@@ -114,19 +114,20 @@ export function registerAuthRoutes(app: FastifyInstance, ctx: AppContext): void 
   );
 }
 
-function respond(
+async function respond(
   user: Parameters<typeof toAuthUser>[0],
   tokens: Awaited<ReturnType<typeof issueTokenPair>>,
   clientType: 'web' | 'mobile',
   reply: FastifyReply,
   ctx: AppContext,
-): AuthResponse {
+): Promise<AuthResponse> {
+  const authUser = await toAuthUser(user);
   if (clientType === 'mobile') {
-    return { user: toAuthUser(user), tokens };
+    return { user: authUser, tokens };
   }
   setRefreshCookie(reply, tokens.refreshToken!, ctx);
   return {
-    user: toAuthUser(user),
+    user: authUser,
     tokens: { accessToken: tokens.accessToken, accessTokenExpiresAt: tokens.accessTokenExpiresAt },
   };
 }
