@@ -1,0 +1,81 @@
+/* Fontes auto-hospedadas — nenhuma chamada a terceiros. */
+@import '../../public/assets/fonts/fonts.css';
+/* Variáveis de cor do design system (claro/escuro). */
+@import '@posto-barato/design-system/theme.css';
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    /* Evita o "pulo" da barra do navegador móvel ao rolar. */
+    scroll-behavior: smooth;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  body {
+    @apply bg-background text-on-background font-sans antialiased;
+    /* Áreas seguras do iPhone: a navegação inferior encosta no gesture bar. */
+    padding-bottom: env(safe-area-inset-bottom);
+    text-rendering: optimizeLegibility;
+  }
+
+  /* DESIGN.md: foco sempre visível — o app é usado em movimento. */
+  :focus-visible {
+    @apply outline-none ring-2 ring-primary ring-offset-2 ring-offset-background;
+  }
+
+  /* Números de preço com largura fixa não "dançam" ao atualizar. */
+  .tabular { font-variant-numeric: tabular-nums; }
+}
+
+@layer components {
+  /* Nível 1 do DESIGN.md: borda sutil + sombra difusa. */
+  .pb-card {
+    @apply rounded-lg border border-outline-variant bg-surface-container-lowest shadow-card;
+  }
+
+  /* Pílula reservada a status e chips de seleção (DESIGN.md). */
+  .pb-pill {
+    @apply inline-flex items-center gap-xs rounded-full px-3 py-1 text-label-bold;
+  }
+
+  .pb-btn {
+    @apply inline-flex min-h-touch items-center justify-center gap-sm rounded-md
+           px-lg text-body-md font-bold transition-colors disabled:opacity-50
+           disabled:pointer-events-none;
+  }
+
+  .pb-btn-primary { @apply pb-btn bg-primary text-on-primary hover:bg-on-primary-fixed-variant; }
+
+  .pb-btn-secondary {
+    @apply pb-btn border-2 border-tertiary text-tertiary hover:bg-tertiary-fixed/40;
+  }
+
+  .pb-btn-ghost { @apply pb-btn text-on-surface-variant hover:bg-surface-container; }
+
+  /* Inputs de 56px, conforme DESIGN.md (uso em movimento). */
+  .pb-input {
+    @apply h-14 w-full rounded-md border border-outline-variant bg-surface-container-low
+           px-md text-body-lg text-on-surface placeholder:text-on-surface-variant/70
+           focus:border-primary focus:outline-none focus:ring-2 focus:ring-primary/30;
+  }
+
+  .pb-skeleton { @apply animate-pulse rounded-md bg-surface-container-high; }
+}
+
+@layer utilities {
+  /* Listas horizontais de chips: rolam sem barra visível. */
+  .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  .hide-scrollbar::-webkit-scrollbar { display: none; }
+}

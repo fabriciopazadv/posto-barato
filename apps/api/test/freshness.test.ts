@@ -4,7 +4,7 @@ import {
   classifyConfidence,
   classifyFreshness,
   humanizeAge,
-} from '../src/domain/freshness.js';
+} from '@posto-barato/domain';
 
 const thresholds = { recentHours: 6, moderateHours: 24, oldHours: 72 };
 

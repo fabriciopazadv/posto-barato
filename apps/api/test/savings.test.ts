@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { computeComparison, type CompareCandidate } from '../src/domain/savings.js';
+import { computeComparison, type CompareCandidate } from '@posto-barato/domain';
 
 const base: Pick<CompareCandidate, 'freshness'> = { freshness: 'RECENT' };
 

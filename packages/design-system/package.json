@@ -1,0 +1,25 @@
+{
+  "name": "@posto-barato/design-system",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Tokens de marca do Posto Barato (DESIGN.md) como preset Tailwind + tema CSS",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./tailwind-preset": "./tailwind-preset.cjs",
+    "./theme.css": "./theme.css",
+    "./tokens.json": "./tokens.json"
+  },
+  "files": ["src", "tailwind-preset.cjs", "theme.css", "tokens.json"],
+  "scripts": {
+    "sync": "node sync.mjs",
+    "build": "node sync.mjs",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

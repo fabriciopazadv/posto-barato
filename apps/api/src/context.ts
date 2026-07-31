@@ -1,5 +1,5 @@
 import type { Env } from './config/env.js';
-import type { FreshnessThresholds } from './domain/freshness.js';
+import type { FreshnessThresholds } from '@posto-barato/domain';
 
 export interface AuthConfig {
   accessSecret: string;

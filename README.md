@@ -29,9 +29,17 @@ coletor, o Nota MT, evidências ou o banco diretamente.
   [`docs/architecture/auth-billing.md`](docs/architecture/auth-billing.md).
 - **Docker Compose** (PostgreSQL+PostGIS, Redis, API), `.env.example` e docs.
 
-⏳ Próximos incrementos (não incluídos aqui): app mobile (Expo), web/PWA
-(Next.js), favoritos, alertas, veículos, recarga elétrica, contribuições,
-notificações, LGPD e design system em código. Ver [seção "Roadmap"](#roadmap).
+- **`packages/design-system`** — tokens do `DESIGN.md` como preset Tailwind e
+  tema CSS (claro/escuro), reaproveitáveis pelo futuro `apps/mobile`.
+- **`packages/domain`** — regras puras (frescor, geo, economia) compartilhadas
+  entre a API e os clientes.
+- **`apps/web`** — PWA em Next.js: início, mapa de postos, detalhes com
+  histórico, comparador de economia real, favoritos, recarga elétrica, perfil,
+  Premium e onboarding. Instalável, com modo escuro e tela offline.
+
+⏳ Próximos incrementos (não incluídos aqui): app mobile (Expo), alertas de
+preço, contribuições da comunidade, notificações e LGPD.
+Ver [seção "Roadmap"](#roadmap).
 
 ## Pré-requisitos
 
@@ -76,51 +84,94 @@ curl "http://localhost:3333/api/v1/stations?latitude=-16.47&longitude=-54.63&rad
 | `pnpm db:seed` | Semeia dados demonstrativos (Rondonópolis/MT) |
 | `pnpm db:reset` | Recria os schemas e semeia |
 | `pnpm docker:up` / `pnpm docker:down` | Sobe/derruba Postgres+Redis |
-| `pnpm css:build` | Compila o CSS do site estático |
-| `pnpm site:serve` | Serve `public/` localmente |
+| `pnpm --filter @posto-barato/web dev` | App em modo watch (porta 3000) |
+| `pnpm css:build` | Compila o CSS da galeria de protótipos |
+| `pnpm site:serve` | Serve `public/` (protótipos) localmente |
 
 ## Estrutura
 
 ```
-apps/api/               API pública de leitura
-packages/database/      Prisma + PostGIS + camada pública derivada + seed
-packages/shared-types/  Contratos TypeScript compartilhados
+apps/
+  api/                  API pública de leitura (Fastify + Swagger + Zod)
+  web/                  PWA em Next.js — o aplicativo em si
+packages/
+  database/             Prisma + PostGIS + camada pública derivada + seed
+  domain/               Regras puras: frescor, geo e cálculo de economia
+  design-system/        Tokens do DESIGN.md como preset Tailwind + tema CSS
+  shared-types/         Contratos TypeScript compartilhados (API ↔ clientes)
 docker/                 Dockerfile da API
 docs/                   architecture · security · api · product
-design-system/          Tokens de marca (DESIGN.md)
+design-system/          DESIGN.md — fonte de verdade dos tokens
 brand/                  Arte-mestra da marca (logo original)
-tools/                  Build do site estático (Tailwind + normalização das telas)
-public/                 >>> ÚNICO diretório publicado no Netlify <<<
-netlify.toml            publish = public, headers de segurança, redirects
+public/                 Galeria de protótipos do Stitch (publicada em /prototipos)
+tools/                  Build de ícones, telas do Stitch e cópia dos protótipos
+netlify.toml            publish = apps/web/out, headers, redirects
 ```
 
-## Site estático (galeria de protótipos)
+`packages/domain` existe para que o app e a API não divirjam no cálculo de
+economia, que é o núcleo do produto: as duas pontas importam a mesma função.
 
-`public/` é o **único** diretório publicado. Nada de `apps/`, `packages/`,
-`docs/` ou `docker/` vai para o CDN — o `netlify.toml` fixa `publish = "public"`
-e ainda devolve 404 para esses caminhos, caso alguém tenha um link antigo de
-quando a raiz do repositório era publicada.
+## Aplicativo (apps/web)
 
-O que está no ar é a **galeria de protótipos de interface**, não a plataforma:
-as telas são estáticas e os preços exibidos são fictícios. Por isso o site sai
-com `noindex` (`robots.txt` + header `X-Robots-Tag`) até a plataforma real
-entrar no ar.
-
-O site não faz nenhuma chamada a terceiros: Tailwind é compilado localmente,
-as fontes são auto-hospedadas e as ilustrações são SVGs versionados no repo.
+PWA em Next.js (App Router) com **export estático**: o app só conversa com a
+API pública `/api/v1` e não tem lado servidor, então não há função serverless
+nem runtime do Next no deploy — é CDN puro.
 
 ```bash
-pnpm css:build      # compila public/assets/css/app.css
-pnpm site:serve     # serve public/ em http://localhost:4173
-node tools/build-screens.mjs           # normaliza as telas do Stitch
-node tools/build-screens.mjs --check   # falha se algo estiver fora do padrão
+pnpm --filter @posto-barato/web dev     # http://localhost:3000
+pnpm --filter @posto-barato/web build   # gera apps/web/out
 ```
 
-`tools/build-screens.mjs` é idempotente e cuida do que o export do Stitch
-deixava quebrado: remove o Tailwind Play CDN e os links do Google Fonts, troca
-as URLs efêmeras de imagem por assets locais, converte os ícones para
-codepoints (a fonte é subsetada), liga a navegação inferior às telas reais,
-adiciona rótulos acessíveis e devolve o link de volta para a galeria.
+### Origem dos dados
+
+O app lê `NEXT_PUBLIC_API_URL`:
+
+| Variável | Comportamento |
+|---|---|
+| definida | consome a API real em `/api/v1` |
+| ausente | **modo demonstração** — camada local reproduzindo o seed de Rondonópolis/MT |
+
+O modo demonstração aplica as mesmas regras de `@posto-barato/domain` que a
+API usa, então trocar de um para o outro não muda números na tela, só a origem
+deles. Nenhuma tela chama `fetch` direto: tudo passa por `src/lib/data.ts`.
+
+Áreas que dependem de backend autenticado (login, compra do Premium) ficam
+explicitamente desabilitadas enquanto a API não estiver publicada — um login
+que parece funcionar mas não autentica seria pior do que nenhum.
+
+### Telas
+
+`/` início · `/mapa` postos · `/posto?id=` detalhes e histórico ·
+`/comparador` economia real · `/favoritos` · `/recarga` pontos de recarga ·
+`/perfil` veículos e tema · `/premium` · `/economia` · `/entrar` ·
+`/onboarding` · `/offline`
+
+### Design system
+
+`packages/design-system` converte o front matter de `design-system/DESIGN.md`
+em preset Tailwind + `theme.css`. As cores são custom properties, então o tema
+claro/escuro troca por CSS, sem duplicar classes com `dark:`.
+
+```bash
+pnpm --filter @posto-barato/design-system sync   # tokens.json → theme.css + tokens.generated.ts
+```
+
+## Galeria de protótipos
+
+O export original do Google Stitch continua versionado em `public/` e é
+publicado em **`/prototipos`**. Ele não faz nenhuma chamada a terceiros:
+Tailwind compilado localmente, fontes auto-hospedadas e ilustrações próprias.
+
+```bash
+pnpm css:build                          # CSS dos protótipos
+node tools/build-screens.mjs            # normaliza as telas (idempotente)
+node tools/build-screens.mjs --check    # falha se algo estiver fora do padrão
+node tools/build-icons.mjs              # subset da fonte de ícones (app + telas)
+```
+
+`tools/build-icons.mjs` resolve as ligaduras do Material Symbols para
+codepoints e subseta a fonte variável de ~4 MB para ~16 KB, preservando os
+eixos `FILL` e `wght`.
 
 ## Segurança
 
@@ -132,6 +183,7 @@ tempo real. Detalhes em [`docs/security/data-boundaries.md`](docs/security/data-
 
 Ordem de implementação da seção 39 da especificação. Incremento 1 cobre os
 passos 1–10 (fundação + API de leitura + geo + Swagger); incremento 2 cobre
-autenticação e o Premium vitalício (pagamento único). Próximos: clientes
-(mobile/web), favoritos/alertas/veículos, recarga elétrica, notificações e
-observabilidade.
+autenticação e o Premium vitalício (pagamento único); incremento 3 entrega o
+cliente web (PWA), o design system em código e o domínio compartilhado.
+Próximos: publicação da API, app mobile (Expo), alertas de preço,
+contribuições da comunidade, notificações e observabilidade.

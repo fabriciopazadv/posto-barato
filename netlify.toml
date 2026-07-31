@@ -1,14 +1,28 @@
+# Deploy do PWA (apps/web) + galeria de protótipos em /prototipos.
+#
+# O app é exportado estaticamente (`output: 'export'` no next.config.mjs):
+# ele só fala com a API pública /api/v1 e não tem lado servidor, então não há
+# funções serverless nem runtime do Next envolvidos — é CDN puro.
+
 [build]
-  # Somente a pasta public/ vai para o CDN. O código da API, migrations SQL,
-  # schema Prisma, docker-compose e docs internos NUNCA são publicados.
-  publish = "public"
-  command = ""
+  publish = "apps/web/out"
+  command = """
+    pnpm --filter @posto-barato/design-system sync && \
+    pnpm css:build && \
+    pnpm --filter @posto-barato/web build && \
+    node tools/copy-prototipos.mjs
+  """
 
 [build.environment]
   NODE_VERSION = "22"
+  PNPM_VERSION = "10"
+  # Sem NEXT_PUBLIC_API_URL o app roda em modo demonstração (dados do seed de
+  # Rondonópolis/MT). Defina esta variável no painel do Netlify assim que a API
+  # estiver publicada — não é preciso mudar código.
+  # NEXT_PUBLIC_API_URL = "https://api.postobarato.com.br"
 
 # ---------------------------------------------------------------------------
-# Cabeçalhos de segurança (aplicados a todas as respostas)
+# Cabeçalhos de segurança
 # ---------------------------------------------------------------------------
 [[headers]]
   for = "/*"
@@ -17,18 +31,19 @@
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
     Referrer-Policy = "strict-origin-when-cross-origin"
-    Permissions-Policy = "geolocation=(), camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
+    Permissions-Policy = "camera=(), microphone=(), payment=(), usb=(), interest-cohort=()"
     Cross-Origin-Opener-Policy = "same-origin"
-    Cross-Origin-Resource-Policy = "same-origin"
-    # Protótipo: todo CSS/JS/fonte/imagem é servido do próprio domínio.
-    # 'unsafe-inline' em style-src é necessário pelos style="" das telas do Stitch.
-    Content-Security-Policy = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; form-action 'none'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests"
-    # Galeria de protótipos: não deve ser indexada como se fosse o produto final.
+    # `script-src 'unsafe-inline'`: o export estático do Next injeta scripts
+    # inline (payload de hidratação) e não há servidor para gerar nonce.
+    # `connect-src https:` permite chamar a API pública em outra origem.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https:; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; object-src 'none'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests"
+    # Enquanto o app roda com dados de demonstração, ele não deve ser indexado
+    # como se os preços fossem reais. Remova junto com NEXT_PUBLIC_API_URL.
     X-Robots-Tag = "noindex, nofollow"
 
-# Assets versionados podem ter cache longo.
+# Assets com hash no nome podem ter cache imutável.
 [[headers]]
-  for = "/assets/*"
+  for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
@@ -36,19 +51,35 @@
   for = "/assets/fonts/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
-    Access-Control-Allow-Origin = "*"
 
-# HTML sempre revalidado, para que um novo deploy apareça na hora.
+[[headers]]
+  for = "/assets/img/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# HTML e service worker sempre revalidados, para um deploy novo aparecer na hora.
 [[headers]]
   for = "/*.html"
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[headers]]
+  for = "/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "public, max-age=3600"
+
 # ---------------------------------------------------------------------------
 # Redirects
 # ---------------------------------------------------------------------------
-# Caminhos do código-fonte que existiam no deploy anterior (quando a raiz do
-# repositório era publicada). Fecha o vazamento sem quebrar quem tenha o link.
+# Caminhos do código-fonte que existiam quando a raiz do repositório era
+# publicada. Fecha o vazamento sem quebrar links antigos.
 [[redirects]]
   from = "/apps/*"
   to = "/404.html"
@@ -73,3 +104,9 @@
   from = "/design-system/*"
   to = "/404.html"
   status = 404
+
+# A galeria de telas ficava na raiz; agora vive em /prototipos.
+[[redirects]]
+  from = "/screens/*"
+  to = "/prototipos/screens/:splat"
+  status = 301

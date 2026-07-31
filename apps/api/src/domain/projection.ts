@@ -8,7 +8,7 @@ import {
   classifyConfidence,
   classifyFreshness,
   type FreshnessThresholds,
-} from './freshness.js';
+} from '@posto-barato/domain';
 
 /** Fonte pública única — nunca a fonte interna do coletor (seções 2, 11). */
 export const PUBLIC_SOURCE = 'Banco de Dados Posto Barato';

@@ -1,0 +1,23 @@
+{
+  "name": "@posto-barato/domain",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "description": "Regras de domínio puras do Posto Barato (frescor, geo, economia), compartilhadas entre a API e os clientes",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint src",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@posto-barato/shared-types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
