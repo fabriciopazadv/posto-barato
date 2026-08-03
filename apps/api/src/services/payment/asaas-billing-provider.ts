@@ -27,7 +27,7 @@ import {
   type Plano,
   type TabelaPrecos,
 } from '@posto-barato/domain';
-import { prisma } from '@posto-barato/database';
+import { appDb } from '@posto-barato/database';
 
 /**
  * Lançado quando a cobrança real não está configurada em produção. Existe para
@@ -117,7 +117,7 @@ export class AsaasBillingProvider {
     plano: Plano,
     cpfCnpj: string | null,
   ): Promise<{ cobrancaEm: Date }> {
-    const sub = await prisma.subscription.update({
+    const sub = await appDb().subscription.update({
       where: { userId },
       data: {
         planoEscolhido: plano,
@@ -144,7 +144,7 @@ export class AsaasBillingProvider {
     plano: Plano,
     pagador: DadosPagador,
   ): Promise<{ simulado: boolean; vencimento: Date }> {
-    const sub = await prisma.subscription.findUnique({
+    const sub = await appDb().subscription.findUnique({
       where: { userId },
       select: {
         trialEndsAt: true,
@@ -170,7 +170,7 @@ export class AsaasBillingProvider {
       // Em produção a ausência da chave é erro, não degradação silenciosa.
       if (this.config.producao) throw new CobrancaNaoConfiguradaError();
       // Demonstração: assume a cobrança como paga para o fluxo seguir.
-      await prisma.subscription.update({
+      await appDb().subscription.update({
         where: { userId },
         data: {
           plano,
@@ -189,7 +189,7 @@ export class AsaasBillingProvider {
 
     // Idempotência: assinatura já criada no Asaas → nada a criar lá fora.
     if (sub.asaasSubscriptionId) {
-      await prisma.subscription.updateMany({
+      await appDb().subscription.updateMany({
         where: { userId, status: { in: ['TRIAL', 'TRIAL_EXPIRADO'] } },
         data: { status: 'AGUARDANDO_PAGAMENTO' },
       });
@@ -211,7 +211,7 @@ export class AsaasBillingProvider {
         externalReference: userId,
       });
       asaasCustomerId = cliente.id;
-      await prisma.subscription.update({
+      await appDb().subscription.update({
         where: { userId },
         data: { asaasCustomerId, cpfCnpjPagador: cpfCnpj },
       });
@@ -234,7 +234,7 @@ export class AsaasBillingProvider {
     // 3) Vincula a assinatura recém-criada. É o primeiro gravado depois da
     //    chamada ao Asaas: sem este vínculo existiria cobrança lá fora sem
     //    contrapartida aqui dentro.
-    await prisma.subscription.update({
+    await appDb().subscription.update({
       where: { userId },
       data: {
         plano,

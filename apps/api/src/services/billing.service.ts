@@ -4,7 +4,7 @@
  * Espelha o desenho do mei-facil: as regras vivem em `@posto-barato/domain`
  * (puras, testáveis) e aqui fica só a orquestração com banco e provedor.
  */
-import { prisma, type Prisma, type Subscription } from '@posto-barato/database';
+import { appDb, type Prisma, type Subscription } from '@posto-barato/database';
 import {
   DocumentoInvalidoError,
   assinaturaPermiteAcesso,
@@ -51,7 +51,7 @@ export async function createTrialSubscription(
   userId: string,
   cadastroEm: Date = new Date(),
 ): Promise<void> {
-  await prisma.subscription.create({
+  await appDb().subscription.create({
     data: {
       userId,
       status: 'TRIAL',
@@ -83,7 +83,7 @@ export function toSummary(sub: Subscription, agora: Date = new Date()): Subscrip
 }
 
 export async function getSubscription(userId: string): Promise<SubscriptionSummary | null> {
-  const sub = await prisma.subscription.findUnique({ where: { userId } });
+  const sub = await appDb().subscription.findUnique({ where: { userId } });
   return sub ? toSummary(sub) : null;
 }
 
@@ -108,7 +108,7 @@ export async function subscribe(
   cpfCnpjInformado: string | undefined,
   ctx: AppContext,
 ): Promise<{ efeito: 'plano_registrado' | 'cobranca_criada'; cobrancaEm: Date; simulado: boolean }> {
-  const sub = await prisma.subscription.findUnique({
+  const sub = await appDb().subscription.findUnique({
     where: { userId },
     select: { trialEndsAt: true, status: true, cpfCnpjPagador: true },
   });
@@ -139,7 +139,7 @@ export async function subscribe(
   }
 
   // ── Caminho 2: dias grátis já usados — cobrança criada agora ────────────
-  const user = await prisma.user.findUniqueOrThrow({
+  const user = await appDb().user.findUniqueOrThrow({
     where: { id: userId },
     select: { name: true, email: true },
   });
@@ -165,7 +165,7 @@ export async function cancelSubscription(
   userId: string,
   ctx: AppContext,
 ): Promise<{ acessoAte: Date | null; jaCancelada: boolean }> {
-  const sub = await prisma.subscription.findUnique({ where: { userId } });
+  const sub = await appDb().subscription.findUnique({ where: { userId } });
   if (!sub) throw new SubscriptionNotFoundError();
   if (sub.status === 'CANCELADA') {
     return { acessoAte: sub.acessoAte, jaCancelada: true };
@@ -184,7 +184,7 @@ export async function cancelSubscription(
     // Ainda em teste: nenhuma cobrança existiu. Some a intenção de assinatura e
     // os dias grátis restantes seguem valendo. O documento vai junto: sem
     // cobrança à vista não há por que o app seguir guardando o CPF de alguém.
-    await prisma.subscription.update({
+    await appDb().subscription.update({
       where: { userId },
       data: {
         planoEscolhido: null,
@@ -197,7 +197,7 @@ export async function cancelSubscription(
   }
 
   const acessoAte = fimDoPeriodoPago(sub, agora);
-  await prisma.subscription.update({
+  await appDb().subscription.update({
     where: { userId },
     data: { status: 'CANCELADA', canceladaEm: agora, acessoAte, planoEscolhido: null },
   });
@@ -239,7 +239,7 @@ export async function registerBillingEvent(
   payload: unknown,
 ): Promise<boolean> {
   try {
-    await prisma.billingEvent.create({
+    await appDb().billingEvent.create({
       data: { id, evento, payload: payload as Prisma.InputJsonValue },
     });
     return true;
@@ -255,13 +255,13 @@ export async function registerBillingEvent(
  */
 async function localizarAssinatura(refs: RefsAsaas): Promise<Subscription | null> {
   if (refs.asaasSubscriptionId) {
-    const s = await prisma.subscription.findFirst({
+    const s = await appDb().subscription.findFirst({
       where: { asaasSubscriptionId: refs.asaasSubscriptionId },
     });
     if (s) return s;
   }
   if (refs.asaasCustomerId) {
-    return prisma.subscription.findFirst({ where: { asaasCustomerId: refs.asaasCustomerId } });
+    return appDb().subscription.findFirst({ where: { asaasCustomerId: refs.asaasCustomerId } });
   }
   return null;
 }
@@ -282,7 +282,7 @@ export async function applyExternalStatus(
   const agora = new Date();
   const plano: Plano = (sub.planoEscolhido ?? sub.plano ?? 'MENSAL') as Plano;
 
-  await prisma.subscription.update({
+  await appDb().subscription.update({
     where: { id: sub.id },
     data: {
       status,
@@ -319,7 +319,7 @@ export async function linkAsaasIds(
 ): Promise<void> {
   // updateMany (e não update) para um usuário removido não virar 500 e travar a
   // fila sequencial de webhooks do Asaas.
-  await prisma.subscription.updateMany({
+  await appDb().subscription.updateMany({
     where: { userId },
     data: {
       plano,

@@ -21,7 +21,7 @@ export const DEMO_NOTICE = 'Dados demonstrativos.';
 
 /**
  * Linha crua vinda de app.public_latest_prices. Contém APENAS campos públicos —
- * a matview não seleciona evidências, raw_visible_data nem caminhos internos.
+ * a matview não seleciona evidências, payload bruto nem caminhos internos.
  * Campos numéricos podem chegar como string (numeric do Postgres via raw query).
  */
 export interface PublicPriceRow {
@@ -40,10 +40,17 @@ export interface PublicPriceRow {
   price: string | number;
   currency: string;
   unit: string;
-  estimated_observed_at: Date | string | null;
-  estimated_time: boolean;
+  /** Data de negócio: quando o preço valia na bomba. Nunca nula na projeção. */
+  observed_at: Date | string;
+  /** true quando a hora foi inferida, e não lida diretamente da fonte. */
+  observed_at_estimated: boolean;
+  /** Quando o dado entrou no Banco de Dados Posto Barato. */
   collected_at: Date | string;
+  /** A fonte marcou a observação como vencida, ou `expires_at` já passou. */
+  is_expired: boolean;
   confidence_score: string | number;
+  /** Nome público da fonte. Nunca o nome interno do coletor. */
+  source_name: string;
   distance_km?: string | number | null;
 }
 
@@ -57,25 +64,37 @@ function asDate(value: Date | string): Date {
   return value instanceof Date ? value : new Date(value);
 }
 
+/**
+ * Converte uma linha da projeção no preço público.
+ *
+ * A idade é medida a partir da DATA DE NEGÓCIO, não da coleta. Um preço visto na
+ * bomba há três dias e recoletado há uma hora tem três dias de idade — medir
+ * pela coleta o classificaria como RECENT e diria ao usuário que é de agora.
+ *
+ * O frescor tem duas origens que se somam: o relógio (as faixas configuráveis
+ * RECENT/MODERATE/OLD) e a própria fonte, que pode ter marcado a observação como
+ * vencida antes disso. Quando a fonte diz que venceu, `EXPIRED` prevalece — ela
+ * sabe da validade do dado o que o relógio não sabe.
+ */
 export function toPublicPrice(
   row: PublicPriceRow,
   thresholds: FreshnessThresholds,
   now: Date = new Date(),
 ): PublicPrice {
+  const observedAt = asDate(row.observed_at);
   const collectedAt = asDate(row.collected_at);
-  const ageMinutes = ageMinutesFrom(collectedAt, now);
-  const observedAt = row.estimated_observed_at ? asDate(row.estimated_observed_at) : null;
+  const ageMinutes = ageMinutesFrom(observedAt, now);
   return {
     productCode: row.product_code,
     productName: row.product_name,
     price: num(row.price) ?? 0,
     currency: row.currency,
     unit: row.unit,
-    observedAt: observedAt ? observedAt.toISOString() : null,
-    observedAtEstimated: row.estimated_time,
+    observedAt: observedAt.toISOString(),
+    observedAtEstimated: row.observed_at_estimated,
     collectedAt: collectedAt.toISOString(),
     ageMinutes,
-    freshness: classifyFreshness(ageMinutes, thresholds),
+    freshness: row.is_expired ? 'EXPIRED' : classifyFreshness(ageMinutes, thresholds),
     confidence: classifyConfidence(num(row.confidence_score) ?? 1),
   };
 }

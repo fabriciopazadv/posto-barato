@@ -15,10 +15,14 @@ coletor, o Nota MT, evidências ou o banco diretamente.
 
 - **Monorepo** (pnpm + Turborepo + TypeScript strict).
 - **`packages/shared-types`** — contratos compartilhados.
-- **`packages/database`** — Prisma lendo o schema `collector` (parcial,
-  somente-leitura) + schema `app` com **PostGIS** e a matview pública
-  **`app.public_latest_prices`** + seed demonstrativo (Rondonópolis/MT) +
-  tabelas de conta/sessão/compra (`users`, `refresh_tokens`, `purchases`).
+- **`packages/database`** — integração com o banco operacional do coletor:
+  **views de compatibilidade** `collector.*` sobre as tabelas do coletor em
+  `public.*`, schema `app` com **PostGIS** e a projeção pública
+  **`app.public_latest_prices`**, migrador versionado (registro, checksum,
+  transação, advisory lock), refresh com registro e retentativa, diagnóstico
+  (`db:doctor`), papéis/grants para o administrador e seed demonstrativo
+  (Rondonópolis/MT). Ver
+  [`docs/operations/database-integration.md`](docs/operations/database-integration.md).
 - **`apps/api`** — API `/api/v1` (Fastify + Swagger + Zod): saúde, config,
   produtos, municípios, postos (proximidade/filtros/ordenação), detalhes,
   preços (latest/summary/compare) e histórico. Projeções públicas, classificação
@@ -55,17 +59,22 @@ Ver [seção "Roadmap"](#roadmap).
 pnpm install
 cp .env.example .env
 
-# sobe PostgreSQL+PostGIS e Redis
+# sobe PostgreSQL 16 + PostGIS e Redis
 pnpm docker:up
 
-# aplica o schema (collector bootstrap p/ dev + schema app/PostGIS) e semeia demo
+# fixture local do coletor + migrações versionadas, e semeia o demo
 pnpm db:generate
-pnpm db:migrate
+pnpm db:setup
 pnpm db:seed
 
 # inicia a API em http://localhost:3333/api/v1 (Swagger em /docs)
 pnpm dev:api
 ```
+
+Em um banco real (com o coletor já operacional), o caminho é outro: `db:setup`
+nunca é usado, quem migra é `db:migrate`, e papéis e grants são executados pelo
+administrador. Ver
+[`docs/operations/database-integration.md`](docs/operations/database-integration.md).
 
 Exemplos:
 
@@ -83,10 +92,15 @@ curl "http://localhost:3333/api/v1/stations?latitude=-16.47&longitude=-54.63&rad
 | `pnpm build` | Build de todos os pacotes |
 | `pnpm typecheck` | Checagem de tipos |
 | `pnpm lint` | Lint |
-| `pnpm test` | Testes unitários |
-| `pnpm db:migrate` | Aplica migrações (SQL: collector bootstrap + app/PostGIS) |
+| `pnpm test` | Testes unitários (sem infraestrutura) |
+| `pnpm test:integration` | Testes de integração (exige `TEST_DATABASE_URL`) |
+| `pnpm db:doctor` | Diagnostica o banco — só lê, não altera nada |
+| `pnpm db:migrate` | Aplica as migrações pendentes |
+| `pnpm db:migrate:status` | Lista aplicadas, pendentes e alteradas |
+| `pnpm db:setup` | Fixture local do coletor + migrações (**só desenvolvimento**) |
 | `pnpm db:seed` | Semeia dados demonstrativos (Rondonópolis/MT) |
-| `pnpm db:reset` | Recria os schemas e semeia |
+| `pnpm db:refresh` | Atualiza a projeção pública de preços |
+| `pnpm db:reset` | Destrutivo: recria schemas locais e semeia |
 | `pnpm docker:up` / `pnpm docker:down` | Sobe/derruba Postgres+Redis |
 | `pnpm --filter @posto-barato/web dev` | App em modo watch (porta 3000) |
 | `pnpm css:build` | Compila o CSS da galeria de protótipos |

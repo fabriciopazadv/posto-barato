@@ -1,4 +1,4 @@
-import { Prisma, prisma } from '@posto-barato/database';
+import { Prisma, appDb, readonlyDb } from '@posto-barato/database';
 import type {
   CompareResult,
   Municipality,
@@ -27,7 +27,9 @@ import {
 } from './queries.js';
 
 export async function listProducts(): Promise<Product[]> {
-  const products = await prisma.product.findMany({
+  // `product` aponta para collector.products, que é uma VIEW: leitura funciona,
+  // escrita não existe nem no banco nem no papel usado por esta conexão.
+  const products = await readonlyDb().product.findMany({
     where: { active: true },
     orderBy: { canonicalCode: 'asc' },
   });
@@ -40,7 +42,7 @@ export async function listProducts(): Promise<Product[]> {
 }
 
 export async function listMunicipalities(): Promise<Municipality[]> {
-  return prisma.$queryRaw<Municipality[]>`
+  return readonlyDb().$queryRaw<Municipality[]>`
     SELECT municipality, state, COUNT(DISTINCT station_id)::int AS "stationCount"
     FROM app.public_latest_prices
     GROUP BY municipality, state
@@ -112,7 +114,9 @@ export async function priceSummary(
     avg: Number(r.avg),
     max: Number(r.max),
     stationCount: r.station_count,
-    collectedAt: new Date(r.collected_at).toISOString(),
+    // Data de negócio da observação mais recente do grupo — a mesma base que o
+    // frescor usa, para o resumo não contradizer o preço que ele resume.
+    collectedAt: new Date(r.observed_at).toISOString(),
   }));
 }
 
@@ -189,10 +193,19 @@ export async function priceHistory(
   };
 }
 
-/** Verificação de saúde da dependência de banco (sem expor detalhes internos). */
+/**
+ * Verificação de saúde do banco (sem expor detalhes internos).
+ *
+ * Testa as DUAS conexões: a API precisa das duas para funcionar, e uma
+ * prontidão que só checa a leitura declara o serviço pronto enquanto o login e
+ * a cobrança estão fora do ar.
+ */
 export async function pingDatabase(): Promise<boolean> {
   try {
-    await prisma.$queryRaw(Prisma.sql`SELECT 1`);
+    await Promise.all([
+      readonlyDb().$queryRaw(Prisma.sql`SELECT 1`),
+      appDb().$queryRaw(Prisma.sql`SELECT 1`),
+    ]);
     return true;
   } catch {
     return false;

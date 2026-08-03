@@ -1,6 +1,6 @@
 import { timingSafeEqual } from 'node:crypto';
 import type { FastifyInstance } from 'fastify';
-import { prisma } from '@posto-barato/database';
+import { appDb } from '@posto-barato/database';
 import {
   CARENCIA_HORAS,
   TRIAL_DIAS,
@@ -243,7 +243,7 @@ export function registerBillingRoutes(app: FastifyInstance, ctx: AppContext): vo
       preHandler: app.requireAuth,
     },
     async (request) => {
-      const sub = await prisma.subscription.findUnique({ where: { userId: request.user!.id } });
+      const sub = await appDb().subscription.findUnique({ where: { userId: request.user!.id } });
       if (!sub) throw notFound('Assinatura não encontrada.');
       return {
         ...toSummary(sub),

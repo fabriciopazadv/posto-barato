@@ -145,6 +145,28 @@ export interface Paginated<T> {
   hasNextPage: boolean;
 }
 
+/**
+ * Envelope das listas sem paginação (`/products`, `/municipalities`,
+ * `/prices/summary`). Mesmo formato do campo `data` de `Paginated`, para que
+ * acrescentar paginação a uma dessas rotas no futuro não quebre o cliente.
+ *
+ * Existir como tipo compartilhado é o que impede a divergência que havia aqui:
+ * a API respondia `{ data: [...] }` e o app declarava esperar `[...]`, e nada
+ * acusava — o app roda em modo demonstração, então o erro só apareceria quando
+ * alguém apontasse `NEXT_PUBLIC_API_URL` para a API de verdade.
+ */
+export interface ListResponse<T> {
+  data: T[];
+}
+
+/** Resposta de `GET /stations/:id/prices`. */
+export interface StationPricesResponse {
+  stationId: string;
+  /** Sempre "Banco de Dados Posto Barato". */
+  source: string;
+  prices: PublicPrice[];
+}
+
 export interface PublicConfig {
   environment: string;
   demoMode: boolean;

@@ -27,10 +27,13 @@ function row(overrides: Partial<PublicPriceRow>): PublicPriceRow {
     price: '3.89',
     currency: 'BRL',
     unit: 'L',
-    estimated_observed_at: new Date('2026-07-14T10:00:00Z'),
-    estimated_time: true,
-    collected_at: new Date('2026-07-14T10:00:00Z'),
+    observed_at: new Date('2026-07-14T10:00:00Z'),
+    observed_at_estimated: true,
+    // Coletado depois de observado, como na vida real.
+    collected_at: new Date('2026-07-14T10:30:00Z'),
+    is_expired: false,
     confidence_score: '0.9',
+    source_name: 'Banco de Dados Posto Barato',
     ...overrides,
   };
 }
@@ -45,10 +48,35 @@ describe('toPublicPrice', () => {
     expect(price.confidence).toBe('HIGH');
   });
 
+  it('mede a idade pela data de negócio, não pela coleta', () => {
+    // Preço visto na bomba há 3 dias, recoletado agora há pouco. Medir pela
+    // coleta diria "RECENT" e mostraria um preço de 3 dias como sendo de agora.
+    const price = toPublicPrice(
+      row({
+        observed_at: new Date('2026-07-11T12:00:00Z'),
+        collected_at: new Date('2026-07-14T11:30:00Z'),
+      }),
+      thresholds,
+      now,
+    );
+    expect(price.ageMinutes).toBe(3 * 24 * 60);
+    expect(price.freshness).toBe('OLD');
+  });
+
+  it('respeita o vencimento declarado pela fonte mesmo com preço recém-observado', () => {
+    const price = toPublicPrice(row({ is_expired: true }), thresholds, now);
+    expect(price.ageMinutes).toBe(120); // pelo relógio, seria RECENT
+    expect(price.freshness).toBe('EXPIRED');
+  });
+
   it('não expõe nenhum campo interno do coletor', () => {
     const price = toPublicPrice(row({}), thresholds, now);
     const keys = Object.keys(price);
-    for (const forbidden of ['rawVisibleData', 'raw_visible_data', 'evidenceId', 'fingerprint', 'internalName']) {
+    for (const forbidden of [
+      'rawPayload', 'raw_payload', 'rawVisibleData', 'evidenceId', 'evidencePath',
+      'fingerprint', 'observationFingerprint', 'sourceRecordHash', 'internalName',
+      'cnpj', 'anpCode', 'collectionRunId',
+    ]) {
       expect(keys).not.toContain(forbidden);
     }
   });
@@ -80,7 +108,7 @@ describe('toStationDetail', () => {
 
   it('adiciona aviso quando há preço expirado', () => {
     const [summary] = groupStations(
-      [row({ collected_at: new Date('2026-07-10T00:00:00Z') })],
+      [row({ observed_at: new Date('2026-07-10T00:00:00Z') })],
       thresholds,
       now,
     );

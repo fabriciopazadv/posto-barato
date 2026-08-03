@@ -10,6 +10,7 @@ import type {
   CancelSubscriptionResponse,
   CompareInput,
   CompareResult,
+  ListResponse,
   Municipality,
   Paginated,
   PriceHistory,
@@ -20,6 +21,7 @@ import type {
   PublicStationDetail,
   PublicStationSummary,
   PlansResponse,
+  StationPricesResponse,
   SubscribeResponse,
   SubscriptionPlan,
   SubscriptionSummary,
@@ -39,14 +41,23 @@ export async function getConfig(): Promise<PublicConfig> {
   return apiFetch<PublicConfig>('/api/v1/public/config');
 }
 
+/**
+ * As rotas de lista da API respondem em envelope `{ data: [...] }` — o mesmo
+ * formato do campo `data` de `Paginated`, usado por `/stations`. O app
+ * desembrulha aqui, num lugar só, para que nenhuma tela precise saber disso.
+ * O envelope é tipado em `@posto-barato/shared-types`, então API e app não têm
+ * como divergir em silêncio de novo.
+ */
 export async function getProducts(): Promise<Product[]> {
   if (USING_MOCK) return mock.mockProducts();
-  return apiFetch<Product[]>('/api/v1/products');
+  const { data } = await apiFetch<ListResponse<Product>>('/api/v1/products');
+  return data;
 }
 
 export async function getMunicipalities(): Promise<Municipality[]> {
   if (USING_MOCK) return mock.mockMunicipalities();
-  return apiFetch<Municipality[]>('/api/v1/municipalities');
+  const { data } = await apiFetch<ListResponse<Municipality>>('/api/v1/municipalities');
+  return data;
 }
 
 export async function getStations(
@@ -73,7 +84,10 @@ export async function getStation(id: string): Promise<PublicStationDetail | null
 
 export async function getStationPrices(id: string): Promise<PublicPrice[]> {
   if (USING_MOCK) return mock.mockStationPrices(id);
-  return apiFetch<PublicPrice[]>(`/api/v1/stations/${encodeURIComponent(id)}/prices`);
+  const response = await apiFetch<StationPricesResponse>(
+    `/api/v1/stations/${encodeURIComponent(id)}/prices`,
+  );
+  return response.prices;
 }
 
 export async function getStationHistory(
@@ -101,9 +115,10 @@ export async function getPriceSummary(
   productCode?: string,
 ): Promise<PriceSummary[]> {
   if (USING_MOCK) return mock.mockSummary(productCode);
-  return apiFetch<PriceSummary[]>(
+  const { data } = await apiFetch<ListResponse<PriceSummary>>(
     `/api/v1/prices/summary${buildQuery({ municipality, state, product: productCode })}`,
   );
+  return data;
 }
 
 export async function compareStations(input: CompareInput): Promise<CompareResult> {
