@@ -1,14 +1,29 @@
--- Privilégios dos papéis de runtime — EXECUTADO PELO ADMINISTRADOR.
+-- Privilégios dos papéis de runtime — EXECUTADO PELO PAPEL QUE MIGRA.
 --
 --   psql "$DATABASE_MIGRATION_URL" -v ON_ERROR_STOP=1 -f grants.sql
 --
 -- Sem senha, sem parâmetro: pode ser versionado, revisado e reexecutado à
 -- vontade. Rode DEPOIS de `roles.sql` e DEPOIS de cada `pnpm db:migrate`.
 --
--- Princípio: ninguém recebe privilégio sobre `public.*`. As views `collector.*`
--- são views comuns, executadas com os privilégios de quem as criou, então
--- SELECT na view é suficiente e o acesso às tabelas-base continua fechado.
--- É por isso que `price_reader` enxerga preços e não enxerga evidências.
+-- ---------------------------------------------------------------------------
+-- O que este arquivo NÃO faz
+-- ---------------------------------------------------------------------------
+-- Ele não concede nem revoga nada em `public.*`. Não por escolha de estilo: em
+-- produção quem é dono daquelas tabelas é o coletor, e um GRANT ou REVOKE feito
+-- por quem não é dono falha com "permission denied for table" — derrubando o
+-- script inteiro no meio, com metade dos privilégios aplicados.
+--
+-- O que precisa acontecer em `public.*` está em `prerequisites.sql`, executado
+-- pelo dono das tabelas. Aqui, a fronteira com `public` é apenas VERIFICADA, no
+-- bloco final.
+--
+-- ---------------------------------------------------------------------------
+-- Princípio
+-- ---------------------------------------------------------------------------
+-- As views `collector.*` são views comuns, executadas com os privilégios de
+-- quem as criou, então SELECT na view é suficiente e o acesso às tabelas-base
+-- continua fechado. É por isso que `price_reader` enxerga preços e não enxerga
+-- evidências.
 --
 -- Cada bloco só age se o papel existir, para que um ambiente sem coletor local
 -- (ou sem agendador) não derrube o script inteiro.
@@ -16,21 +31,25 @@
 \set ON_ERROR_STOP on
 
 -- ---------------------------------------------------------------------------
--- Dono das views: precisa ler as tabelas-base, e só elas.
+-- Pré-condição: o dono das views consegue ler as tabelas-base?
 -- ---------------------------------------------------------------------------
--- Sem isto as views de compatibilidade são criadas com sucesso e falham na
--- primeira consulta. O acesso é nominal — quatro tabelas, não o schema inteiro,
--- então nem o dono das views alcança collection_evidence ou collection_errors.
+-- Só conferimos. Sem este acesso, as views são criadas com sucesso e falham na
+-- primeira consulta — o Postgres não checa privilégio no CREATE VIEW.
 DO $$
 DECLARE
-  owner_role text := current_user;
-  t text;
+  sem_acesso text;
 BEGIN
-  FOREACH t IN ARRAY ARRAY['data_sources', 'stations', 'products', 'price_observations'] LOOP
-    IF to_regclass('public.' || t) IS NOT NULL THEN
-      EXECUTE format('GRANT SELECT ON public.%I TO %I', t, owner_role);
-    END IF;
-  END LOOP;
+  SELECT string_agg(format('public.%s', v.t), ', ')
+    INTO sem_acesso
+  FROM (VALUES ('data_sources'), ('stations'), ('products'), ('price_observations')) AS v(t)
+  WHERE to_regclass('public.' || v.t) IS NOT NULL
+    AND NOT has_table_privilege(current_user, 'public.' || v.t, 'SELECT');
+
+  IF sem_acesso IS NOT NULL THEN
+    RAISE EXCEPTION
+      'O papel % não tem SELECT em: %. Rode operations/prerequisites.sql (pelo dono das tabelas do coletor) antes deste script.',
+      current_user, sem_acesso;
+  END IF;
 END $$;
 
 -- ---------------------------------------------------------------------------
@@ -43,19 +62,18 @@ BEGIN
   GRANT USAGE ON SCHEMA app       TO price_reader;
   GRANT USAGE ON SCHEMA collector TO price_reader;
 
-  GRANT SELECT ON app.public_latest_prices    TO price_reader;
+  GRANT SELECT ON app.public_latest_prices     TO price_reader;
   -- Catálogo e histórico agregado. O histórico completo mora no coletor e é
   -- agregado no banco; o cliente nunca recebe observação bruta.
-  GRANT SELECT ON collector.products          TO price_reader;
+  GRANT SELECT ON collector.products           TO price_reader;
   GRANT SELECT ON collector.price_observations TO price_reader;
   -- Rótulo "Dados demonstrativos" na resposta pública.
-  GRANT SELECT ON app.demo_stations           TO price_reader;
+  GRANT SELECT ON app.demo_stations            TO price_reader;
 
-  -- Defensivo e idempotente: se um provisionamento anterior deu acesso amplo,
-  -- ele é retirado aqui.
-  REVOKE ALL ON ALL TABLES IN SCHEMA public FROM price_reader;
-  REVOKE ALL ON SCHEMA public FROM price_reader;
-  REVOKE ALL ON collector.stations    FROM price_reader;
+  -- Defensivo, e sobre objetos que ESTE papel possui. `collector.stations` e
+  -- `collector.data_sources` não são lidas diretamente pela API: os dados do
+  -- posto e o nome público da fonte já viajam na projeção.
+  REVOKE ALL ON collector.stations     FROM price_reader;
   REVOKE ALL ON collector.data_sources FROM price_reader;
 END $$;
 
@@ -73,11 +91,9 @@ BEGIN
   -- DELETE só aqui: sessão revogada e expirada é lixo, e limpá-la é rotina.
   GRANT SELECT, INSERT, UPDATE, DELETE ON app.refresh_tokens TO app_writer;
 
-  -- Sem acesso ao coletor nem à projeção pública: a conexão de escrita não tem
-  -- por que ler preço, e não poder é melhor do que não precisar.
-  REVOKE ALL ON ALL TABLES IN SCHEMA public FROM app_writer;
-  REVOKE ALL ON SCHEMA public    FROM app_writer;
-  REVOKE ALL ON SCHEMA collector FROM app_writer;
+  -- A conexão de escrita não tem por que ler preço, e não poder é melhor do
+  -- que não precisar.
+  REVOKE ALL ON SCHEMA collector         FROM app_writer;
   REVOKE ALL ON app.public_latest_prices FROM app_writer;
 END $$;
 
@@ -95,33 +111,43 @@ BEGIN
   GRANT SELECT, INSERT, UPDATE ON app.price_refresh_log TO price_refresher;
   GRANT USAGE ON SEQUENCE app.price_refresh_log_id_seq  TO price_refresher;
 
-  REVOKE ALL ON ALL TABLES IN SCHEMA public FROM price_refresher;
-  REVOKE ALL ON SCHEMA public            FROM price_refresher;
   REVOKE ALL ON app.public_latest_prices FROM price_refresher;
+  REVOKE ALL ON SCHEMA collector         FROM price_refresher;
 END $$;
 
 -- ---------------------------------------------------------------------------
--- collector_writer — escrita da coleta (Fase 1).
+-- collector_writer — o coletor não tem nada a fazer no schema da Fase 2.
 -- ---------------------------------------------------------------------------
--- A Fase 2 não administra o coletor; este bloco existe para a matriz de papéis
--- ficar completa e auditável em um só lugar. Concede nas tabelas que existirem,
--- nominalmente, e não no schema inteiro.
+-- A escrita nas tabelas do coletor é concedida em `prerequisites.sql`, pelo
+-- dono delas. Aqui só fechamos a porta do lado de cá.
 DO $$
-DECLARE
-  t text;
 BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'collector_writer') THEN RETURN; END IF;
-
-  GRANT USAGE ON SCHEMA public TO collector_writer;
-  FOREACH t IN ARRAY ARRAY[
-    'data_sources', 'collection_runs', 'stations', 'products', 'station_products',
-    'price_observations', 'collection_errors', 'collection_evidence', 'observation_evidence'
-  ] LOOP
-    IF to_regclass('public.' || t) IS NOT NULL THEN
-      EXECUTE format('GRANT SELECT, INSERT, UPDATE ON public.%I TO collector_writer', t);
-    END IF;
-  END LOOP;
-
-  -- O coletor não tem nada a fazer no schema da Fase 2.
   REVOKE ALL ON SCHEMA app FROM collector_writer;
+END $$;
+
+-- ---------------------------------------------------------------------------
+-- Verificação final da fronteira com `public`
+-- ---------------------------------------------------------------------------
+-- Nenhum papel de runtime pode ter privilégio nas tabelas do coletor. Não
+-- podemos revogar (não somos donos), então acusamos — e quem corrige é o dono.
+DO $$
+DECLARE
+  vazamento text;
+BEGIN
+  SELECT string_agg(format('%s em public.%s (%s)', r.rolname, c.relname, a.privilege_type), '; ')
+    INTO vazamento
+  FROM pg_class c
+  JOIN pg_namespace n ON n.oid = c.relnamespace
+  CROSS JOIN LATERAL aclexplode(c.relacl) a
+  JOIN pg_roles r ON r.oid = a.grantee
+  WHERE n.nspname = 'public'
+    AND c.relkind IN ('r', 'p', 'v', 'm')
+    AND r.rolname IN ('price_reader', 'app_writer', 'price_refresher');
+
+  IF vazamento IS NOT NULL THEN
+    RAISE EXCEPTION
+      'Papéis de runtime têm privilégio direto nas tabelas do coletor: %. O acesso deve passar pelas views collector.*. Peça ao dono das tabelas para revogar.',
+      vazamento;
+  END IF;
 END $$;

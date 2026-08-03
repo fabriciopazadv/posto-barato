@@ -53,16 +53,40 @@ async function inspect(client: Client): Promise<Report> {
   }
 
   // --- Tabelas do coletor -------------------------------------------------
+  // pg_attribute e pg_class, e não information_schema: o catálogo padrão SQL é
+  // FILTRADO POR PRIVILÉGIO. Um papel sem SELECT em public.stations recebe zero
+  // linhas dali, e o diagnóstico sairia "a tabela não existe" quando o problema
+  // é permissão — mandando o operador procurar no lugar errado.
   for (const [table, columns] of Object.entries(REQUIRED_COLUMNS)) {
     const { rows } = await client.query<{ column_name: string }>(
-      `SELECT column_name FROM information_schema.columns
-       WHERE table_schema = 'public' AND table_name = $1`,
+      `SELECT a.attname AS column_name
+       FROM pg_attribute a
+       JOIN pg_class c ON c.oid = a.attrelid
+       JOIN pg_namespace n ON n.oid = c.relnamespace
+       WHERE n.nspname = 'public' AND c.relname = $1
+         AND a.attnum > 0 AND NOT a.attisdropped`,
       [table],
     );
     if (rows.length === 0) {
       report.blocking.push(`public.${table} não existe.`);
       continue;
     }
+
+    const { rows: priv } = await client.query<{ pode_ler: boolean }>(
+      `SELECT has_table_privilege(current_user, $1, 'SELECT') AS pode_ler`,
+      [`public.${table}`],
+    );
+    if (!priv[0]?.pode_ler) {
+      // Não é detalhe: as views de compatibilidade rodam com os privilégios de
+      // quem as cria, e o Postgres aceita criá-las sem este acesso — só recusa
+      // na primeira consulta, já em produção.
+      report.blocking.push(
+        `Este papel não tem SELECT em public.${table}. ` +
+          'Rode operations/prerequisites.sql pelo dono das tabelas do coletor.',
+      );
+      continue;
+    }
+
     const present = new Set(rows.map((r) => r.column_name));
     const missing = columns.filter((c) => !present.has(c));
     if (missing.length > 0) {
@@ -90,9 +114,17 @@ async function inspect(client: Client): Promise<Report> {
   }
 
   // --- Vazamento de coluna privada ----------------------------------------
+  // Novamente pg_attribute: com information_schema, um papel sem privilégio
+  // veria zero colunas e o relatório diria "sem vazamento" justamente onde não
+  // poderia enxergar nada.
   const { rows: leaks } = await client.query<{ table_name: string; column_name: string }>(
-    `SELECT table_name, column_name FROM information_schema.columns
-     WHERE table_schema = 'collector' AND column_name = ANY($1)`,
+    `SELECT c.relname AS table_name, a.attname AS column_name
+     FROM pg_attribute a
+     JOIN pg_class c ON c.oid = a.attrelid
+     JOIN pg_namespace n ON n.oid = c.relnamespace
+     WHERE n.nspname = 'collector'
+       AND a.attnum > 0 AND NOT a.attisdropped
+       AND a.attname = ANY($1)`,
     [FORBIDDEN_COLUMNS],
   );
   for (const leak of leaks) {

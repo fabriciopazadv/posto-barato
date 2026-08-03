@@ -274,6 +274,39 @@ describe('campos privados', () => {
     expect(await privilegios()).toEqual(['SELECT']);
   });
 
+  it('a migração recusa criar as views sem SELECT nas tabelas-base', async () => {
+    // O Postgres ACEITA `CREATE VIEW` sobre uma tabela que o criador não pode
+    // ler; o erro só aparece quando alguém consulta a view. Sem o preflight, a
+    // migração terminaria com sucesso, o ledger registraria tudo aplicado, e a
+    // API quebraria em produção na primeira requisição — onde o papel que migra
+    // não é dono das tabelas do coletor.
+    await db.query(`DO $$ BEGIN
+        IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'papel_sem_privilegio') THEN
+          CREATE ROLE papel_sem_privilegio NOLOGIN;
+        END IF;
+      END $$`);
+    // CREATE no banco para o papel chegar até o preflight: o que precisa faltar
+    // é o SELECT nas tabelas do coletor, não a permissão de criar schema.
+    await db.query(
+      `DO $$ BEGIN
+         EXECUTE format('GRANT CREATE ON DATABASE %I TO papel_sem_privilegio', current_database());
+       END $$`,
+    );
+
+    const sql = await readFile(
+      join(SQL_DIR, 'migrations', '0003_collector_compat_views.sql'),
+      'utf8',
+    );
+
+    await db.query('BEGIN');
+    try {
+      await db.query('SET LOCAL ROLE papel_sem_privilegio');
+      await expect(db.query(sql)).rejects.toThrow(/não tem SELECT em/);
+    } finally {
+      await db.query('ROLLBACK');
+    }
+  });
+
   it('o schema collector contém apenas views, nunca tabelas', async () => {
     const { rows } = await db.query<{ relkind: string }>(
       `SELECT c.relkind FROM pg_class c

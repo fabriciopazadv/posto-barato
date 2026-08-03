@@ -97,41 +97,73 @@ tabela contra o banco.
 Executados por quem administra o PostgreSQL, com `migration_admin`, nesta ordem.
 Nenhum deles roda automaticamente.
 
+**A ordem importa, e quem executa cada passo também.** Os passos marcados
+`[DONO]` precisam do dono das tabelas do coletor (ou de um superusuário); os
+marcados `[MIGRA]` usam `migration_admin`. Trocar a ordem dos dois primeiros
+faz a migração falhar — de propósito, e com mensagem explicando.
+
 ```bash
-# 1. Diagnóstico — só lê. Rode ANTES de qualquer coisa.
+# 1. [MIGRA] Diagnóstico — só lê. Rode ANTES de qualquer coisa.
 DATABASE_MIGRATION_URL=... pnpm db:doctor
 
-# 2. Pré-requisito que exige superusuário (uma vez).
+# 2. [DONO] PostGIS (uma vez, exige superusuário).
 psql "$SUPERUSER_URL" -c 'CREATE EXTENSION IF NOT EXISTS postgis;'
 
-# 3. Papéis. As senhas vêm do cofre, nunca do histórico do shell.
-psql "$DATABASE_MIGRATION_URL" -v ON_ERROR_STOP=1 \
+# 3. [DONO] Papéis. As senhas vêm do cofre, nunca do histórico do shell.
+psql "$OWNER_URL" -v ON_ERROR_STOP=1 \
   -v collector_writer_password="$(...)" -v price_reader_password="$(...)" \
   -v app_writer_password="$(...)"       -v price_refresher_password="$(...)" \
   -f packages/database/prisma/sql/operations/roles.sql
 
-# 4. Migrações (schema app + views de compatibilidade + projeção).
+# 4. [DONO] Pré-requisitos: dá a migration_admin o SELECT nas quatro tabelas do
+#    coletor. SEM ISTO A MIGRAÇÃO RECUSA PROSSEGUIR — ver a seção abaixo.
+psql "$OWNER_URL" -v ON_ERROR_STOP=1 -v migration_role=migration_admin \
+  -f packages/database/prisma/sql/operations/prerequisites.sql
+
+# 5. [MIGRA] Migrações (schema app + views de compatibilidade + projeção).
 DATABASE_MIGRATION_URL=... pnpm db:migrate
 
-# 5. Privilégios. Rode depois de CADA migração.
+# 6. [MIGRA] Privilégios. Rode depois de CADA migração.
 psql "$DATABASE_MIGRATION_URL" -v ON_ERROR_STOP=1 \
   -f packages/database/prisma/sql/operations/grants.sql
 
-# 6. Primeira carga da projeção.
+# 7. [MIGRA] Primeira carga da projeção.
 DATABASE_REFRESH_URL=... pnpm db:refresh -- --by=cli
 
-# 7. Índices no coletor — PROPOSTA, para revisão de quem administra.
+# 8. [DONO] Índices no coletor — PROPOSTA, para revisão de quem administra.
 #    CONCURRENTLY: não pode rodar em transação, então nunca use -1.
-psql "$DATABASE_MIGRATION_URL" -v ON_ERROR_STOP=1 \
+psql "$OWNER_URL" -v ON_ERROR_STOP=1 \
   -f packages/database/prisma/sql/operations/collector_indexes.sql
 
-# 8. Confirmação.
+# 9. [MIGRA] Confirmação.
 DATABASE_MIGRATION_URL=... pnpm db:doctor
 ```
 
-O passo 7 é o único que toca objetos do coletor, e é por isso que está separado:
-adicionar índice muda o custo de escrita da coleta, e essa decisão é de quem é
-dono daquelas tabelas.
+O passo 8 é o único que altera objetos do coletor, e é por isso que está
+separado: adicionar índice muda o custo de escrita da coleta, e essa decisão é
+de quem é dono daquelas tabelas.
+
+### Por que os pré-requisitos são um passo à parte
+
+As views `collector.*` são views comuns, executadas com os privilégios de quem
+as criou. Para `price_reader` ler preços através delas sem ganhar acesso às
+tabelas-base, quem precisa conseguir ler as tabelas-base é o **dono das views** —
+`migration_admin`.
+
+E `migration_admin` não pode conceder isso a si mesmo: em produção quem é dono
+de `public.stations` é o coletor, e um `GRANT` executado por quem não é dono
+falha com "permission denied for table". Só o dono (ou um superusuário) pode.
+
+Pior: o PostgreSQL **aceita** `CREATE VIEW` sobre uma tabela que o criador não
+pode ler, e só recusa quando alguém consulta a view. Sem uma verificação
+explícita, a migração terminaria com sucesso, o ledger registraria tudo
+aplicado, e a API quebraria em produção na primeira requisição. Por isso a
+migração `0003` testa `has_table_privilege` antes de criar qualquer view, e
+`grants.sql` refaz a checagem antes de conceder qualquer coisa.
+
+Pelo mesmo motivo `grants.sql` **não** concede nem revoga nada em `public.*` —
+ele apenas verifica, no bloco final, que nenhum papel de runtime tem privilégio
+direto nas tabelas do coletor, e falha apontando o que corrigir.
 
 ## Refresh da projeção
 

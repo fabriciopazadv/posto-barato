@@ -45,6 +45,33 @@ BEGIN
       conflicting;
   END IF;
 
+  -- 2. Quem está migrando consegue LER as tabelas-base?
+  --
+  -- Vem ANTES da conferência de colunas de propósito: sem SELECT, a consulta de
+  -- colunas não enxerga nada e acusaria as 39 colunas como ausentes, mandando
+  -- o operador caçar um problema de schema que não existe.
+  --
+  -- E a verificação existe porque o Postgres não a faz: `CREATE VIEW` sobre uma
+  -- tabela sem SELECT é aceito sem reclamação, e o erro "permission denied for
+  -- table stations" só aparece quando alguém CONSULTA a view. Sem isto, a
+  -- migração terminaria com sucesso, o ledger registraria tudo aplicado, e a
+  -- API quebraria em produção na primeira requisição.
+  SELECT string_agg(format('public.%s', v.t), ', ')
+    INTO missing
+  FROM (VALUES ('data_sources'), ('stations'), ('products'), ('price_observations')) AS v(t)
+  WHERE NOT has_table_privilege(current_user, 'public.' || v.t, 'SELECT');
+
+  IF missing IS NOT NULL THEN
+    RAISE EXCEPTION
+      'O papel % não tem SELECT em: %. As views de compatibilidade seriam criadas e falhariam na primeira consulta. Peça ao dono das tabelas do coletor para rodar operations/prerequisites.sql antes de migrar.',
+      current_user, missing;
+  END IF;
+
+  -- 3. As colunas exigidas existem?
+  --
+  -- pg_attribute, e não information_schema: o catálogo padrão SQL é filtrado por
+  -- privilégio. (A checagem acima já garante o acesso, mas ler o catálogo do
+  -- Postgres mantém o diagnóstico correto mesmo se aquela mudar.)
   SELECT string_agg(format('public.%s.%s', t.tbl, t.col), ', ')
     INTO missing
   FROM (
@@ -68,8 +95,12 @@ BEGIN
       ('price_observations', 'created_at')
   ) AS t(tbl, col)
   WHERE NOT EXISTS (
-    SELECT 1 FROM information_schema.columns c
-    WHERE c.table_schema = 'public' AND c.table_name = t.tbl AND c.column_name = t.col
+    SELECT 1
+    FROM pg_attribute a
+    JOIN pg_class c ON c.oid = a.attrelid
+    JOIN pg_namespace n ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public' AND c.relname = t.tbl AND a.attname = t.col
+      AND a.attnum > 0 AND NOT a.attisdropped
   );
 
   IF missing IS NOT NULL THEN
