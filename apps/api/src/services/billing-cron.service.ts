@@ -6,7 +6,7 @@
  * `POST /api/v1/billing/cron` com `Authorization: Bearer $CRON_SECRET`, disparado
  * uma vez por dia pelo agendador da plataforma que hospedar a API.
  */
-import { prisma } from '@posto-barato/database';
+import { appDb } from '@posto-barato/database';
 import {
   documentoValido,
   proximoVencimento,
@@ -48,7 +48,7 @@ export interface CronResult {
  */
 export async function runBillingCron(ctx: AppContext, log: Logger): Promise<CronResult> {
   const agora = new Date();
-  const vencidos = await prisma.subscription.findMany({
+  const vencidos = await appDb().subscription.findMany({
     where: { status: 'TRIAL', trialEndsAt: { lte: agora } },
     select: {
       userId: true,
@@ -74,7 +74,7 @@ export async function runBillingCron(ctx: AppContext, log: Logger): Promise<Cron
 
     // Sem plano escolhido não há o que cobrar: paywall e ponto.
     if (!plano) {
-      await prisma.subscription.update({
+      await appDb().subscription.update({
         where: { userId: sub.userId },
         data: { status: 'TRIAL_EXPIRADO' },
       });
@@ -87,7 +87,7 @@ export async function runBillingCron(ctx: AppContext, log: Logger): Promise<Cron
     // paywall de uma vez, onde a pessoa reassina informando o CPF. O aviso fica
     // no log para o suporte saber que não é indisponibilidade do Asaas.
     if (provider.configurado && !documentoValido(sub.cpfCnpjPagador)) {
-      await prisma.subscription.update({
+      await appDb().subscription.update({
         where: { userId: sub.userId },
         data: { status: 'TRIAL_EXPIRADO' },
       });
@@ -133,7 +133,7 @@ export async function runBillingCron(ctx: AppContext, log: Logger): Promise<Cron
 async function reconciliar(provider: AsaasBillingProvider, log: Logger): Promise<number> {
   if (!provider.configurado) return 0;
 
-  const candidatas = await prisma.subscription.findMany({
+  const candidatas = await appDb().subscription.findMany({
     where: {
       asaasSubscriptionId: { not: null },
       status: { in: ['AGUARDANDO_PAGAMENTO', 'ATIVA', 'INADIMPLENTE'] },
@@ -152,7 +152,7 @@ async function reconciliar(provider: AsaasBillingProvider, log: Logger): Promise
 
       const agora = new Date();
       const plano = (sub.plano ?? 'MENSAL') as Plano;
-      await prisma.subscription.update({
+      await appDb().subscription.update({
         where: { id: sub.id },
         data: {
           status: desejado,

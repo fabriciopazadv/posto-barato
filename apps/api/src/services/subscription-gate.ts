@@ -5,7 +5,7 @@
  * o app faz de graça. Este gate protege só o que o plano paga — alertas,
  * histórico longo, comparação avançada e economia acumulada.
  */
-import { prisma } from '@posto-barato/database';
+import { appDb } from '@posto-barato/database';
 import { AssinaturaInativaError, assinaturaPermiteAcesso } from '@posto-barato/domain';
 
 export { AssinaturaInativaError };
@@ -15,7 +15,7 @@ export { AssinaturaInativaError };
  * bloqueado. Use como preHandler nas rotas de recurso pago.
  */
 export async function requireAssinaturaAtiva(userId: string): Promise<void> {
-  const sub = await prisma.subscription.findUnique({
+  const sub = await appDb().subscription.findUnique({
     where: { userId },
     select: {
       status: true,

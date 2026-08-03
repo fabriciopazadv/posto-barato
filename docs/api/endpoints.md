@@ -14,6 +14,23 @@ Favoritos, alertas e veículos virão nos próximos incrementos.
 | GET | `/health` | Liveness (não toca dependências) |
 | GET | `/ready` | Readiness (verifica o banco) |
 
+## Formato das respostas
+
+Listas vêm em envelope, nunca como array puro:
+
+| Rota | Formato |
+|---|---|
+| `/products`, `/municipalities`, `/prices/summary` | `{ "data": [...] }` (`ListResponse<T>`) |
+| `/stations`, `/prices/latest` | `{ "data": [...], "page", "limit", "total", "hasNextPage" }` (`Paginated<T>`) |
+| `/stations/:id/prices` | `{ "stationId", "source", "prices": [...] }` (`StationPricesResponse`) |
+| `/stations/:id`, `/prices/compare`, `/stations/:id/history` | objeto direto |
+
+Os três formatos são tipos de `@posto-barato/shared-types`, importados pela API
+e pelo PWA. É o que impede a divergência que existia aqui: a API respondia em
+envelope e o app declarava esperar array puro, e nada acusava — o app roda em
+modo demonstração, então as quatro rotas só quebrariam quando alguém apontasse
+`NEXT_PUBLIC_API_URL` para a API real.
+
 ## Catálogo
 | Método | Rota | Descrição |
 |---|---|---|
@@ -37,6 +54,18 @@ Favoritos, alertas e veículos virão nos próximos incrementos.
 
 Regras: `latitude`/`longitude` andam juntas; `radiusKm` e `sort=nearest` exigem
 origem. A distância (km) só é calculada quando há origem.
+
+`updatedWithinHours` e `sort=most_recent` usam a **data de negócio** da
+observação (quando o preço valia na bomba), não a data de coleta.
+
+### Frescor e preço vencido
+
+`freshness` combina duas coisas: as faixas de tempo configuráveis
+(`RECENT`/`MODERATE`/`OLD`/`EXPIRED`, medidas desde a data de negócio) e o
+vencimento declarado pela fonte. Quando a fonte marca a observação como vencida,
+a resposta é `EXPIRED` mesmo que pelo relógio o preço fosse recente. Preços
+vencidos continuam sendo devolvidos — com aviso em `notices` no detalhe do posto
+—, porque omiti-los faria o posto desaparecer do mapa.
 
 ## Preços
 | Método | Rota | Descrição |

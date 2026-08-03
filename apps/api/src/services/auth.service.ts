@@ -1,4 +1,4 @@
-import { prisma } from '@posto-barato/database';
+import { appDb } from '@posto-barato/database';
 import { createTrialSubscription, getSubscription } from './billing.service.js';
 import type { AuthUser, TokenPair } from '@posto-barato/shared-types';
 import { hashPassword, verifyPassword } from '../domain/password.js';
@@ -56,10 +56,10 @@ export async function registerUser(
   password: string,
   name: string | undefined,
 ): Promise<UserRecord> {
-  const existing = await prisma.user.findUnique({ where: { email } });
+  const existing = await appDb().user.findUnique({ where: { email } });
   if (existing) throw new EmailInUseError();
 
-  const user = await prisma.user.create({
+  const user = await appDb().user.create({
     data: { email, passwordHash: await hashPassword(password), name },
     select: { id: true, email: true, name: true, createdAt: true },
   });
@@ -72,7 +72,7 @@ export async function registerUser(
 }
 
 export async function authenticateUser(email: string, password: string): Promise<UserRecord> {
-  const user = await prisma.user.findUnique({ where: { email } });
+  const user = await appDb().user.findUnique({ where: { email } });
   if (!user || !(await verifyPassword(user.passwordHash, password))) {
     throw new UnauthorizedError('E-mail ou senha incorretos.');
   }
@@ -80,7 +80,7 @@ export async function authenticateUser(email: string, password: string): Promise
 }
 
 export async function getUserById(userId: string): Promise<UserRecord> {
-  const user = await prisma.user.findUnique({
+  const user = await appDb().user.findUnique({
     where: { id: userId },
     select: { id: true, email: true, name: true, createdAt: true },
   });
@@ -94,7 +94,7 @@ export async function issueTokenPair(userId: string, config: AuthTokenConfig): P
   const refreshToken = generateRefreshToken();
   const expiresAt = new Date(Date.now() + config.refreshTtlDays * 24 * 60 * 60 * 1000);
 
-  await prisma.refreshToken.create({
+  await appDb().refreshToken.create({
     data: { userId, tokenHash: hashRefreshToken(refreshToken), expiresAt },
   });
 
@@ -115,12 +115,12 @@ export async function rotateRefreshToken(
   config: AuthTokenConfig,
 ): Promise<{ tokens: TokenPair; userId: string }> {
   const tokenHash = hashRefreshToken(refreshToken);
-  const record = await prisma.refreshToken.findUnique({ where: { tokenHash } });
+  const record = await appDb().refreshToken.findUnique({ where: { tokenHash } });
   if (!record) throw new UnauthorizedError('Sessão inválida.');
 
   if (record.revokedAt || record.expiresAt.getTime() < Date.now()) {
     if (record.revokedAt) {
-      await prisma.refreshToken.updateMany({
+      await appDb().refreshToken.updateMany({
         where: { userId: record.userId, revokedAt: null },
         data: { revokedAt: new Date() },
       });
@@ -130,8 +130,8 @@ export async function rotateRefreshToken(
 
   const tokens = await issueTokenPair(record.userId, config);
   const newHash = hashRefreshToken(tokens.refreshToken!);
-  const newRecord = await prisma.refreshToken.findUnique({ where: { tokenHash: newHash } });
-  await prisma.refreshToken.update({
+  const newRecord = await appDb().refreshToken.findUnique({ where: { tokenHash: newHash } });
+  await appDb().refreshToken.update({
     where: { id: record.id },
     data: { revokedAt: new Date(), replacedById: newRecord?.id },
   });
@@ -141,7 +141,7 @@ export async function rotateRefreshToken(
 
 export async function revokeRefreshToken(refreshToken: string): Promise<void> {
   const tokenHash = hashRefreshToken(refreshToken);
-  await prisma.refreshToken.updateMany({
+  await appDb().refreshToken.updateMany({
     where: { tokenHash, revokedAt: null },
     data: { revokedAt: new Date() },
   });

@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify';
+import type { StationPricesResponse } from '@posto-barato/shared-types';
 import type { AppContext } from '../context.js';
 import { notFound } from '../plugins/errors.js';
 import { getStationDetail, listStations } from '../services/read.service.js';
@@ -60,7 +61,7 @@ export function registerStationRoutes(app: FastifyInstance, ctx: AppContext): vo
   app.get(
     '/stations/:id/prices',
     { schema: { tags: ['postos'], summary: 'Preços mais recentes de um posto' } },
-    async (request) => {
+    async (request): Promise<StationPricesResponse> => {
       const { id } = stationIdParams.parse(request.params);
       const station = await getStationDetail(id, ctx.thresholds);
       if (!station) throw notFound('Posto não encontrado');

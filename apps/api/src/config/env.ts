@@ -8,7 +8,19 @@ const schema = z.object({
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   API_PORT: z.coerce.number().int().positive().default(3333),
   API_HOST: z.string().default('0.0.0.0'),
-  DATABASE_URL: z.string().min(1),
+
+  // Conexões separadas por privilégio (ver packages/database/src/clients.ts).
+  // Nenhuma é obrigatória isoladamente: fora de produção `DATABASE_URL` cobre as
+  // duas. Em produção cada uma é exigida — a checagem está no superRefine abaixo,
+  // porque depende do NODE_ENV.
+  //
+  // A API não recebe `DATABASE_MIGRATION_URL`: quem migra é o comando de
+  // migração, e um processo que atende a internet não tem por que carregar uma
+  // credencial capaz de alterar schema.
+  DATABASE_READONLY_URL: z.string().min(1).optional(),
+  DATABASE_APP_URL: z.string().min(1).optional(),
+  /** Conexão única de desenvolvimento. Ignorada em produção. */
+  DATABASE_URL: z.string().min(1).optional(),
 
   // Faixas de frescor do preço em horas (seção 8), configuráveis.
   FRESHNESS_RECENT_HOURS: z.coerce.number().positive().default(6),
@@ -60,7 +72,36 @@ const schema = z.object({
   ASAAS_WEBHOOK_TOKEN: z.string().optional(),
   // Segredo exigido por POST /billing/cron (virada do teste + reconciliação).
   CRON_SECRET: z.string().optional(),
-});
+})
+  .superRefine((env, ctx) => {
+    // Em produção, cair em uma conexão genérica é como uma API pública acaba
+    // conectada com um usuário que pode escrever no coletor. Falha no boot.
+    const required =
+      env.NODE_ENV === 'production'
+        ? (['DATABASE_READONLY_URL', 'DATABASE_APP_URL'] as const)
+        : ([] as const);
+
+    for (const key of required) {
+      if (!env[key]) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: [key],
+          message: 'obrigatória em produção — DATABASE_URL não substitui.',
+        });
+      }
+    }
+
+    if (env.NODE_ENV !== 'production') {
+      const hasAny = env.DATABASE_URL ?? env.DATABASE_READONLY_URL ?? env.DATABASE_APP_URL;
+      if (!hasAny) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          path: ['DATABASE_URL'],
+          message: 'defina DATABASE_URL (ou as URLs por papel) para conectar ao banco.',
+        });
+      }
+    }
+  });
 
 export type Env = z.infer<typeof schema>;
 

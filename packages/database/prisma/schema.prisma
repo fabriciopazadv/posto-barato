@@ -1,15 +1,17 @@
 // Schema Prisma da Fase 2 (Plataforma Posto Barato).
 //
 // IMPORTANTE (seções 6, 7 e 8 da especificação):
-//   - O schema `collector` pertence à Fase 1. Aqui ele é espelhado APENAS de
-//     forma parcial e SOMENTE-LEITURA: declaramos exclusivamente os modelos e
-//     campos públicos que a API pode ler.
+//   - Os modelos do schema `collector` NÃO são tabelas: são as VIEWS de
+//     compatibilidade criadas pela migração 0003 sobre as tabelas do coletor em
+//     `public.*`. São somente-leitura por construção — a view não tem regra de
+//     escrita, então uma tentativa de INSERT falha no banco, não só na revisão.
 //   - As tabelas sensíveis (collection_evidence, collection_errors,
-//     collection_runs, collection_locks) e os campos sensíveis
-//     (raw_visible_data, screenshot_path, html_snapshot_path, internal_name...)
-//     NÃO são declarados aqui de propósito — a API não tem como acessá-los.
-//   - As migrations do `collector` são de responsabilidade da Fase 1. A Fase 2
-//     nunca altera tabelas do collector (aplicamos DDL apenas no schema `app`).
+//     collection_runs, observation_evidence) e os campos sensíveis
+//     (raw_payload, raw_registry_payload, evidence_path, observation_fingerprint,
+//     source_record_hash, internal_name, cnpj, anp_*) NÃO atravessam as views —
+//     a API não tem como acessá-los nem por engano.
+//   - As migrations do coletor são de responsabilidade da Fase 1. A Fase 2 nunca
+//     altera as tabelas do coletor (aplicamos DDL apenas no schema `app`).
 
 generator client {
   provider = "prisma-client-js"
@@ -21,10 +23,12 @@ datasource db {
   schemas  = ["collector", "app"]
 }
 
-/// Fonte de dados (Fase 1). Somente `publicName` é exposto ao cliente final.
+/// Fonte de dados (Fase 1). `internalName` (ex.: NOTA_MT_MARKET_RESEARCH) foi
+/// removido do modelo e da view: nenhuma operação da API precisa do nome
+/// interno, e o que não é declarado não vaza por uma projeção esquecida. A fonte
+/// apresentada ao cliente é sempre `publicName`.
 model DataSource {
   id           String             @id @db.Uuid
-  internalName String             @unique @map("internal_name")
   publicName   String             @map("public_name")
   sourceType   String             @map("source_type")
   active       Boolean            @default(true)
@@ -35,6 +39,9 @@ model DataSource {
 }
 
 /// Posto identificado pela coleta (Fase 1). Leitura pública.
+/// Cadastro administrativo (cnpj, corporate_name, anp_*, registry_*) fica de
+/// fora da view: identifica o estabelecimento perante órgãos, não ajuda a
+/// abastecer mais barato.
 model Station {
   id             String             @id @db.Uuid
   displayName    String             @map("display_name")
@@ -69,8 +76,12 @@ model Product {
   @@schema("collector")
 }
 
-/// Observação de preço (Fase 1). Expomos apenas campos públicos derivados;
-/// raw_visible_data e evidence_id NÃO são declarados aqui.
+/// Observação de preço publicável (Fase 1).
+///
+/// A view por trás deste modelo já filtra `status IN ('APPROVED','EXPIRED')`:
+/// observação PENDING ou REJECTED não é alcançável a partir daqui de forma
+/// alguma. `rawPayload`, `evidencePath`, `observationFingerprint`,
+/// `sourceRecordHash` e `collectionRunId` não são declarados nem existem na view.
 model PriceObservation {
   id                  String     @id @db.Uuid
   stationId           String     @map("station_id") @db.Uuid
@@ -80,11 +91,19 @@ model PriceObservation {
   currency            String     @default("BRL")
   unit                String     @default("L")
   relativeTimeText    String?    @map("relative_time_text")
+  /// Hora real da observação, quando a fonte a informa. Primeira escolha da
+  /// data de negócio usada para eleger a observação mais recente.
+  observedAt          DateTime?  @map("observed_at")
   estimatedObservedAt DateTime?  @map("estimated_observed_at")
   estimatedTime       Boolean    @default(false) @map("estimated_time")
   collectedAt         DateTime   @map("collected_at")
   sourcePosition      Int        @map("source_position")
   confidenceScore     Decimal    @default(1) @map("confidence_score") @db.Decimal(3, 2)
+  /// 'APPROVED' ou 'EXPIRED' — texto, e não enum, para a Fase 2 não depender do
+  /// tipo do coletor. A view converte.
+  status              String
+  expiresAt           DateTime?  @map("expires_at")
+  createdAt           DateTime   @map("created_at")
   station             Station    @relation(fields: [stationId], references: [id])
   product             Product    @relation(fields: [productId], references: [id])
   dataSource          DataSource @relation(fields: [dataSourceId], references: [id])

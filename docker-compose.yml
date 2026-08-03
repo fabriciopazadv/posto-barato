@@ -1,4 +1,14 @@
 services:
+  # PostgreSQL 16 + PostGIS 3.4 — a mesma linha maior de versão do banco do
+  # coletor. Um único banco lógico (`posto_barato`) para tudo: o coletor escreve
+  # em public.*, a Fase 2 lê pelas views collector.* e mantém o schema app.
+  # Criar um segundo banco lógico impediria as views de enxergarem as tabelas.
+  #
+  # TROCAR ESTA IMAGEM EM UM BANCO QUE JÁ TEM DADOS NÃO É UMA EDIÇÃO DE YAML.
+  # O procedimento (backup, validação do volume, PostGIS_Version, migrações e
+  # plano de rollback) está em docs/operations/database-integration.md.
+  # Subir PostgreSQL 17 sobre um volume escrito pelo 16 faz o container
+  # encerrar com erro de incompatibilidade — o volume não é migrado sozinho.
   postgres:
     image: postgis/postgis:16-3.4
     container_name: posto-barato-db
@@ -9,6 +19,8 @@ services:
     ports:
       - "5432:5432"
     volumes:
+      # Caminho do PGDATA do PostgreSQL 16. Mudar este caminho torna os dados
+      # existentes invisíveis para o servidor, que inicializa um cluster vazio.
       - pgdata:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U posto_barato -d posto_barato"]
@@ -33,7 +45,11 @@ services:
       dockerfile: docker/api.Dockerfile
     container_name: posto-barato-api
     environment:
-      DATABASE_URL: postgresql://posto_barato:posto_barato@postgres:5432/posto_barato
+      # Local: um usuário só para os dois papéis. Em produção cada um recebe a
+      # própria credencial (DATABASE_READONLY_URL e DATABASE_APP_URL) e a API
+      # recusa subir sem elas — ver .env.example.
+      DATABASE_READONLY_URL: postgresql://posto_barato:posto_barato@postgres:5432/posto_barato
+      DATABASE_APP_URL: postgresql://posto_barato:posto_barato@postgres:5432/posto_barato
       REDIS_URL: redis://redis:6379
       NODE_ENV: development
       API_HOST: 0.0.0.0

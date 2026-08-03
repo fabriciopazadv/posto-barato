@@ -1,5 +1,10 @@
 import type { FastifyInstance } from 'fastify';
-import type { PublicConfig } from '@posto-barato/shared-types';
+import type {
+  ListResponse,
+  Municipality,
+  Product,
+  PublicConfig,
+} from '@posto-barato/shared-types';
 import type { AppContext } from '../context.js';
 import { CONFIRM_NOTICE, NOT_REALTIME_NOTICE, PUBLIC_SOURCE } from '../domain/projection.js';
 import { listMunicipalities, listProducts } from '../services/read.service.js';
@@ -31,12 +36,12 @@ export function registerCatalogRoutes(app: FastifyInstance, ctx: AppContext): vo
   app.get(
     '/products',
     { schema: { tags: ['catálogo'], summary: 'Lista de produtos (combustíveis)' } },
-    async () => ({ data: await listProducts() }),
+    async (): Promise<ListResponse<Product>> => ({ data: await listProducts() }),
   );
 
   app.get(
     '/municipalities',
     { schema: { tags: ['catálogo'], summary: 'Municípios com dados disponíveis' } },
-    async () => ({ data: await listMunicipalities() }),
+    async (): Promise<ListResponse<Municipality>> => ({ data: await listMunicipalities() }),
   );
 }

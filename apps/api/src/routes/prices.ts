@@ -1,4 +1,5 @@
 import type { FastifyInstance } from 'fastify';
+import type { ListResponse, PriceSummary } from '@posto-barato/shared-types';
 import type { AppContext } from '../context.js';
 import { badRequest, notFound } from '../plugins/errors.js';
 import {
@@ -42,7 +43,7 @@ export function registerPriceRoutes(app: FastifyInstance, ctx: AppContext): void
   app.get(
     '/prices/summary',
     { schema: { tags: ['preços'], summary: 'Resumo de preços por município' } },
-    async (request) => {
+    async (request): Promise<ListResponse<PriceSummary>> => {
       const q = summaryQuery.parse(request.query);
       return { data: await priceSummary(q.municipality, q.state, q.product) };
     },
