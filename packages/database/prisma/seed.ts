@@ -117,9 +117,9 @@ async function main(): Promise<void> {
     );
     const previousIds = previous.map((r) => r.station_id);
     if (previousIds.length > 0) {
-      await client.query('DELETE FROM public.price_observations WHERE station_id = ANY($1::uuid[])', [previousIds]);
-      await client.query('DELETE FROM public.station_products WHERE station_id = ANY($1::uuid[])', [previousIds]);
-      await client.query('DELETE FROM public.stations WHERE id = ANY($1::uuid[])', [previousIds]);
+      await client.query('DELETE FROM public.price_observations WHERE station_id = ANY($1::text[])', [previousIds]);
+      await client.query('DELETE FROM public.station_products WHERE station_id = ANY($1::text[])', [previousIds]);
+      await client.query('DELETE FROM public.stations WHERE id = ANY($1::text[])', [previousIds]);
       await client.query('DELETE FROM app.demo_stations');
     }
     await client.query('DELETE FROM public.collection_runs WHERE host_name = $1', [DEMO_HOST]);
@@ -187,7 +187,7 @@ async function main(): Promise<void> {
 
     await client.query(
       `INSERT INTO app.demo_stations (station_id, note)
-       SELECT unnest($1::uuid[]), 'Rondonópolis/MT demo'`,
+       SELECT unnest($1::text[]), 'Rondonópolis/MT demo'`,
       [demoIds],
     );
 

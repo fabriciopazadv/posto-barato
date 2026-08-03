@@ -2,11 +2,18 @@
   "$schema": "https://turbo.build/schema.json",
   "ui": "stream",
   "tasks": {
+    // A ordem shared-types → domain → database → api sai daqui: `^build` obriga
+    // cada pacote a esperar as dependências declaradas no seu package.json. Os
+    // pacotes publicam `dist/` (e não mais `src/*.ts`), então sem esta ordem a
+    // API compila contra tipos que ainda não existem.
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
     },
+    // `dev` também espera o build das dependências: `tsx watch` resolve
+    // @posto-barato/* pelo `exports` do package.json, que aponta para `dist/`.
     "dev": {
+      "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },

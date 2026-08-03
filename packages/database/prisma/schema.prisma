@@ -12,6 +12,20 @@
 //     a API não tem como acessá-los nem por engano.
 //   - As migrations do coletor são de responsabilidade da Fase 1. A Fase 2 nunca
 //     altera as tabelas do coletor (aplicamos DDL apenas no schema `app`).
+//
+// TIPO DOS IDENTIFICADORES — os dois lados divergem, e é de propósito:
+//
+//   collector.*  `String` SEM `@db.Uuid`. Os valores TÊM formato UUID, mas a
+//                coluna é `text`: o coletor os declara como
+//                `String @default(uuid())`, sem `@db.Uuid`. Declarar `@db.Uuid`
+//                aqui faria o Prisma comparar `uuid` com `text`, e o Postgres
+//                recusa esse operador — a consulta falha em tempo de execução,
+//                não de compilação. O mesmo vale para `app.demo_stations`, cuja
+//                chave é um id do coletor.
+//
+//   app.*        UUID nativo (`@db.Uuid`) em `users`, `refresh_tokens`,
+//                `subscriptions` e `billing_events`. São tabelas nossas, criadas
+//                pelas migrações da Fase 2, e nada as compara com o coletor.
 
 generator client {
   provider = "prisma-client-js"
@@ -28,7 +42,7 @@ datasource db {
 /// interno, e o que não é declarado não vaza por uma projeção esquecida. A fonte
 /// apresentada ao cliente é sempre `publicName`.
 model DataSource {
-  id           String             @id @db.Uuid
+  id           String             @id
   publicName   String             @map("public_name")
   sourceType   String             @map("source_type")
   active       Boolean            @default(true)
@@ -43,7 +57,7 @@ model DataSource {
 /// fora da view: identifica o estabelecimento perante órgãos, não ajuda a
 /// abastecer mais barato.
 model Station {
-  id             String             @id @db.Uuid
+  id             String             @id
   displayName    String             @map("display_name")
   displayAddress String             @map("display_address")
   neighborhood   String?
@@ -64,7 +78,7 @@ model Station {
 
 /// Produto canônico (Fase 1).
 model Product {
-  id            String             @id @db.Uuid
+  id            String             @id
   canonicalCode String             @unique @map("canonical_code")
   canonicalName String             @map("canonical_name")
   category      String
@@ -83,10 +97,10 @@ model Product {
 /// alguma. `rawPayload`, `evidencePath`, `observationFingerprint`,
 /// `sourceRecordHash` e `collectionRunId` não são declarados nem existem na view.
 model PriceObservation {
-  id                  String     @id @db.Uuid
-  stationId           String     @map("station_id") @db.Uuid
-  productId           String     @map("product_id") @db.Uuid
-  dataSourceId        String     @map("data_source_id") @db.Uuid
+  id                  String     @id
+  stationId           String     @map("station_id")
+  productId           String     @map("product_id")
+  dataSourceId        String     @map("data_source_id")
   priceDecimal        Decimal    @map("price_decimal") @db.Decimal(10, 3)
   currency            String     @default("BRL")
   unit                String     @default("L")
@@ -123,7 +137,7 @@ model PriceObservation {
 /// "Dados demonstrativos" no cliente (seção 35). is_demo nunca deve misturar-se
 /// silenciosamente com dados reais em produção.
 model DemoStation {
-  stationId String   @id @map("station_id") @db.Uuid
+  stationId String   @id @map("station_id")
   note      String?
   createdAt DateTime @default(now()) @map("created_at")
 

@@ -78,6 +78,30 @@ Em produção a ausência de `DATABASE_READONLY_URL` ou `DATABASE_APP_URL` derru
 a API no boot. A API **não** recebe `DATABASE_MIGRATION_URL`: um processo que
 atende a internet não carrega credencial capaz de alterar schema.
 
+### Os dois arquivos locais
+
+A separação acima só vale se o processo da API não *conseguir* ler a credencial
+de migração. Um único `.env` com todas as variáveis a entregaria de volta, então
+o ambiente local usa dois arquivos — ambos ignorados pelo Git:
+
+| Arquivo | Carregado por | Contém |
+|---|---|---|
+| `.env` | `pnpm dev:api`, `pnpm --filter @posto-barato/api start` | `DATABASE_READONLY_URL`, `DATABASE_APP_URL`, `AUTH_ACCESS_SECRET`, ajustes da API |
+| `.env.tools` | `db:migrate`, `db:doctor`, `db:refresh`, `db:seed` | `DATABASE_MIGRATION_URL`, `DATABASE_REFRESH_URL`, `DATABASE_URL` (Prisma CLI) |
+
+O carregamento é do próprio Node (`--env-file-if-exists`), declarado nos scripts
+de cada pacote — não há dependência de `dotenv`, e um arquivo ausente não quebra
+o comando. `.gitignore` cobre `.env` e `.env.*`, com exceção de `.env.example`.
+
+Gere o segredo de autenticação, nunca o digite:
+
+```bash
+openssl rand -base64 48
+```
+
+`COOKIE_SECURE=false` só no ambiente local, que não tem HTTPS; em produção o
+valor volta a ser `true` (é o padrão do schema de ambiente).
+
 ## Matriz de papéis
 
 | Papel | Enxerga | Escreve | Nunca alcança |

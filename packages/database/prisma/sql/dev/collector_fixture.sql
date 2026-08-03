@@ -13,6 +13,28 @@
 --
 -- As tabelas de evidência abaixo existem para um fim só: provar nos testes que
 -- `price_reader` NÃO consegue lê-las.
+--
+-- ---------------------------------------------------------------------------
+-- Por que os ids são `text`, e não `uuid`
+-- ---------------------------------------------------------------------------
+-- Os valores têm formato UUID, mas a coluna é `text`: o coletor os declara como
+-- `String @default(uuid())`, sem `@db.Uuid`. Esta fixture usava `uuid` nativo, e
+-- o descompasso não aparecia em lugar nenhum — os testes passavam contra um
+-- banco cujos ids eram de um tipo que a produção não tem. As consultas da API
+-- que convertiam o parâmetro para `uuid` só falhariam contra o banco real, com
+-- `operator does not exist: text = uuid`, na primeira requisição.
+--
+-- `app.demo_stations` é criada aqui, antes das migrações, pelo mesmo motivo: a
+-- migração 0001 a declara com `station_id uuid` sob `CREATE TABLE IF NOT EXISTS`,
+-- e no banco real a tabela já existia com `text` — o `IF NOT EXISTS` a preservou.
+-- Criá-la assim reproduz o estado real, em vez de montar um ambiente onde o
+-- JOIN da migração 0004 compara `uuid` com `text` e falha.
+CREATE SCHEMA IF NOT EXISTS app;
+CREATE TABLE IF NOT EXISTS app.demo_stations (
+  station_id text PRIMARY KEY,
+  note       text,
+  created_at timestamptz NOT NULL DEFAULT now()
+);
 
 DO $$ BEGIN
   CREATE TYPE public."ObservationStatus" AS ENUM ('PENDING','APPROVED','REJECTED','EXPIRED');
@@ -24,7 +46,7 @@ DO $$ BEGIN
 EXCEPTION WHEN duplicate_object THEN NULL; END $$;
 
 CREATE TABLE IF NOT EXISTS public.data_sources (
-  id            uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id            text PRIMARY KEY DEFAULT gen_random_uuid()::text,
   internal_name text UNIQUE NOT NULL,
   public_name   text NOT NULL,
   source_type   text NOT NULL,
@@ -34,7 +56,7 @@ CREATE TABLE IF NOT EXISTS public.data_sources (
 );
 
 CREATE TABLE IF NOT EXISTS public.collection_runs (
-  id                 uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id                 text PRIMARY KEY DEFAULT gen_random_uuid()::text,
   started_at         timestamptz NOT NULL DEFAULT now(),
   finished_at        timestamptz,
   status             public."CollectionRunStatus" NOT NULL DEFAULT 'RUNNING',
@@ -51,7 +73,7 @@ CREATE TABLE IF NOT EXISTS public.collection_runs (
 );
 
 CREATE TABLE IF NOT EXISTS public.stations (
-  id                   uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id                   text PRIMARY KEY DEFAULT gen_random_uuid()::text,
   normalized_name      text NOT NULL,
   display_name         text NOT NULL,
   normalized_address   text NOT NULL,
@@ -83,7 +105,7 @@ CREATE TABLE IF NOT EXISTS public.stations (
 );
 
 CREATE TABLE IF NOT EXISTS public.products (
-  id             uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  id             text PRIMARY KEY DEFAULT gen_random_uuid()::text,
   canonical_code text UNIQUE NOT NULL,
   canonical_name text NOT NULL,
   category       text NOT NULL,
@@ -94,16 +116,16 @@ CREATE TABLE IF NOT EXISTS public.products (
 );
 
 CREATE TABLE IF NOT EXISTS public.station_products (
-  station_id    uuid NOT NULL REFERENCES public.stations(id),
-  product_id    uuid NOT NULL REFERENCES public.products(id),
+  station_id    text NOT NULL REFERENCES public.stations(id),
+  product_id    text NOT NULL REFERENCES public.products(id),
   first_seen_at timestamptz NOT NULL DEFAULT now(),
   last_seen_at  timestamptz NOT NULL DEFAULT now(),
   PRIMARY KEY (station_id, product_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.collection_evidence (
-  id                       uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  collection_run_id        uuid NOT NULL REFERENCES public.collection_runs(id),
+  id                       text PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  collection_run_id        text NOT NULL REFERENCES public.collection_runs(id),
   evidence_type            text NOT NULL,
   file_path                text NOT NULL,
   sha256                   text NOT NULL,
@@ -114,11 +136,11 @@ CREATE TABLE IF NOT EXISTS public.collection_evidence (
 );
 
 CREATE TABLE IF NOT EXISTS public.price_observations (
-  id                      uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  station_id              uuid NOT NULL REFERENCES public.stations(id),
-  product_id              uuid NOT NULL REFERENCES public.products(id),
-  data_source_id          uuid NOT NULL REFERENCES public.data_sources(id),
-  collection_run_id       uuid NOT NULL REFERENCES public.collection_runs(id),
+  id                      text PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  station_id              text NOT NULL REFERENCES public.stations(id),
+  product_id              text NOT NULL REFERENCES public.products(id),
+  data_source_id          text NOT NULL REFERENCES public.data_sources(id),
+  collection_run_id       text NOT NULL REFERENCES public.collection_runs(id),
   original_product_name   text NOT NULL,
   original_price_text     text NOT NULL,
   price_decimal           numeric(10,3) NOT NULL,
@@ -142,14 +164,14 @@ CREATE TABLE IF NOT EXISTS public.price_observations (
 );
 
 CREATE TABLE IF NOT EXISTS public.observation_evidence (
-  observation_id uuid NOT NULL REFERENCES public.price_observations(id),
-  evidence_id    uuid NOT NULL REFERENCES public.collection_evidence(id),
+  observation_id text NOT NULL REFERENCES public.price_observations(id),
+  evidence_id    text NOT NULL REFERENCES public.collection_evidence(id),
   PRIMARY KEY (observation_id, evidence_id)
 );
 
 CREATE TABLE IF NOT EXISTS public.collection_errors (
-  id                uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  collection_run_id uuid NOT NULL REFERENCES public.collection_runs(id),
+  id                text PRIMARY KEY DEFAULT gen_random_uuid()::text,
+  collection_run_id text NOT NULL REFERENCES public.collection_runs(id),
   stage             text NOT NULL,
   error_type        text NOT NULL,
   message           text NOT NULL,

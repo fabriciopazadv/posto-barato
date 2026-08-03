@@ -3,23 +3,34 @@
   "version": "0.2.0",
   "private": true,
   "type": "module",
-  "main": "./src/index.ts",
-  "types": "./src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./src/index.ts",
-    "./migrate": "./src/migrate.ts",
-    "./refresh": "./src/refresh.ts"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./migrate": {
+      "types": "./dist/migrate.d.ts",
+      "default": "./dist/migrate.js"
+    },
+    "./refresh": {
+      "types": "./dist/refresh.d.ts",
+      "default": "./dist/refresh.js"
+    }
   },
   "scripts": {
+    "build": "prisma generate && tsc -p tsconfig.build.json",
     "generate": "prisma generate",
     "validate": "prisma validate",
-    "migrate": "tsx src/migrate.ts",
-    "migrate:status": "tsx src/migrate.ts --status",
-    "doctor": "tsx src/doctor.ts",
-    "seed": "tsx prisma/seed.ts",
-    "reset": "tsx src/migrate.ts --reset --yes-drop-everything --dev-fixture && tsx prisma/seed.ts",
-    "refresh": "tsx src/refresh.ts",
-    "typecheck": "tsc --noEmit",
+    "validate": "prisma validate",
+    "migrate": "tsx --env-file-if-exists=../../.env --env-file-if-exists=../../.env.tools src/migrate.ts",
+    "migrate:status": "tsx --env-file-if-exists=../../.env --env-file-if-exists=../../.env.tools src/migrate.ts --status",
+    "doctor": "tsx --env-file-if-exists=../../.env --env-file-if-exists=../../.env.tools src/doctor.ts",
+    "seed": "tsx --env-file-if-exists=../../.env --env-file-if-exists=../../.env.tools prisma/seed.ts",
+    "reset": "tsx --env-file-if-exists=../../.env --env-file-if-exists=../../.env.tools src/migrate.ts --reset --yes-drop-everything --dev-fixture && pnpm seed",
+    "refresh": "tsx --env-file-if-exists=../../.env --env-file-if-exists=../../.env.tools src/refresh.ts",
+    "typecheck": "prisma generate && tsc --noEmit",
     "lint": "eslint src prisma"
   },
   "dependencies": {

@@ -1,0 +1,13 @@
+{
+  // Emissão do pacote. `tsconfig.json` (typecheck) cobre também `prisma/seed.ts`,
+  // que é um script executado por tsx e não faz parte da API publicada — incluí-lo
+  // aqui empurraria o `rootDir` para a raiz do pacote e o `dist` ganharia um nível
+  // `dist/src/`, quebrando os caminhos declarados em `exports`.
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist"
+  },
+  "include": ["src/**/*.ts"],
+  "exclude": ["prisma/**/*.ts"]
+}

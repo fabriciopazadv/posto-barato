@@ -4,8 +4,12 @@
     "rootDir": ".",
     "outDir": "./dist",
     "types": ["node"],
-    "moduleResolution": "Bundler",
-    "module": "ESNext",
+    // NodeNext, e não Bundler: o build é executado por `node dist/server.js`,
+    // sem empacotador no meio. Com "Bundler" o compilador aceitava imports que o
+    // Node ESM rejeita em tempo de execução (extensão ausente, `exports` do
+    // package ignorado) — o build passava e o processo morria no boot.
+    "moduleResolution": "NodeNext",
+    "module": "NodeNext",
     "verbatimModuleSyntax": false
   },
   "include": ["src/**/*.ts", "test/**/*.ts"]

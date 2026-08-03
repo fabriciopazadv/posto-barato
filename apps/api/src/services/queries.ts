@@ -124,13 +124,15 @@ export async function queryPriceRowsForStations(
 ): Promise<PublicPriceRow[]> {
   if (stationIds.length === 0) return [];
   const productCond = product ? Prisma.sql`AND product_code = ${product}` : Prisma.empty;
-  // `= ANY($1::uuid[])` e não `station_id::text IN (...)`: converter a coluna
-  // para texto descarta o índice sobre o UUID e força varredura completa, e o
-  // custo cresce junto com a página.
+  // `::text[]`, e não `::uuid[]`: os ids do coletor têm formato UUID mas a
+  // coluna é `text` (a Fase 1 os declara como `String @default(uuid())`, sem
+  // `@db.Uuid`). Comparar `text` com `uuid` não é conversão implícita no
+  // Postgres — é `operator does not exist`, erro na primeira consulta.
+  // O tipo do parâmetro casa com o da coluna, então o índice continua em uso.
   return readonlyDb().$queryRaw<PublicPriceRow[]>`
     SELECT ${PUBLIC_COLUMNS}
     FROM app.public_latest_prices
-    WHERE station_id = ANY(${stationIds}::uuid[]) ${productCond}
+    WHERE station_id = ANY(${stationIds}::text[]) ${productCond}
     ORDER BY station_id, product_code`;
 }
 
@@ -145,7 +147,7 @@ export async function queryStationById(
   return readonlyDb().$queryRaw<PublicPriceRow[]>`
     SELECT ${PUBLIC_COLUMNS}, ${distance} AS distance_km
     FROM app.public_latest_prices
-    WHERE station_id = ${stationId}::uuid
+    WHERE station_id = ${stationId}::text
     ORDER BY product_code`;
 }
 
@@ -210,7 +212,7 @@ export async function queryHistory(
              po.price_decimal AS price
       FROM collector.price_observations po
       JOIN collector.products p ON p.id = po.product_id
-      WHERE po.station_id = ${stationId}::uuid
+      WHERE po.station_id = ${stationId}::text
         AND p.canonical_code = ${product}
         AND COALESCE(po.observed_at, po.estimated_observed_at, po.collected_at)
             >= now() - make_interval(days => ${days}::int)
@@ -241,7 +243,7 @@ export async function queryMunicipalAggregate(
     WHERE product_code = ${product}
       AND (municipality, state) IN (
         SELECT municipality, state FROM app.public_latest_prices
-        WHERE station_id = ${stationId}::uuid LIMIT 1
+        WHERE station_id = ${stationId}::text LIMIT 1
       )`;
   return rows[0] ?? { municipal_avg: null, municipal_min: null };
 }
